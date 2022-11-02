@@ -1,25 +1,42 @@
 import { Text, Image, View, StyleSheet } from "react-native";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
-export const ChatGroup = () => {
+dayjs.extend(relativeTime);
+
+type Chat = {
+  id: string;
+  user: {
+    image: string;
+    name: string;
+  };
+  lastMessage: {
+    text: string;
+    createdAt: string;
+  };
+};
+
+export const ChatGroup = ({ chat }: { chat: Chat }) => {
   return (
     <View style={styles.container}>
       <Image
         source={{
-          uri: "https://media2.dallasobserver.com/dal/imager/u/magnum/13742578/baroness58a9832.jpg?cb=1649112638",
+          uri: chat.user.image,
         }}
         style={styles.image}
       />
       <View style={styles.main}>
         <View style={styles.item}>
           <Text style={styles.name} numberOfLines={1}>
-            Floz
+            {chat.user.name}
           </Text>
-          <Text style={styles.subtext}>8:00</Text>
+          <Text style={styles.subtext}>
+            {dayjs(chat.lastMessage.createdAt).fromNow(true)}
+          </Text>
         </View>
 
         <Text numberOfLines={2} style={styles.subtext}>
-          Hi What's Up?Hi What's Up?Hi What's Up?Hi What's Up?Hi What's Up?Hi
-          What's Up?Hi What's Up?Hi What's Up?Hi What's Up?Hi What's Up?
+          {chat.lastMessage.text}
         </Text>
       </View>
     </View>
