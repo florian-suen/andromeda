@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TextInput, Animated } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const InputBox = () => {
   const [inputText, setInputText] = useState("");
@@ -48,7 +49,7 @@ export const InputBox = () => {
   }, [inputText]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView edges={["bottom"]} style={styles.container}>
       <TextInput
         style={styles.input}
         placeholder="Message"
@@ -78,14 +79,14 @@ export const InputBox = () => {
           />
         </Animated.View>
       ) : null}
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: "blue",
+    backgroundColor: "green",
     padding: 5,
     paddingHorizontal: 6,
     borderColor: "black",

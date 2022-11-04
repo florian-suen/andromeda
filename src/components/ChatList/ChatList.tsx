@@ -1,11 +1,17 @@
-import { Text, Image, View, StyleSheet } from "react-native";
+import { Text, Image, View, StyleSheet, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 dayjs.extend(relativeTime);
 
+type RootStackParamList = {
+  Chat: { id: number; user: string };
+};
+
 type Chat = {
-  id: string;
+  id: number;
   user: {
     image: string;
     name: string;
@@ -17,8 +23,16 @@ type Chat = {
 };
 
 export const ChatGroup = ({ chat }: { chat: Chat }) => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   return (
-    <View style={styles.container}>
+    <Pressable
+      onPress={() =>
+        navigation.navigate("Chat", { id: chat.id, user: chat.user.name })
+      }
+      style={styles.container}
+    >
       <Image
         source={{
           uri: chat.user.image,
@@ -39,7 +53,7 @@ export const ChatGroup = ({ chat }: { chat: Chat }) => {
           {chat.lastMessage.text}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

@@ -1,12 +1,12 @@
 import { View, Text, FlatList } from "react-native";
-import { ChatGroup } from "../components/ChatGroup/ChatGroup";
+import { ChatGroup } from "../components/ChatList/ChatList";
 
 export const ChatList = () => {
   return (
     <FlatList
       data={[
         {
-          id: "1",
+          id: 1,
           user: {
             image:
               "http://sropr.com/wp-content/uploads/2021/02/Photo-Jan-21-6-23-33-AM-1-scaled.jpg",
