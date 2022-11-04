@@ -1,6 +1,12 @@
-import { View, Text, FlatList } from "react-native";
-import { ChatGroup } from "../components/chatgroup/ChatGroup";
-import { Message } from "../components/message/Message";
+import {
+  View,
+  Text,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
+import { ChatGroup } from "../components/ChatGroup/ChatGroup";
+import { Message } from "../components/Message/Message";
 const message = [
   {
     id: "2",
@@ -20,10 +26,14 @@ const message = [
 
 export const Chat = () => {
   return (
-    <FlatList
-      inverted
-      data={message}
-      renderItem={({ item }) => <Message message={item} />}
-    ></FlatList>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <FlatList
+        inverted
+        data={message}
+        renderItem={({ item }) => <Message message={item} />}
+      ></FlatList>
+    </KeyboardAvoidingView>
   );
 };

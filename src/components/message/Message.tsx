@@ -20,6 +20,7 @@ export const Message = ({ message }: { message: Message }) => {
 
   return (
     <View
+      key={message.id + Math.random()}
       style={[
         styles.container,
         isMyMsg ? styles.containerme : styles.containerfriend,
@@ -37,6 +38,15 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 15,
     maxWidth: "90%",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.0,
+
+    elevation: 1,
   },
   containerfriend: { backgroundColor: "lightblue", alignSelf: "flex-start" },
   containerme: { backgroundColor: "magenta", alignSelf: "flex-end" },

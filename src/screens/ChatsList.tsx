@@ -1,5 +1,5 @@
 import { View, Text, FlatList } from "react-native";
-import { ChatGroup } from "../components/chatgroup/ChatGroup";
+import { ChatGroup } from "../components/ChatGroup/ChatGroup";
 
 export const ChatList = () => {
   return (
