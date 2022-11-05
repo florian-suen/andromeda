@@ -25,6 +25,7 @@ export const Navigator = () => {
       <Stack.Navigator
         initialRouteName="Home"
         screenOptions={{
+          headerTitleStyle: { color: myTheme.colors.primary },
           headerTitleAlign: "center",
         }}
       >
@@ -38,10 +39,9 @@ export const Navigator = () => {
           component={Chat}
           options={{
             headerTitleAlign: "left",
-            headerTitleStyle: { color: "#c2bdb6" },
           }}
         />
-        <Stack.Screen name="ChatContacts" component={ChatContacts} />
+        <Stack.Screen name="Select Contacts" component={ChatContacts} />
       </Stack.Navigator>
     </NavigationContainer>
   );

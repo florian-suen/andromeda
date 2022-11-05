@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { ChatList } from "../screens/ChatsList";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { setStatusBarBackgroundColor } from "expo-status-bar";
+import { Account } from "../screens/Account";
 
 const Tab = createBottomTabNavigator();
 
@@ -26,7 +27,7 @@ export const TabNavigator = () => {
             headerRight: () => (
               <MaterialCommunityIcons
                 name="chat-plus-outline"
-                onPress={() => navigation.navigate("ChatContacts")}
+                onPress={() => navigation.navigate("Select Contacts")}
                 size={20}
                 color=" teal"
                 style={{ marginRight: 12 }}
@@ -59,7 +60,7 @@ export const TabNavigator = () => {
       />
       <Tab.Screen
         name="Account"
-        component={ChatList}
+        component={Account}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons

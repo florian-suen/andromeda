@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-andromeda-staging-141429-authRole",
+      "UnauthRoleArn": "arn:aws:iam::937927140124:role/amplify-andromeda-staging-141429-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::937927140124:role/amplify-andromeda-staging-141429-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-andromeda-staging-141429-deployment",
+      "UnauthRoleName": "amplify-andromeda-staging-141429-unauthRole",
+      "StackName": "amplify-andromeda-staging-141429",
+      "StackId": "arn:aws:cloudformation:us-east-1:937927140124:stack/amplify-andromeda-staging-141429/2a636700-5d14-11ed-9ce8-0e00c578f3cf",
+      "AmplifyAppId": "d2u7kn4f9uzgbv"
+    },
+    "categories": {
+      "auth": {
+        "Andromeda": {}
+      }
+    }
+  }
+}
