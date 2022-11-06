@@ -1,0 +1,23 @@
+type ChatGroup @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Messages: [Message] @hasMany(indexName: "byChatGroup", fields: ["id"])
+  users: [User] @manyToMany(relationName: "UserChatGroup")
+  LastMessage: Message @hasOne
+}
+
+type Message @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  message: String!
+  untitledfield: String
+  chatgroupID: ID! @index(name: "byChatGroup")
+  userID: ID! @index(name: "byUser")
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  username: String!
+  status: String
+  image: String
+  Messages: [Message] @hasMany(indexName: "byUser", fields: ["id"])
+  ChatGroups: [ChatGroup] @manyToMany(relationName: "UserChatGroup")
+}
