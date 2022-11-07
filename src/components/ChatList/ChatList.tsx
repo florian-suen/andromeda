@@ -22,12 +22,16 @@ type ChatGroup = {
     users: {
       items: {
         user: { id: string; image: string | null; username: string };
-        chatGroup: { LastMessage: string | null };
+        chatGroup: {
+          LastMessage: { message: string; id: string; createdAt: string };
+        };
       }[];
     };
   };
   user: {
-    chatGroup: { LastMessage: string | null };
+    chatGroup: {
+      LastMessage: { message: string; id: string; createdAt: string };
+    };
     user: { id: string; image: string | null; username: string };
   };
 };
@@ -102,13 +106,17 @@ export const ChatGroup = ({ chat, id }: { chat: ChatGroup; id: string }) => {
           </Text>
           {filteredChat[0].chatGroup.LastMessage ? (
             <Text style={styles.time}>
-              {dayjs(filteredChat[0].chatGroup?.LastMessage).fromNow(true)}
+              {dayjs(filteredChat[0].chatGroup?.LastMessage.createdAt).fromNow(
+                true
+              )}
             </Text>
           ) : null}
         </View>
 
         <Text style={styles.subtext} numberOfLines={2}>
-          {filteredChat[0].chatGroup?.LastMessage}
+          {filteredChat[0].chatGroup.LastMessage?.message
+            ? filteredChat[0].chatGroup?.LastMessage.message
+            : null}
         </Text>
       </View>
     </Pressable>

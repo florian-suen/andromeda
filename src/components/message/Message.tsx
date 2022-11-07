@@ -17,7 +17,7 @@ export const Message = ({ message }: { message: Message }) => {
   const [myMsg, setMymsg] = useState(false);
 
   useEffect(() => {
-    const isMyMsg = (async () => {
+    (async () => {
       const currentUser = await Auth.currentAuthenticatedUser();
       setMymsg(message.userID === currentUser.attributes.sub);
     })();
