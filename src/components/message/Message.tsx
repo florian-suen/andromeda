@@ -1,29 +1,34 @@
 import { View, Text, StyleSheet } from "react-native";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-
+import { Auth } from "aws-amplify";
+import { useState, useEffect } from "react";
 dayjs.extend(relativeTime);
 
 type Message = {
-  id: string;
+  chatgroupID: string;
   message: string;
   createdAt: string;
-  user: {
-    id: string;
-    username: string;
-  };
+  userID: string;
+  id: string;
 };
 
 export const Message = ({ message }: { message: Message }) => {
-  const isMyMsg = false;
-  //message.user.username !== isMyMsg;
+  const [myMsg, setMymsg] = useState(false);
+
+  useEffect(() => {
+    const isMyMsg = (async () => {
+      const currentUser = await Auth.currentAuthenticatedUser();
+      setMymsg(message.userID === currentUser.attributes.sub);
+    })();
+  }, []);
 
   return (
     <View
-      key={message.id + Math.random()}
+      key={message.id}
       style={[
         styles.container,
-        isMyMsg ? styles.containerme : styles.containerfriend,
+        myMsg ? styles.containerme : styles.containerfriend,
       ]}
     >
       <Text style={styles.message}>{message.message}</Text>

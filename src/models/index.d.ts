@@ -6,11 +6,11 @@ type ChatGroupMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
-type MessageMetaData = {
+type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
-type UserMetaData = {
+type MessageMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
@@ -20,9 +20,9 @@ type UserChatGroupMetaData = {
 
 type EagerChatGroup = {
   readonly id: string;
-  readonly Messages?: (Message | null)[] | null;
   readonly users?: (UserChatGroup | null)[] | null;
   readonly LastMessage?: Message | null;
+  readonly Messages?: (Message | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly chatGroupLastMessageId?: string | null;
@@ -30,9 +30,9 @@ type EagerChatGroup = {
 
 type LazyChatGroup = {
   readonly id: string;
-  readonly Messages: AsyncCollection<Message>;
   readonly users: AsyncCollection<UserChatGroup>;
   readonly LastMessage: AsyncItem<Message | undefined>;
+  readonly Messages: AsyncCollection<Message>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly chatGroupLastMessageId?: string | null;
@@ -42,32 +42,6 @@ export declare type ChatGroup = LazyLoading extends LazyLoadingDisabled ? EagerC
 
 export declare const ChatGroup: (new (init: ModelInit<ChatGroup, ChatGroupMetaData>) => ChatGroup) & {
   copyOf(source: ChatGroup, mutator: (draft: MutableModel<ChatGroup, ChatGroupMetaData>) => MutableModel<ChatGroup, ChatGroupMetaData> | void): ChatGroup;
-}
-
-type EagerMessage = {
-  readonly id: string;
-  readonly message: string;
-  readonly untitledfield?: string | null;
-  readonly chatgroupID: string;
-  readonly userID: string;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyMessage = {
-  readonly id: string;
-  readonly message: string;
-  readonly untitledfield?: string | null;
-  readonly chatgroupID: string;
-  readonly userID: string;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type Message = LazyLoading extends LazyLoadingDisabled ? EagerMessage : LazyMessage
-
-export declare const Message: (new (init: ModelInit<Message, MessageMetaData>) => Message) & {
-  copyOf(source: Message, mutator: (draft: MutableModel<Message, MessageMetaData>) => MutableModel<Message, MessageMetaData> | void): Message;
 }
 
 type EagerUser = {
@@ -96,6 +70,30 @@ export declare type User = LazyLoading extends LazyLoadingDisabled ? EagerUser :
 
 export declare const User: (new (init: ModelInit<User, UserMetaData>) => User) & {
   copyOf(source: User, mutator: (draft: MutableModel<User, UserMetaData>) => MutableModel<User, UserMetaData> | void): User;
+}
+
+type EagerMessage = {
+  readonly id: string;
+  readonly message?: string | null;
+  readonly userID: string;
+  readonly chatgroupID: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyMessage = {
+  readonly id: string;
+  readonly message?: string | null;
+  readonly userID: string;
+  readonly chatgroupID: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Message = LazyLoading extends LazyLoadingDisabled ? EagerMessage : LazyMessage
+
+export declare const Message: (new (init: ModelInit<Message, MessageMetaData>) => Message) & {
+  copyOf(source: Message, mutator: (draft: MutableModel<Message, MessageMetaData>) => MutableModel<Message, MessageMetaData> | void): Message;
 }
 
 type EagerUserChatGroup = {

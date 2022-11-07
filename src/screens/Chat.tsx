@@ -1,40 +1,43 @@
-import { FlatList, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { InputBox } from "../components/InputBox/InputBox";
 import { Message } from "../components/Message/Message";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
-
-type UserParam = {
-  user: { id: number; user: string };
+import { API, graphqlOperation } from "aws-amplify";
+import { getChatGroup } from "../graphql/queries";
+import { useState } from "react";
+type ChatGroupParam = {
+  user: { chatGroupId: string; username: string };
 };
 
-const message = [
-  {
-    id: "2",
-    message:
-      "Heya Man! GFMKMGKFMGFKLMSGKLGMFKLSMGKLm KMGKLSMGKLGMKLGMLKSDMG GMDKLSMKLGMKLGMKLGMLKSMDGKLGM",
-    createdAt: "2020-04-02T08:02:17-05:00",
-    user: { id: "1", username: "Sam" },
-  },
-  {
-    id: "1",
-    message:
-      "Hey Man! GFMKMGKFMGFKLMSGKLGMFKLSMGKLm KMGKLSMGKLGMKLGMLKSDMG GMDKLSMKLGMKLGMKLGMLKSMDGKLGM",
-    createdAt: "2020-04-02T08:02:17-05:00",
-    user: { id: "1", username: "Sam" },
-  },
-];
-
 export const Chat = () => {
-  const route = useRoute<RouteProp<UserParam, "user">>();
+  const route = useRoute<RouteProp<ChatGroupParam>>();
   const navigation = useNavigation();
+  const chatGroupId = route.params.chatGroupId;
+  const [chatGroupData, setChatGroupData] = useState<any>(null);
+
+  useEffect(() => {
+    const chatGroupResp = API.graphql(
+      graphqlOperation(getChatGroup, { id: chatGroupId })
+    );
+    "then" in chatGroupResp &&
+      chatGroupResp.then((results) =>
+        setChatGroupData(results.data.getChatGroup)
+      );
+  }, []);
 
   useEffect(
-    () => navigation.setOptions({ title: route.params.user }),
-    [route.params.id]
+    () => navigation.setOptions({ title: route.params.username }),
+    [route.params.username]
   );
 
+  if (!chatGroupId) return <ActivityIndicator size="large" color="#00ff00" />;
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -42,10 +45,10 @@ export const Chat = () => {
     >
       <FlatList
         inverted
-        data={message}
+        data={chatGroupData && chatGroupData.Messages.items}
         renderItem={({ item }) => <Message message={item} />}
       ></FlatList>
-      <InputBox />
+      <InputBox chatGroup={chatGroupData} />
     </KeyboardAvoidingView>
   );
 };

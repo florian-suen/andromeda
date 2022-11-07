@@ -2,23 +2,69 @@ import { Text, Image, View, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { User } from "../../models/index";
+import {
+  createUserChatGroup,
+  createChatGroup,
+} from "../../../src/graphql/mutations";
+import { Auth, API, graphqlOperation } from "aws-amplify";
+import { useExistingChatGroups } from "../../../utility/useExistingChatGroups";
 type RootStackParamList = {
-  Chat: { id: number; user: string };
+  Chat: { chatGroupId: string; username: string };
 };
 
 export const ChatContactsComponent = ({ user }: { user: User }) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const image = user.image ? user.image : undefined;
+
+  const createChatGroupHandler = async () => {
+    const existingChatGroup = await useExistingChatGroups(user.id);
+
+    if (existingChatGroup) {
+      navigation.navigate("Chat", {
+        chatGroupId: existingChatGroup.chatGroup.id,
+        username: user.username,
+      });
+      return;
+    }
+
+    const newChatGroupResp = await API.graphql(
+      graphqlOperation(createChatGroup, { input: {} })
+    );
+
+    if ("data" in newChatGroupResp && !newChatGroupResp.data?.createChatGroup)
+      console.log("Error creating chatgroup");
+
+    const newChatGroup =
+      "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
+
+    await API.graphql(
+      graphqlOperation(createUserChatGroup, {
+        input: { chatGroupID: newChatGroup.id, userID: user.id },
+      })
+    );
+
+    const userAuth = await Auth.currentAuthenticatedUser();
+
+    await API.graphql(
+      graphqlOperation(createUserChatGroup, {
+        input: {
+          chatGroupID: newChatGroup.id,
+          userID: userAuth.attributes.sub,
+        },
+      })
+    );
+
+    navigation.navigate("Chat", {
+      chatGroupId: newChatGroup.id,
+      username: user.username,
+    });
+  };
+
   return (
     <Pressable
       android_ripple={{ color: "#222b3d" }}
-      onPress={() =>
-        navigation.navigate("Chat", {
-          id: parseInt(user.id),
-          user: user.username,
-        })
-      }
+      onPress={createChatGroupHandler}
       style={({ pressed }) => [
         styles.container,
         pressed ? styles.pressed : null,

@@ -2,8 +2,11 @@ import { View, Text, StyleSheet, TextInput, Animated } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { createMessage, updateChatGroup } from "../../graphql/mutations";
+import { API, Auth, graphqlOperation } from "aws-amplify";
+import react from "react";
 
-export const InputBox = () => {
+export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
   const [inputText, setInputText] = useState("");
   const inputOpacity = new Animated.Value(0);
   const inputScale = new Animated.Value(0);
@@ -13,6 +16,34 @@ export const InputBox = () => {
     inputRange: [0, 0.5, 1],
     outputRange: [0, 0.6, 1],
   });
+
+  const sendHandler = async () => {
+    console.log("sending message");
+    const currentUser = await Auth.currentAuthenticatedUser();
+
+    const newInput = {
+      chatgroupID: chatGroup.id,
+      message: inputText,
+      userID: currentUser.attributes.sub,
+    };
+
+    const newMessage = await API.graphql(
+      graphqlOperation(createMessage, { input: newInput })
+    );
+    const newMessageId =
+      "data" in newMessage && newMessage.data.createMessage.id;
+    API.graphql(
+      graphqlOperation(updateChatGroup, {
+        input: {
+          chatGroupLastMessageId: newMessageId,
+          id: chatGroup.id,
+          _version: chatGroup._version,
+        },
+      })
+    );
+
+    setInputText("");
+  };
 
   useEffect(() => {
     const opacityTiming = () => {
@@ -53,13 +84,13 @@ export const InputBox = () => {
         size={30}
         color={"white"}
       />
-      {inputText ? (
+      {true ? (
         <Animated.View
           style={{
             width: 22,
             marginRight: 7,
-            opacity: inputOpacity,
-            transform: [{ scale: interpo }],
+            //opacity: inputOpacity,
+            // transform: [{ scale: interpo }],
           }}
         >
           <Ionicons
@@ -67,6 +98,7 @@ export const InputBox = () => {
             name="send"
             size={25}
             color={"white"}
+            onPress={sendHandler}
           />
         </Animated.View>
       ) : null}

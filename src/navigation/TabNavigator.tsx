@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { ChatList } from "../screens/ChatsList";
+import { ChatList } from "../screens/ChatsList/ChatsList";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { setStatusBarBackgroundColor } from "expo-status-bar";
 import { Account } from "../screens/Account";

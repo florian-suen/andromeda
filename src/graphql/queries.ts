@@ -10,7 +10,7 @@ export const getChatGroup = /* GraphQL */ `
         items {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt
@@ -39,7 +39,7 @@ export const getChatGroup = /* GraphQL */ `
       LastMessage {
         id
         message
-        untitledfield
+
         chatgroupID
         userID
         createdAt
@@ -77,7 +77,7 @@ export const listChatGroups = /* GraphQL */ `
         LastMessage {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt
@@ -124,7 +124,7 @@ export const syncChatGroups = /* GraphQL */ `
         LastMessage {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt
@@ -150,7 +150,7 @@ export const getMessage = /* GraphQL */ `
     getMessage(id: $id) {
       id
       message
-      untitledfield
+
       chatgroupID
       userID
       createdAt
@@ -171,7 +171,7 @@ export const listMessages = /* GraphQL */ `
       items {
         id
         message
-        untitledfield
+
         chatgroupID
         userID
         createdAt
@@ -201,7 +201,7 @@ export const syncMessages = /* GraphQL */ `
       items {
         id
         message
-        untitledfield
+
         chatgroupID
         userID
         createdAt
@@ -226,7 +226,6 @@ export const getUser = /* GraphQL */ `
         items {
           id
           message
-          untitledfield
           chatgroupID
           userID
           createdAt
@@ -347,7 +346,7 @@ export const getUserChatGroup = /* GraphQL */ `
         LastMessage {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt

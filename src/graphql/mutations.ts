@@ -13,7 +13,7 @@ export const createChatGroup = /* GraphQL */ `
         items {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt
@@ -42,7 +42,7 @@ export const createChatGroup = /* GraphQL */ `
       LastMessage {
         id
         message
-        untitledfield
+
         chatgroupID
         userID
         createdAt
@@ -71,7 +71,7 @@ export const updateChatGroup = /* GraphQL */ `
         items {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt
@@ -100,7 +100,7 @@ export const updateChatGroup = /* GraphQL */ `
       LastMessage {
         id
         message
-        untitledfield
+
         chatgroupID
         userID
         createdAt
@@ -129,7 +129,7 @@ export const deleteChatGroup = /* GraphQL */ `
         items {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt
@@ -158,7 +158,7 @@ export const deleteChatGroup = /* GraphQL */ `
       LastMessage {
         id
         message
-        untitledfield
+
         chatgroupID
         userID
         createdAt
@@ -184,7 +184,7 @@ export const createMessage = /* GraphQL */ `
     createMessage(input: $input, condition: $condition) {
       id
       message
-      untitledfield
+
       chatgroupID
       userID
       createdAt
@@ -203,7 +203,7 @@ export const updateMessage = /* GraphQL */ `
     updateMessage(input: $input, condition: $condition) {
       id
       message
-      untitledfield
+
       chatgroupID
       userID
       createdAt
@@ -222,7 +222,7 @@ export const deleteMessage = /* GraphQL */ `
     deleteMessage(input: $input, condition: $condition) {
       id
       message
-      untitledfield
+
       chatgroupID
       userID
       createdAt
@@ -247,7 +247,7 @@ export const createUser = /* GraphQL */ `
         items {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt
@@ -295,7 +295,7 @@ export const updateUser = /* GraphQL */ `
         items {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt
@@ -343,7 +343,7 @@ export const deleteUser = /* GraphQL */ `
         items {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt
@@ -399,7 +399,7 @@ export const createUserChatGroup = /* GraphQL */ `
         LastMessage {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt
@@ -464,7 +464,7 @@ export const updateUserChatGroup = /* GraphQL */ `
         LastMessage {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt
@@ -529,7 +529,7 @@ export const deleteUserChatGroup = /* GraphQL */ `
         LastMessage {
           id
           message
-          untitledfield
+
           chatgroupID
           userID
           createdAt
