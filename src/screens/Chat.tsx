@@ -10,7 +10,7 @@ import { useRoute, RouteProp } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-import { getChatGroup } from "../graphql/queries";
+import { getChatGroup, listMessagesByChatGroup } from "../graphql/queries";
 import { useState } from "react";
 type ChatGroupParam = {
   user: { chatGroupId: string; username: string };
@@ -21,7 +21,7 @@ export const Chat = () => {
   const navigation = useNavigation();
   const chatGroupId = route.params.chatGroupId;
   const [chatGroupData, setChatGroupData] = useState<any>(null);
-
+  const [messages, setMessages] = useState([]);
   useEffect(() => {
     const chatGroupResp = API.graphql(
       graphqlOperation(getChatGroup, { id: chatGroupId })
@@ -30,7 +30,21 @@ export const Chat = () => {
       chatGroupResp.then((results) =>
         setChatGroupData(results.data.getChatGroup)
       );
-  }, []);
+  }, [chatGroupId]);
+
+  useEffect(() => {
+    const messageResp = API.graphql(
+      graphqlOperation(listMessagesByChatGroup, {
+        chatgroupID: chatGroupId,
+        sortDirection: "DESC",
+      })
+    );
+
+    "then" in messageResp &&
+      messageResp.then((results) =>
+        setMessages(results.data?.listMessagesByChatGroup?.items)
+      );
+  }, [chatGroupId]);
 
   useEffect(
     () => navigation.setOptions({ title: route.params.username }),
@@ -45,7 +59,7 @@ export const Chat = () => {
     >
       <FlatList
         inverted
-        data={chatGroupData && chatGroupData.Messages.items}
+        data={messages}
         renderItem={({ item }) => <Message message={item} />}
       ></FlatList>
       <InputBox chatGroup={chatGroupData} />

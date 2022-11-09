@@ -9,22 +9,6 @@ export const createChatGroup = /* GraphQL */ `
   ) {
     createChatGroup(input: $input, condition: $condition) {
       id
-      Messages {
-        items {
-          id
-          message
-
-          chatgroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
       users {
         items {
           id
@@ -39,20 +23,36 @@ export const createChatGroup = /* GraphQL */ `
         nextToken
         startedAt
       }
+      name
+      image
+      updatedAt
       LastMessage {
         id
-        message
-
-        chatgroupID
-        userID
         createdAt
+        message
+        userID
+        chatgroupID
         updatedAt
         _version
         _deleted
         _lastChangedAt
       }
+      Messages {
+        items {
+          id
+          createdAt
+          message
+          userID
+          chatgroupID
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
       createdAt
-      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -67,22 +67,6 @@ export const updateChatGroup = /* GraphQL */ `
   ) {
     updateChatGroup(input: $input, condition: $condition) {
       id
-      Messages {
-        items {
-          id
-          message
-
-          chatgroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
       users {
         items {
           id
@@ -97,20 +81,36 @@ export const updateChatGroup = /* GraphQL */ `
         nextToken
         startedAt
       }
+      name
+      image
+      updatedAt
       LastMessage {
         id
-        message
-
-        chatgroupID
-        userID
         createdAt
+        message
+        userID
+        chatgroupID
         updatedAt
         _version
         _deleted
         _lastChangedAt
       }
+      Messages {
+        items {
+          id
+          createdAt
+          message
+          userID
+          chatgroupID
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
       createdAt
-      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -125,22 +125,6 @@ export const deleteChatGroup = /* GraphQL */ `
   ) {
     deleteChatGroup(input: $input, condition: $condition) {
       id
-      Messages {
-        items {
-          id
-          message
-
-          chatgroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
       users {
         items {
           id
@@ -155,20 +139,36 @@ export const deleteChatGroup = /* GraphQL */ `
         nextToken
         startedAt
       }
+      name
+      image
+      updatedAt
       LastMessage {
         id
-        message
-
-        chatgroupID
-        userID
         createdAt
+        message
+        userID
+        chatgroupID
         updatedAt
         _version
         _deleted
         _lastChangedAt
       }
+      Messages {
+        items {
+          id
+          createdAt
+          message
+          userID
+          chatgroupID
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
       createdAt
-      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -183,11 +183,10 @@ export const createMessage = /* GraphQL */ `
   ) {
     createMessage(input: $input, condition: $condition) {
       id
-      message
-
-      chatgroupID
-      userID
       createdAt
+      message
+      userID
+      chatgroupID
       updatedAt
       _version
       _deleted
@@ -202,11 +201,10 @@ export const updateMessage = /* GraphQL */ `
   ) {
     updateMessage(input: $input, condition: $condition) {
       id
-      message
-
-      chatgroupID
-      userID
       createdAt
+      message
+      userID
+      chatgroupID
       updatedAt
       _version
       _deleted
@@ -221,11 +219,10 @@ export const deleteMessage = /* GraphQL */ `
   ) {
     deleteMessage(input: $input, condition: $condition) {
       id
-      message
-
-      chatgroupID
-      userID
       createdAt
+      message
+      userID
+      chatgroupID
       updatedAt
       _version
       _deleted
@@ -246,11 +243,10 @@ export const createUser = /* GraphQL */ `
       Messages {
         items {
           id
-          message
-
-          chatgroupID
-          userID
           createdAt
+          message
+          userID
+          chatgroupID
           updatedAt
           _version
           _deleted
@@ -294,11 +290,10 @@ export const updateUser = /* GraphQL */ `
       Messages {
         items {
           id
-          message
-
-          chatgroupID
-          userID
           createdAt
+          message
+          userID
+          chatgroupID
           updatedAt
           _version
           _deleted
@@ -342,11 +337,10 @@ export const deleteUser = /* GraphQL */ `
       Messages {
         items {
           id
-          message
-
-          chatgroupID
-          userID
           createdAt
+          message
+          userID
+          chatgroupID
           updatedAt
           _version
           _deleted
@@ -388,28 +382,29 @@ export const createUserChatGroup = /* GraphQL */ `
       userID
       chatGroup {
         id
-        Messages {
-          nextToken
-          startedAt
-        }
         users {
           nextToken
           startedAt
         }
+        name
+        image
+        updatedAt
         LastMessage {
           id
-          message
-
-          chatgroupID
-          userID
           createdAt
+          message
+          userID
+          chatgroupID
           updatedAt
           _version
           _deleted
           _lastChangedAt
         }
+        Messages {
+          nextToken
+          startedAt
+        }
         createdAt
-        updatedAt
         _version
         _deleted
         _lastChangedAt
@@ -453,28 +448,29 @@ export const updateUserChatGroup = /* GraphQL */ `
       userID
       chatGroup {
         id
-        Messages {
-          nextToken
-          startedAt
-        }
         users {
           nextToken
           startedAt
         }
+        name
+        image
+        updatedAt
         LastMessage {
           id
-          message
-
-          chatgroupID
-          userID
           createdAt
+          message
+          userID
+          chatgroupID
           updatedAt
           _version
           _deleted
           _lastChangedAt
         }
+        Messages {
+          nextToken
+          startedAt
+        }
         createdAt
-        updatedAt
         _version
         _deleted
         _lastChangedAt
@@ -518,28 +514,29 @@ export const deleteUserChatGroup = /* GraphQL */ `
       userID
       chatGroup {
         id
-        Messages {
-          nextToken
-          startedAt
-        }
         users {
           nextToken
           startedAt
         }
+        name
+        image
+        updatedAt
         LastMessage {
           id
-          message
-
-          chatgroupID
-          userID
           createdAt
+          message
+          userID
+          chatgroupID
           updatedAt
           _version
           _deleted
           _lastChangedAt
         }
+        Messages {
+          nextToken
+          startedAt
+        }
         createdAt
-        updatedAt
         _version
         _deleted
         _lastChangedAt

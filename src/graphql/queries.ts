@@ -6,22 +6,6 @@ export const getChatGroup = /* GraphQL */ `
   query GetChatGroup($id: ID!) {
     getChatGroup(id: $id) {
       id
-      Messages {
-        items {
-          id
-          message
-
-          chatgroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
       users {
         items {
           id
@@ -36,20 +20,36 @@ export const getChatGroup = /* GraphQL */ `
         nextToken
         startedAt
       }
+      name
+      image
+      updatedAt
       LastMessage {
         id
-        message
-
-        chatgroupID
-        userID
         createdAt
+        message
+        userID
+        chatgroupID
         updatedAt
         _version
         _deleted
         _lastChangedAt
       }
+      Messages {
+        items {
+          id
+          createdAt
+          message
+          userID
+          chatgroupID
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        nextToken
+        startedAt
+      }
       createdAt
-      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -66,28 +66,29 @@ export const listChatGroups = /* GraphQL */ `
     listChatGroups(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        Messages {
-          nextToken
-          startedAt
-        }
         users {
           nextToken
           startedAt
         }
+        name
+        image
+        updatedAt
         LastMessage {
           id
-          message
-
-          chatgroupID
-          userID
           createdAt
+          message
+          userID
+          chatgroupID
           updatedAt
           _version
           _deleted
           _lastChangedAt
         }
+        Messages {
+          nextToken
+          startedAt
+        }
         createdAt
-        updatedAt
         _version
         _deleted
         _lastChangedAt
@@ -113,28 +114,81 @@ export const syncChatGroups = /* GraphQL */ `
     ) {
       items {
         id
-        Messages {
-          nextToken
-          startedAt
-        }
         users {
           nextToken
           startedAt
         }
+        name
+        image
+        updatedAt
         LastMessage {
           id
-          message
-
-          chatgroupID
-          userID
           createdAt
+          message
+          userID
+          chatgroupID
           updatedAt
           _version
           _deleted
           _lastChangedAt
         }
+        Messages {
+          nextToken
+          startedAt
+        }
         createdAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatGroupLastMessageId
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const byChatGroupIDUpdated = /* GraphQL */ `
+  query ByChatGroupIDUpdated(
+    $id: ID!
+    $updatedAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelChatGroupFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    byChatGroupIDUpdated(
+      id: $id
+      updatedAt: $updatedAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        users {
+          nextToken
+          startedAt
+        }
+        name
+        image
         updatedAt
+        LastMessage {
+          id
+          createdAt
+          message
+          userID
+          chatgroupID
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        Messages {
+          nextToken
+          startedAt
+        }
+        createdAt
         _version
         _deleted
         _lastChangedAt
@@ -149,11 +203,10 @@ export const getMessage = /* GraphQL */ `
   query GetMessage($id: ID!) {
     getMessage(id: $id) {
       id
-      message
-
-      chatgroupID
-      userID
       createdAt
+      message
+      userID
+      chatgroupID
       updatedAt
       _version
       _deleted
@@ -170,11 +223,10 @@ export const listMessages = /* GraphQL */ `
     listMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        message
-
-        chatgroupID
-        userID
         createdAt
+        message
+        userID
+        chatgroupID
         updatedAt
         _version
         _deleted
@@ -200,11 +252,43 @@ export const syncMessages = /* GraphQL */ `
     ) {
       items {
         id
-        message
-
-        chatgroupID
-        userID
         createdAt
+        message
+        userID
+        chatgroupID
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const listMessagesByChatGroup = /* GraphQL */ `
+  query ListMessagesByChatGroup(
+    $chatgroupID: ID!
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listMessagesByChatGroup(
+      chatgroupID: $chatgroupID
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        createdAt
+        message
+        userID
+        chatgroupID
         updatedAt
         _version
         _deleted
@@ -225,10 +309,10 @@ export const getUser = /* GraphQL */ `
       Messages {
         items {
           id
-          message
-          chatgroupID
-          userID
           createdAt
+          message
+          userID
+          chatgroupID
           updatedAt
           _version
           _deleted
@@ -335,28 +419,29 @@ export const getUserChatGroup = /* GraphQL */ `
       userID
       chatGroup {
         id
-        Messages {
-          nextToken
-          startedAt
-        }
         users {
           nextToken
           startedAt
         }
+        name
+        image
+        updatedAt
         LastMessage {
           id
-          message
-
-          chatgroupID
-          userID
           createdAt
+          message
+          userID
+          chatgroupID
           updatedAt
           _version
           _deleted
           _lastChangedAt
         }
+        Messages {
+          nextToken
+          startedAt
+        }
         createdAt
-        updatedAt
         _version
         _deleted
         _lastChangedAt
@@ -402,8 +487,10 @@ export const listUserChatGroups = /* GraphQL */ `
         userID
         chatGroup {
           id
-          createdAt
+          name
+          image
           updatedAt
+          createdAt
           _version
           _deleted
           _lastChangedAt
@@ -450,8 +537,10 @@ export const syncUserChatGroups = /* GraphQL */ `
         userID
         chatGroup {
           id
-          createdAt
+          name
+          image
           updatedAt
+          createdAt
           _version
           _deleted
           _lastChangedAt
