@@ -19,8 +19,18 @@ type User @model @auth(rules: [{ allow: public }]) {
 
 type UserChatGroup @model @auth(rules: [{ allow: public }]) {
   id: ID!
-  userID: ID! @index(name: "byUserChatGroup", sortKeyFields: ["chatgroupID"])
-  chatgroupID: ID! @index(name: "byChatGroupUser", sortKeyFields: ["userID"])
+  userID: ID!
+    @index(
+      name: "byUserChatGroup"
+      sortKeyFields: ["updatedAt"]
+      queryField: "ListbyUserChatGroup"
+    )
+  chatgroupID: ID!
+    @index(
+      name: "byChatGroupUser"
+      sortKeyFields: ["updatedAt"]
+      queryField: "ListbyChatGroupUser"
+    )
   updatedAt: AWSDateTime!
   Chatgroup: ChatGroup @belongsTo(fields: ["chatgroupID"])
   user: User @belongsTo(fields: ["userID"])
@@ -38,3 +48,4 @@ type Message @model @auth(rules: [{ allow: public }]) {
       queryField: "listMessagesByChatGroup"
     )
 }
+  

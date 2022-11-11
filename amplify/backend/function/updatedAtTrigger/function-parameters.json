@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "api": {
+      "Andromeda": [
+        "Query",
+        "Mutation"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
