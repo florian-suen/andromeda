@@ -12,8 +12,10 @@
       "AmplifyAppId": "d3et3fw1uo2e7q"
     },
     "categories": {
+      "auth": {
+        "Andromeda": {}
+      },
       "function": {
-        "updateAtTrigger": {},
         "updatedAtTrigger": {
           "deploymentBucketName": "amplify-andromeda-staging-83223-deployment",
           "s3Key": "amplify-builds/updatedAtTrigger-75535a2f32616769374b-build.zip"

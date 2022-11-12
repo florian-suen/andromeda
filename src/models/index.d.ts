@@ -2,6 +2,10 @@ import { ModelInit, MutableModel } from "@aws-amplify/datastore";
 // @ts-ignore
 import { LazyLoading, LazyLoadingDisabled, AsyncItem, AsyncCollection } from "@aws-amplify/datastore";
 
+type FriendsMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
 type ChatGroupMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
@@ -16,6 +20,24 @@ type UserChatGroupMetaData = {
 
 type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
+type EagerFriends = {
+  readonly id: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyFriends = {
+  readonly id: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Friends = LazyLoading extends LazyLoadingDisabled ? EagerFriends : LazyFriends
+
+export declare const Friends: (new (init: ModelInit<Friends, FriendsMetaData>) => Friends) & {
+  copyOf(source: Friends, mutator: (draft: MutableModel<Friends, FriendsMetaData>) => MutableModel<Friends, FriendsMetaData> | void): Friends;
 }
 
 type EagerChatGroup = {

@@ -1,4 +1,8 @@
-type ChatGroup @model @auth(rules: [{ allow: public }]) {
+type Friends @model @auth(rules: [{allow: public}]) {
+  id: ID!
+}
+
+type ChatGroup @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
   image: String
@@ -7,45 +11,29 @@ type ChatGroup @model @auth(rules: [{ allow: public }]) {
   users: [UserChatGroup] @hasMany(indexName: "byChatGroupUser", fields: ["id"])
 }
 
-type User @model @auth(rules: [{ allow: public }]) {
+type User @model @auth(rules: [{allow: public}]) {
   id: ID!
   username: String!
   status: String
   image: String
   Messages: [Message] @hasMany(indexName: "byUser", fields: ["id"])
-  ChatGroups: [UserChatGroup]
-    @hasMany(indexName: "byUserChatGroup", fields: ["id"])
+  ChatGroups: [UserChatGroup] @hasMany(indexName: "byUserChatGroup", fields: ["id"])
 }
 
-type UserChatGroup @model @auth(rules: [{ allow: public }]) {
+type UserChatGroup @model @auth(rules: [{allow: public}]) {
   id: ID!
-  userID: ID!
-    @index(
-      name: "byUserChatGroup"
-      sortKeyFields: ["updatedAt"]
-      queryField: "ListbyUserChatGroup"
-    )
-  chatgroupID: ID!
-    @index(
-      name: "byChatGroupUser"
-      sortKeyFields: ["updatedAt"]
-      queryField: "ListbyChatGroupUser"
-    )
+  userID: ID! @index(name: "byUserChatGroup", sortKeyFields: ["updatedAt"], queryField: "ListbyUserChatGroup")
+  chatgroupID: ID! @index(name: "byChatGroupUser", sortKeyFields: ["updatedAt"], queryField: "ListbyChatGroupUser")
   updatedAt: AWSDateTime!
   Chatgroup: ChatGroup @belongsTo(fields: ["chatgroupID"])
   user: User @belongsTo(fields: ["userID"])
 }
 
-type Message @model @auth(rules: [{ allow: public }]) {
+type Message @model @auth(rules: [{allow: public}]) {
   id: ID!
   createdAt: AWSDateTime
   message: String
   userID: ID! @index(name: "byUser")
-  chatgroupID: ID!
-    @index(
-      name: "byChatGroup"
-      sortKeyFields: ["createdAt"]
-      queryField: "listMessagesByChatGroup"
-    )
+  chatgroupID: ID! @index(name: "byChatGroup", sortKeyFields: ["createdAt"], queryField: "listMessagesByChatGroup")
 }
-  
+   

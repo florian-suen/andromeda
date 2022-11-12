@@ -2,6 +2,51 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createFriends = /* GraphQL */ `
+  mutation CreateFriends(
+    $input: CreateFriendsInput!
+    $condition: ModelFriendsConditionInput
+  ) {
+    createFriends(input: $input, condition: $condition) {
+      id
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateFriends = /* GraphQL */ `
+  mutation UpdateFriends(
+    $input: UpdateFriendsInput!
+    $condition: ModelFriendsConditionInput
+  ) {
+    updateFriends(input: $input, condition: $condition) {
+      id
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteFriends = /* GraphQL */ `
+  mutation DeleteFriends(
+    $input: DeleteFriendsInput!
+    $condition: ModelFriendsConditionInput
+  ) {
+    deleteFriends(input: $input, condition: $condition) {
+      id
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const createChatGroup = /* GraphQL */ `
   mutation CreateChatGroup(
     $input: CreateChatGroupInput!
@@ -9,23 +54,8 @@ export const createChatGroup = /* GraphQL */ `
   ) {
     createChatGroup(input: $input, condition: $condition) {
       id
-      users {
-        items {
-          id
-          chatGroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
       name
       image
-      updatedAt
       LastMessage {
         id
         createdAt
@@ -38,21 +68,15 @@ export const createChatGroup = /* GraphQL */ `
         _lastChangedAt
       }
       Messages {
-        items {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
+        nextToken
+        startedAt
+      }
+      users {
         nextToken
         startedAt
       }
       createdAt
+      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -67,23 +91,8 @@ export const updateChatGroup = /* GraphQL */ `
   ) {
     updateChatGroup(input: $input, condition: $condition) {
       id
-      users {
-        items {
-          id
-          chatGroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
       name
       image
-      updatedAt
       LastMessage {
         id
         createdAt
@@ -96,21 +105,15 @@ export const updateChatGroup = /* GraphQL */ `
         _lastChangedAt
       }
       Messages {
-        items {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
+        nextToken
+        startedAt
+      }
+      users {
         nextToken
         startedAt
       }
       createdAt
+      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -125,23 +128,8 @@ export const deleteChatGroup = /* GraphQL */ `
   ) {
     deleteChatGroup(input: $input, condition: $condition) {
       id
-      users {
-        items {
-          id
-          chatGroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
       name
       image
-      updatedAt
       LastMessage {
         id
         createdAt
@@ -154,25 +142,214 @@ export const deleteChatGroup = /* GraphQL */ `
         _lastChangedAt
       }
       Messages {
-        items {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+      }
+      users {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      chatGroupLastMessageId
+    }
+  }
+`;
+export const createUser = /* GraphQL */ `
+  mutation CreateUser(
+    $input: CreateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    createUser(input: $input, condition: $condition) {
+      id
+      username
+      status
+      image
+      Messages {
+        nextToken
+        startedAt
+      }
+      ChatGroups {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    updateUser(input: $input, condition: $condition) {
+      id
+      username
+      status
+      image
+      Messages {
+        nextToken
+        startedAt
+      }
+      ChatGroups {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteUser = /* GraphQL */ `
+  mutation DeleteUser(
+    $input: DeleteUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    deleteUser(input: $input, condition: $condition) {
+      id
+      username
+      status
+      image
+      Messages {
+        nextToken
+        startedAt
+      }
+      ChatGroups {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const createUserChatGroup = /* GraphQL */ `
+  mutation CreateUserChatGroup(
+    $input: CreateUserChatGroupInput!
+    $condition: ModelUserChatGroupConditionInput
+  ) {
+    createUserChatGroup(input: $input, condition: $condition) {
+      id
+      userID
+      chatgroupID
+      updatedAt
+      Chatgroup {
+        id
+        name
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatGroupLastMessageId
+      }
+      user {
+        id
+        username
+        status
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       _version
       _deleted
       _lastChangedAt
-      chatGroupLastMessageId
+    }
+  }
+`;
+export const updateUserChatGroup = /* GraphQL */ `
+  mutation UpdateUserChatGroup(
+    $input: UpdateUserChatGroupInput!
+    $condition: ModelUserChatGroupConditionInput
+  ) {
+    updateUserChatGroup(input: $input, condition: $condition) {
+      id
+      userID
+      chatgroupID
+      updatedAt
+      Chatgroup {
+        id
+        name
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatGroupLastMessageId
+      }
+      user {
+        id
+        username
+        status
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      createdAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteUserChatGroup = /* GraphQL */ `
+  mutation DeleteUserChatGroup(
+    $input: DeleteUserChatGroupInput!
+    $condition: ModelUserChatGroupConditionInput
+  ) {
+    deleteUserChatGroup(input: $input, condition: $condition) {
+      id
+      userID
+      chatgroupID
+      updatedAt
+      Chatgroup {
+        id
+        name
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatGroupLastMessageId
+      }
+      user {
+        id
+        username
+        status
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      createdAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -223,345 +400,6 @@ export const deleteMessage = /* GraphQL */ `
       message
       userID
       chatgroupID
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const createUser = /* GraphQL */ `
-  mutation CreateUser(
-    $input: CreateUserInput!
-    $condition: ModelUserConditionInput
-  ) {
-    createUser(input: $input, condition: $condition) {
-      id
-      username
-      status
-      image
-      Messages {
-        items {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      ChatGroups {
-        items {
-          id
-          chatGroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const updateUser = /* GraphQL */ `
-  mutation UpdateUser(
-    $input: UpdateUserInput!
-    $condition: ModelUserConditionInput
-  ) {
-    updateUser(input: $input, condition: $condition) {
-      id
-      username
-      status
-      image
-      Messages {
-        items {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      ChatGroups {
-        items {
-          id
-          chatGroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const deleteUser = /* GraphQL */ `
-  mutation DeleteUser(
-    $input: DeleteUserInput!
-    $condition: ModelUserConditionInput
-  ) {
-    deleteUser(input: $input, condition: $condition) {
-      id
-      username
-      status
-      image
-      Messages {
-        items {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      ChatGroups {
-        items {
-          id
-          chatGroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const createUserChatGroup = /* GraphQL */ `
-  mutation CreateUserChatGroup(
-    $input: CreateUserChatGroupInput!
-    $condition: ModelUserChatGroupConditionInput
-  ) {
-    createUserChatGroup(input: $input, condition: $condition) {
-      id
-      chatGroupID
-      userID
-      chatGroup {
-        id
-        users {
-          nextToken
-          startedAt
-        }
-        name
-        image
-        updatedAt
-        LastMessage {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        Messages {
-          nextToken
-          startedAt
-        }
-        createdAt
-        _version
-        _deleted
-        _lastChangedAt
-        chatGroupLastMessageId
-      }
-      user {
-        id
-        username
-        status
-        image
-        Messages {
-          nextToken
-          startedAt
-        }
-        ChatGroups {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const updateUserChatGroup = /* GraphQL */ `
-  mutation UpdateUserChatGroup(
-    $input: UpdateUserChatGroupInput!
-    $condition: ModelUserChatGroupConditionInput
-  ) {
-    updateUserChatGroup(input: $input, condition: $condition) {
-      id
-      chatGroupID
-      userID
-      chatGroup {
-        id
-        users {
-          nextToken
-          startedAt
-        }
-        name
-        image
-        updatedAt
-        LastMessage {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        Messages {
-          nextToken
-          startedAt
-        }
-        createdAt
-        _version
-        _deleted
-        _lastChangedAt
-        chatGroupLastMessageId
-      }
-      user {
-        id
-        username
-        status
-        image
-        Messages {
-          nextToken
-          startedAt
-        }
-        ChatGroups {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const deleteUserChatGroup = /* GraphQL */ `
-  mutation DeleteUserChatGroup(
-    $input: DeleteUserChatGroupInput!
-    $condition: ModelUserChatGroupConditionInput
-  ) {
-    deleteUserChatGroup(input: $input, condition: $condition) {
-      id
-      chatGroupID
-      userID
-      chatGroup {
-        id
-        users {
-          nextToken
-          startedAt
-        }
-        name
-        image
-        updatedAt
-        LastMessage {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        Messages {
-          nextToken
-          startedAt
-        }
-        createdAt
-        _version
-        _deleted
-        _lastChangedAt
-        chatGroupLastMessageId
-      }
-      user {
-        id
-        username
-        status
-        image
-        Messages {
-          nextToken
-          startedAt
-        }
-        ChatGroups {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
       updatedAt
       _version
       _deleted

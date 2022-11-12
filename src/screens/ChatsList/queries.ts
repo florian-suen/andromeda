@@ -2,9 +2,9 @@ export const GetUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
       id
-      ChatGroups {
+      ChatGroups(sortDirection: DESC) {
         items {
-          chatGroup {
+          Chatgroup {
             id
             users {
               items {
@@ -13,7 +13,7 @@ export const GetUser = /* GraphQL */ `
                   image
                   username
                 }
-                chatGroup {
+                Chatgroup {
                   LastMessage {
                     id
                     createdAt
@@ -35,7 +35,7 @@ export const ChatGroupList = /* GraphQL */ `
       id
       ChatGroups {
         items {
-          chatGroup {
+          Chatgroup {
             id
             users {
               items {

@@ -14,6 +14,7 @@ function App() {
       const userAuth = await Auth.currentAuthenticatedUser({
         bypassCache: true,
       });
+      console.log(userAuth.attributes.sub);
       const user = await API.graphql(
         graphqlOperation(getUser, { id: userAuth.attributes.sub })
       );
@@ -29,7 +30,13 @@ function App() {
         status: "Hey! I am new!",
       };
 
-      await API.graphql(graphqlOperation(createUser, { input: newUser }));
+      const createdUser = await API.graphql(
+        graphqlOperation(createUser, { input: newUser })
+      );
+      "data" in createdUser &&
+        console.log(
+          `created new user: ${createdUser.data?.createUser.username}`
+        );
     };
 
     userSync();

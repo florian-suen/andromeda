@@ -17,19 +17,19 @@ type ChatGroupParam = {
 };
 
 type ChatGroup = {
-  chatGroup: {
+  Chatgroup: {
     id: string;
     users: {
       items: {
         user: { id: string; image: string | null; username: string };
-        chatGroup: {
+        Chatgroup: {
           LastMessage: { message: string; id: string; createdAt: string };
         };
       }[];
     };
   };
   user: {
-    chatGroup: {
+    Chatgroup: {
       LastMessage: { message: string; id: string; createdAt: string };
     };
     user: { id: string; image: string | null; username: string };
@@ -73,7 +73,7 @@ export const ChatGroup = ({ chat, id }: { chat: ChatGroup; id: string }) => {
   const navigation = useNavigation<NativeStackNavigationProp<ChatGroupParam>>();
   const styles = StyleSheet.create(useThemeColor(styleSheet));
 
-  const filteredChat = chat.chatGroup.users.items.filter(
+  const filteredChat = chat.Chatgroup.users.items.filter(
     (v) => v.user.id !== id
   );
 
@@ -86,7 +86,7 @@ export const ChatGroup = ({ chat, id }: { chat: ChatGroup; id: string }) => {
       ]}
       onPress={() =>
         navigation.navigate("Chat", {
-          chatGroupId: chat.chatGroup.id,
+          chatGroupId: chat.Chatgroup.id,
           username: filteredChat[0].user.username,
         })
       }
@@ -104,9 +104,9 @@ export const ChatGroup = ({ chat, id }: { chat: ChatGroup; id: string }) => {
           <Text style={styles.name} numberOfLines={1}>
             {filteredChat[0].user.username}
           </Text>
-          {filteredChat[0].chatGroup.LastMessage ? (
+          {filteredChat[0].Chatgroup.LastMessage ? (
             <Text style={styles.time}>
-              {dayjs(filteredChat[0].chatGroup?.LastMessage.createdAt).fromNow(
+              {dayjs(filteredChat[0].Chatgroup?.LastMessage.createdAt).fromNow(
                 true
               )}
             </Text>
@@ -114,8 +114,8 @@ export const ChatGroup = ({ chat, id }: { chat: ChatGroup; id: string }) => {
         </View>
 
         <Text style={styles.subtext} numberOfLines={2}>
-          {filteredChat[0].chatGroup.LastMessage?.message
-            ? filteredChat[0].chatGroup?.LastMessage.message
+          {filteredChat[0].Chatgroup.LastMessage?.message
+            ? filteredChat[0].Chatgroup?.LastMessage.message
             : null}
         </Text>
       </View>

@@ -22,7 +22,7 @@ export const ChatContactsComponent = ({ user }: { user: User }) => {
 
     if (existingChatGroup) {
       navigation.navigate("Chat", {
-        chatGroupId: existingChatGroup.chatGroup.id,
+        chatGroupId: existingChatGroup.Chatgroup.id,
         username: user.username,
       });
       return;
@@ -40,7 +40,7 @@ export const ChatContactsComponent = ({ user }: { user: User }) => {
 
     await API.graphql(
       graphqlOperation(createUserChatGroup, {
-        input: { chatGroupID: newChatGroup.id, userID: user.id },
+        input: { chatgroupID: newChatGroup.id, userID: user.id },
       })
     );
 
@@ -49,7 +49,7 @@ export const ChatContactsComponent = ({ user }: { user: User }) => {
     await API.graphql(
       graphqlOperation(createUserChatGroup, {
         input: {
-          chatGroupID: newChatGroup.id,
+          chatgroupID: newChatGroup.id,
           userID: userAuth.attributes.sub,
         },
       })

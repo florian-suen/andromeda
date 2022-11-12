@@ -2,11 +2,41 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
+export type CreateFriendsInput = {
+  id?: string | null,
+  _version?: number | null,
+};
+
+export type ModelFriendsConditionInput = {
+  and?: Array< ModelFriendsConditionInput | null > | null,
+  or?: Array< ModelFriendsConditionInput | null > | null,
+  not?: ModelFriendsConditionInput | null,
+};
+
+export type Friends = {
+  __typename: "Friends",
+  id: string,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateFriendsInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type DeleteFriendsInput = {
+  id: string,
+  _version?: number | null,
+};
+
 export type CreateChatGroupInput = {
   id?: string | null,
   name?: string | null,
   image?: string | null,
-  updatedAt?: string | null,
   _version?: number | null,
   chatGroupLastMessageId?: string | null,
 };
@@ -14,7 +44,6 @@ export type CreateChatGroupInput = {
 export type ModelChatGroupConditionInput = {
   name?: ModelStringInput | null,
   image?: ModelStringInput | null,
-  updatedAt?: ModelStringInput | null,
   and?: Array< ModelChatGroupConditionInput | null > | null,
   or?: Array< ModelChatGroupConditionInput | null > | null,
   not?: ModelChatGroupConditionInput | null,
@@ -80,17 +109,37 @@ export type ModelIDInput = {
 export type ChatGroup = {
   __typename: "ChatGroup",
   id: string,
-  users?: ModelUserChatGroupConnection | null,
   name?: string | null,
   image?: string | null,
-  updatedAt: string,
   LastMessage?: Message | null,
   Messages?: ModelMessageConnection | null,
+  users?: ModelUserChatGroupConnection | null,
   createdAt: string,
+  updatedAt: string,
   _version: number,
   _deleted?: boolean | null,
   _lastChangedAt: number,
   chatGroupLastMessageId?: string | null,
+};
+
+export type Message = {
+  __typename: "Message",
+  id: string,
+  createdAt?: string | null,
+  message?: string | null,
+  userID: string,
+  chatgroupID: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelMessageConnection = {
+  __typename: "ModelMessageConnection",
+  items:  Array<Message | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
 };
 
 export type ModelUserChatGroupConnection = {
@@ -103,12 +152,12 @@ export type ModelUserChatGroupConnection = {
 export type UserChatGroup = {
   __typename: "UserChatGroup",
   id: string,
-  chatGroupID: string,
   userID: string,
-  chatGroup: ChatGroup,
-  user: User,
-  createdAt: string,
+  chatgroupID: string,
   updatedAt: string,
+  Chatgroup?: ChatGroup | null,
+  user?: User | null,
+  createdAt: string,
   _version: number,
   _deleted?: boolean | null,
   _lastChangedAt: number,
@@ -129,36 +178,75 @@ export type User = {
   _lastChangedAt: number,
 };
 
-export type ModelMessageConnection = {
-  __typename: "ModelMessageConnection",
-  items:  Array<Message | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
-};
-
-export type Message = {
-  __typename: "Message",
-  id: string,
-  createdAt?: string | null,
-  message?: string | null,
-  userID: string,
-  chatgroupID: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
-
 export type UpdateChatGroupInput = {
   id: string,
   name?: string | null,
   image?: string | null,
-  updatedAt?: string | null,
   _version?: number | null,
   chatGroupLastMessageId?: string | null,
 };
 
 export type DeleteChatGroupInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateUserInput = {
+  id?: string | null,
+  username: string,
+  status?: string | null,
+  image?: string | null,
+  _version?: number | null,
+};
+
+export type ModelUserConditionInput = {
+  username?: ModelStringInput | null,
+  status?: ModelStringInput | null,
+  image?: ModelStringInput | null,
+  and?: Array< ModelUserConditionInput | null > | null,
+  or?: Array< ModelUserConditionInput | null > | null,
+  not?: ModelUserConditionInput | null,
+};
+
+export type UpdateUserInput = {
+  id: string,
+  username?: string | null,
+  status?: string | null,
+  image?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteUserInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateUserChatGroupInput = {
+  id?: string | null,
+  userID: string,
+  chatgroupID: string,
+  updatedAt?: string | null,
+  _version?: number | null,
+};
+
+export type ModelUserChatGroupConditionInput = {
+  userID?: ModelIDInput | null,
+  chatgroupID?: ModelIDInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelUserChatGroupConditionInput | null > | null,
+  or?: Array< ModelUserChatGroupConditionInput | null > | null,
+  not?: ModelUserChatGroupConditionInput | null,
+};
+
+export type UpdateUserChatGroupInput = {
+  id: string,
+  userID?: string | null,
+  chatgroupID?: string | null,
+  updatedAt?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteUserChatGroupInput = {
   id: string,
   _version?: number | null,
 };
@@ -196,68 +284,24 @@ export type DeleteMessageInput = {
   _version?: number | null,
 };
 
-export type CreateUserInput = {
-  id?: string | null,
-  username: string,
-  status?: string | null,
-  image?: string | null,
-  _version?: number | null,
+export type ModelFriendsFilterInput = {
+  id?: ModelIDInput | null,
+  and?: Array< ModelFriendsFilterInput | null > | null,
+  or?: Array< ModelFriendsFilterInput | null > | null,
+  not?: ModelFriendsFilterInput | null,
 };
 
-export type ModelUserConditionInput = {
-  username?: ModelStringInput | null,
-  status?: ModelStringInput | null,
-  image?: ModelStringInput | null,
-  and?: Array< ModelUserConditionInput | null > | null,
-  or?: Array< ModelUserConditionInput | null > | null,
-  not?: ModelUserConditionInput | null,
-};
-
-export type UpdateUserInput = {
-  id: string,
-  username?: string | null,
-  status?: string | null,
-  image?: string | null,
-  _version?: number | null,
-};
-
-export type DeleteUserInput = {
-  id: string,
-  _version?: number | null,
-};
-
-export type CreateUserChatGroupInput = {
-  id?: string | null,
-  chatGroupID: string,
-  userID: string,
-  _version?: number | null,
-};
-
-export type ModelUserChatGroupConditionInput = {
-  chatGroupID?: ModelIDInput | null,
-  userID?: ModelIDInput | null,
-  and?: Array< ModelUserChatGroupConditionInput | null > | null,
-  or?: Array< ModelUserChatGroupConditionInput | null > | null,
-  not?: ModelUserChatGroupConditionInput | null,
-};
-
-export type UpdateUserChatGroupInput = {
-  id: string,
-  chatGroupID?: string | null,
-  userID?: string | null,
-  _version?: number | null,
-};
-
-export type DeleteUserChatGroupInput = {
-  id: string,
-  _version?: number | null,
+export type ModelFriendsConnection = {
+  __typename: "ModelFriendsConnection",
+  items:  Array<Friends | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
 };
 
 export type ModelChatGroupFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
   image?: ModelStringInput | null,
-  updatedAt?: ModelStringInput | null,
   and?: Array< ModelChatGroupFilterInput | null > | null,
   or?: Array< ModelChatGroupFilterInput | null > | null,
   not?: ModelChatGroupFilterInput | null,
@@ -269,6 +313,33 @@ export type ModelChatGroupConnection = {
   items:  Array<ChatGroup | null >,
   nextToken?: string | null,
   startedAt?: number | null,
+};
+
+export type ModelUserFilterInput = {
+  id?: ModelIDInput | null,
+  username?: ModelStringInput | null,
+  status?: ModelStringInput | null,
+  image?: ModelStringInput | null,
+  and?: Array< ModelUserFilterInput | null > | null,
+  or?: Array< ModelUserFilterInput | null > | null,
+  not?: ModelUserFilterInput | null,
+};
+
+export type ModelUserConnection = {
+  __typename: "ModelUserConnection",
+  items:  Array<User | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ModelUserChatGroupFilterInput = {
+  id?: ModelIDInput | null,
+  userID?: ModelIDInput | null,
+  chatgroupID?: ModelIDInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelUserChatGroupFilterInput | null > | null,
+  or?: Array< ModelUserChatGroupFilterInput | null > | null,
+  not?: ModelUserChatGroupFilterInput | null,
 };
 
 export type ModelStringKeyConditionInput = {
@@ -298,39 +369,10 @@ export type ModelMessageFilterInput = {
   not?: ModelMessageFilterInput | null,
 };
 
-export type ModelUserFilterInput = {
-  id?: ModelIDInput | null,
-  username?: ModelStringInput | null,
-  status?: ModelStringInput | null,
-  image?: ModelStringInput | null,
-  and?: Array< ModelUserFilterInput | null > | null,
-  or?: Array< ModelUserFilterInput | null > | null,
-  not?: ModelUserFilterInput | null,
-};
-
-export type ModelUserConnection = {
-  __typename: "ModelUserConnection",
-  items:  Array<User | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
-};
-
-export type ModelUserChatGroupFilterInput = {
-  id?: ModelIDInput | null,
-  chatGroupID?: ModelIDInput | null,
-  userID?: ModelIDInput | null,
-  and?: Array< ModelUserChatGroupFilterInput | null > | null,
-  or?: Array< ModelUserChatGroupFilterInput | null > | null,
-  not?: ModelUserChatGroupFilterInput | null,
-};
-
-export type ModelSubscriptionChatGroupFilterInput = {
+export type ModelSubscriptionFriendsFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  name?: ModelSubscriptionStringInput | null,
-  image?: ModelSubscriptionStringInput | null,
-  updatedAt?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionChatGroupFilterInput | null > | null,
-  or?: Array< ModelSubscriptionChatGroupFilterInput | null > | null,
+  and?: Array< ModelSubscriptionFriendsFilterInput | null > | null,
+  or?: Array< ModelSubscriptionFriendsFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -348,6 +390,14 @@ export type ModelSubscriptionIDInput = {
   notIn?: Array< string | null > | null,
 };
 
+export type ModelSubscriptionChatGroupFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  image?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionChatGroupFilterInput | null > | null,
+  or?: Array< ModelSubscriptionChatGroupFilterInput | null > | null,
+};
+
 export type ModelSubscriptionStringInput = {
   ne?: string | null,
   eq?: string | null,
@@ -363,16 +413,6 @@ export type ModelSubscriptionStringInput = {
   notIn?: Array< string | null > | null,
 };
 
-export type ModelSubscriptionMessageFilterInput = {
-  id?: ModelSubscriptionIDInput | null,
-  createdAt?: ModelSubscriptionStringInput | null,
-  message?: ModelSubscriptionStringInput | null,
-  userID?: ModelSubscriptionIDInput | null,
-  chatgroupID?: ModelSubscriptionIDInput | null,
-  and?: Array< ModelSubscriptionMessageFilterInput | null > | null,
-  or?: Array< ModelSubscriptionMessageFilterInput | null > | null,
-};
-
 export type ModelSubscriptionUserFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   username?: ModelSubscriptionStringInput | null,
@@ -384,10 +424,72 @@ export type ModelSubscriptionUserFilterInput = {
 
 export type ModelSubscriptionUserChatGroupFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  chatGroupID?: ModelSubscriptionIDInput | null,
   userID?: ModelSubscriptionIDInput | null,
+  chatgroupID?: ModelSubscriptionIDInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionUserChatGroupFilterInput | null > | null,
   or?: Array< ModelSubscriptionUserChatGroupFilterInput | null > | null,
+};
+
+export type ModelSubscriptionMessageFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  message?: ModelSubscriptionStringInput | null,
+  userID?: ModelSubscriptionIDInput | null,
+  chatgroupID?: ModelSubscriptionIDInput | null,
+  and?: Array< ModelSubscriptionMessageFilterInput | null > | null,
+  or?: Array< ModelSubscriptionMessageFilterInput | null > | null,
+};
+
+export type CreateFriendsMutationVariables = {
+  input: CreateFriendsInput,
+  condition?: ModelFriendsConditionInput | null,
+};
+
+export type CreateFriendsMutation = {
+  createFriends?:  {
+    __typename: "Friends",
+    id: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateFriendsMutationVariables = {
+  input: UpdateFriendsInput,
+  condition?: ModelFriendsConditionInput | null,
+};
+
+export type UpdateFriendsMutation = {
+  updateFriends?:  {
+    __typename: "Friends",
+    id: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteFriendsMutationVariables = {
+  input: DeleteFriendsInput,
+  condition?: ModelFriendsConditionInput | null,
+};
+
+export type DeleteFriendsMutation = {
+  deleteFriends?:  {
+    __typename: "Friends",
+    id: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
 };
 
 export type CreateChatGroupMutationVariables = {
@@ -399,25 +501,8 @@ export type CreateChatGroupMutation = {
   createChatGroup?:  {
     __typename: "ChatGroup",
     id: string,
-    users?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
     name?: string | null,
     image?: string | null,
-    updatedAt: string,
     LastMessage?:  {
       __typename: "Message",
       id: string,
@@ -432,22 +517,16 @@ export type CreateChatGroupMutation = {
     } | null,
     Messages?:  {
       __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    users?:  {
+      __typename: "ModelUserChatGroupConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
     createdAt: string,
+    updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
@@ -464,25 +543,8 @@ export type UpdateChatGroupMutation = {
   updateChatGroup?:  {
     __typename: "ChatGroup",
     id: string,
-    users?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
     name?: string | null,
     image?: string | null,
-    updatedAt: string,
     LastMessage?:  {
       __typename: "Message",
       id: string,
@@ -497,22 +559,16 @@ export type UpdateChatGroupMutation = {
     } | null,
     Messages?:  {
       __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    users?:  {
+      __typename: "ModelUserChatGroupConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
     createdAt: string,
+    updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
@@ -529,25 +585,8 @@ export type DeleteChatGroupMutation = {
   deleteChatGroup?:  {
     __typename: "ChatGroup",
     id: string,
-    users?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
     name?: string | null,
     image?: string | null,
-    updatedAt: string,
     LastMessage?:  {
       __typename: "Message",
       id: string,
@@ -562,26 +601,239 @@ export type DeleteChatGroupMutation = {
     } | null,
     Messages?:  {
       __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
       nextToken?: string | null,
       startedAt?: number | null,
+    } | null,
+    users?:  {
+      __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    chatGroupLastMessageId?: string | null,
+  } | null,
+};
+
+export type CreateUserMutationVariables = {
+  input: CreateUserInput,
+  condition?: ModelUserConditionInput | null,
+};
+
+export type CreateUserMutation = {
+  createUser?:  {
+    __typename: "User",
+    id: string,
+    username: string,
+    status?: string | null,
+    image?: string | null,
+    Messages?:  {
+      __typename: "ModelMessageConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ChatGroups?:  {
+      __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateUserMutationVariables = {
+  input: UpdateUserInput,
+  condition?: ModelUserConditionInput | null,
+};
+
+export type UpdateUserMutation = {
+  updateUser?:  {
+    __typename: "User",
+    id: string,
+    username: string,
+    status?: string | null,
+    image?: string | null,
+    Messages?:  {
+      __typename: "ModelMessageConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ChatGroups?:  {
+      __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteUserMutationVariables = {
+  input: DeleteUserInput,
+  condition?: ModelUserConditionInput | null,
+};
+
+export type DeleteUserMutation = {
+  deleteUser?:  {
+    __typename: "User",
+    id: string,
+    username: string,
+    status?: string | null,
+    image?: string | null,
+    Messages?:  {
+      __typename: "ModelMessageConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ChatGroups?:  {
+      __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateUserChatGroupMutationVariables = {
+  input: CreateUserChatGroupInput,
+  condition?: ModelUserChatGroupConditionInput | null,
+};
+
+export type CreateUserChatGroupMutation = {
+  createUserChatGroup?:  {
+    __typename: "UserChatGroup",
+    id: string,
+    userID: string,
+    chatgroupID: string,
+    updatedAt: string,
+    Chatgroup?:  {
+      __typename: "ChatGroup",
+      id: string,
+      name?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      chatGroupLastMessageId?: string | null,
+    } | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
     } | null,
     createdAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
-    chatGroupLastMessageId?: string | null,
+  } | null,
+};
+
+export type UpdateUserChatGroupMutationVariables = {
+  input: UpdateUserChatGroupInput,
+  condition?: ModelUserChatGroupConditionInput | null,
+};
+
+export type UpdateUserChatGroupMutation = {
+  updateUserChatGroup?:  {
+    __typename: "UserChatGroup",
+    id: string,
+    userID: string,
+    chatgroupID: string,
+    updatedAt: string,
+    Chatgroup?:  {
+      __typename: "ChatGroup",
+      id: string,
+      name?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      chatGroupLastMessageId?: string | null,
+    } | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteUserChatGroupMutationVariables = {
+  input: DeleteUserChatGroupInput,
+  condition?: ModelUserChatGroupConditionInput | null,
+};
+
+export type DeleteUserChatGroupMutation = {
+  deleteUserChatGroup?:  {
+    __typename: "UserChatGroup",
+    id: string,
+    userID: string,
+    chatgroupID: string,
+    updatedAt: string,
+    Chatgroup?:  {
+      __typename: "ChatGroup",
+      id: string,
+      name?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      chatGroupLastMessageId?: string | null,
+    } | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
   } | null,
 };
 
@@ -645,51 +897,14 @@ export type DeleteMessageMutation = {
   } | null,
 };
 
-export type CreateUserMutationVariables = {
-  input: CreateUserInput,
-  condition?: ModelUserConditionInput | null,
+export type GetFriendsQueryVariables = {
+  id: string,
 };
 
-export type CreateUserMutation = {
-  createUser?:  {
-    __typename: "User",
+export type GetFriendsQuery = {
+  getFriends?:  {
+    __typename: "Friends",
     id: string,
-    username: string,
-    status?: string | null,
-    image?: string | null,
-    Messages?:  {
-      __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ChatGroups?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -698,334 +913,50 @@ export type CreateUserMutation = {
   } | null,
 };
 
-export type UpdateUserMutationVariables = {
-  input: UpdateUserInput,
-  condition?: ModelUserConditionInput | null,
+export type ListFriendsQueryVariables = {
+  filter?: ModelFriendsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
 };
 
-export type UpdateUserMutation = {
-  updateUser?:  {
-    __typename: "User",
-    id: string,
-    username: string,
-    status?: string | null,
-    image?: string | null,
-    Messages?:  {
-      __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ChatGroups?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
+export type ListFriendsQuery = {
+  listFriends?:  {
+    __typename: "ModelFriendsConnection",
+    items:  Array< {
+      __typename: "Friends",
+      id: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
   } | null,
 };
 
-export type DeleteUserMutationVariables = {
-  input: DeleteUserInput,
-  condition?: ModelUserConditionInput | null,
+export type SyncFriendsQueryVariables = {
+  filter?: ModelFriendsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
 };
 
-export type DeleteUserMutation = {
-  deleteUser?:  {
-    __typename: "User",
-    id: string,
-    username: string,
-    status?: string | null,
-    image?: string | null,
-    Messages?:  {
-      __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ChatGroups?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type CreateUserChatGroupMutationVariables = {
-  input: CreateUserChatGroupInput,
-  condition?: ModelUserChatGroupConditionInput | null,
-};
-
-export type CreateUserChatGroupMutation = {
-  createUserChatGroup?:  {
-    __typename: "UserChatGroup",
-    id: string,
-    chatGroupID: string,
-    userID: string,
-    chatGroup:  {
-      __typename: "ChatGroup",
+export type SyncFriendsQuery = {
+  syncFriends?:  {
+    __typename: "ModelFriendsConnection",
+    items:  Array< {
+      __typename: "Friends",
       id: string,
-      users?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      name?: string | null,
-      image?: string | null,
-      updatedAt: string,
-      LastMessage?:  {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-      chatGroupLastMessageId?: string | null,
-    },
-    user:  {
-      __typename: "User",
-      id: string,
-      username: string,
-      status?: string | null,
-      image?: string | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      ChatGroups?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
-    },
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type UpdateUserChatGroupMutationVariables = {
-  input: UpdateUserChatGroupInput,
-  condition?: ModelUserChatGroupConditionInput | null,
-};
-
-export type UpdateUserChatGroupMutation = {
-  updateUserChatGroup?:  {
-    __typename: "UserChatGroup",
-    id: string,
-    chatGroupID: string,
-    userID: string,
-    chatGroup:  {
-      __typename: "ChatGroup",
-      id: string,
-      users?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      name?: string | null,
-      image?: string | null,
-      updatedAt: string,
-      LastMessage?:  {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-      chatGroupLastMessageId?: string | null,
-    },
-    user:  {
-      __typename: "User",
-      id: string,
-      username: string,
-      status?: string | null,
-      image?: string | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      ChatGroups?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type DeleteUserChatGroupMutationVariables = {
-  input: DeleteUserChatGroupInput,
-  condition?: ModelUserChatGroupConditionInput | null,
-};
-
-export type DeleteUserChatGroupMutation = {
-  deleteUserChatGroup?:  {
-    __typename: "UserChatGroup",
-    id: string,
-    chatGroupID: string,
-    userID: string,
-    chatGroup:  {
-      __typename: "ChatGroup",
-      id: string,
-      users?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      name?: string | null,
-      image?: string | null,
-      updatedAt: string,
-      LastMessage?:  {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-      chatGroupLastMessageId?: string | null,
-    },
-    user:  {
-      __typename: "User",
-      id: string,
-      username: string,
-      status?: string | null,
-      image?: string | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      ChatGroups?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
   } | null,
 };
 
@@ -1037,25 +968,8 @@ export type GetChatGroupQuery = {
   getChatGroup?:  {
     __typename: "ChatGroup",
     id: string,
-    users?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
     name?: string | null,
     image?: string | null,
-    updatedAt: string,
     LastMessage?:  {
       __typename: "Message",
       id: string,
@@ -1070,22 +984,16 @@ export type GetChatGroupQuery = {
     } | null,
     Messages?:  {
       __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    users?:  {
+      __typename: "ModelUserChatGroupConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
     createdAt: string,
+    updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
@@ -1105,32 +1013,10 @@ export type ListChatGroupsQuery = {
     items:  Array< {
       __typename: "ChatGroup",
       id: string,
-      users?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
       name?: string | null,
       image?: string | null,
-      updatedAt: string,
-      LastMessage?:  {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
       createdAt: string,
+      updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
@@ -1154,32 +1040,10 @@ export type SyncChatGroupsQuery = {
     items:  Array< {
       __typename: "ChatGroup",
       id: string,
-      users?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
       name?: string | null,
       image?: string | null,
-      updatedAt: string,
-      LastMessage?:  {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
       createdAt: string,
+      updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
@@ -1190,51 +1054,231 @@ export type SyncChatGroupsQuery = {
   } | null,
 };
 
-export type ByChatGroupIDUpdatedQueryVariables = {
+export type GetUserQueryVariables = {
   id: string,
-  updatedAt?: ModelStringKeyConditionInput | null,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelChatGroupFilterInput | null,
+};
+
+export type GetUserQuery = {
+  getUser?:  {
+    __typename: "User",
+    id: string,
+    username: string,
+    status?: string | null,
+    image?: string | null,
+    Messages?:  {
+      __typename: "ModelMessageConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ChatGroups?:  {
+      __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListUsersQueryVariables = {
+  filter?: ModelUserFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type ByChatGroupIDUpdatedQuery = {
-  byChatGroupIDUpdated?:  {
-    __typename: "ModelChatGroupConnection",
+export type ListUsersQuery = {
+  listUsers?:  {
+    __typename: "ModelUserConnection",
     items:  Array< {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncUsersQueryVariables = {
+  filter?: ModelUserFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncUsersQuery = {
+  syncUsers?:  {
+    __typename: "ModelUserConnection",
+    items:  Array< {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetUserChatGroupQueryVariables = {
+  id: string,
+};
+
+export type GetUserChatGroupQuery = {
+  getUserChatGroup?:  {
+    __typename: "UserChatGroup",
+    id: string,
+    userID: string,
+    chatgroupID: string,
+    updatedAt: string,
+    Chatgroup?:  {
       __typename: "ChatGroup",
       id: string,
-      users?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
       name?: string | null,
       image?: string | null,
-      updatedAt: string,
-      LastMessage?:  {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
       createdAt: string,
+      updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
       chatGroupLastMessageId?: string | null,
+    } | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListUserChatGroupsQueryVariables = {
+  filter?: ModelUserChatGroupFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListUserChatGroupsQuery = {
+  listUserChatGroups?:  {
+    __typename: "ModelUserChatGroupConnection",
+    items:  Array< {
+      __typename: "UserChatGroup",
+      id: string,
+      userID: string,
+      chatgroupID: string,
+      updatedAt: string,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncUserChatGroupsQueryVariables = {
+  filter?: ModelUserChatGroupFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncUserChatGroupsQuery = {
+  syncUserChatGroups?:  {
+    __typename: "ModelUserChatGroupConnection",
+    items:  Array< {
+      __typename: "UserChatGroup",
+      id: string,
+      userID: string,
+      chatgroupID: string,
+      updatedAt: string,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ListbyUserChatGroupQueryVariables = {
+  userID: string,
+  updatedAt?: ModelStringKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelUserChatGroupFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListbyUserChatGroupQuery = {
+  ListbyUserChatGroup?:  {
+    __typename: "ModelUserChatGroupConnection",
+    items:  Array< {
+      __typename: "UserChatGroup",
+      id: string,
+      userID: string,
+      chatgroupID: string,
+      updatedAt: string,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ListbyChatGroupUserQueryVariables = {
+  chatgroupID: string,
+  updatedAt?: ModelStringKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelUserChatGroupFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListbyChatGroupUserQuery = {
+  ListbyChatGroupUser?:  {
+    __typename: "ModelUserChatGroupConnection",
+    items:  Array< {
+      __typename: "UserChatGroup",
+      id: string,
+      userID: string,
+      chatgroupID: string,
+      updatedAt: string,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
@@ -1342,50 +1386,14 @@ export type ListMessagesByChatGroupQuery = {
   } | null,
 };
 
-export type GetUserQueryVariables = {
-  id: string,
+export type OnCreateFriendsSubscriptionVariables = {
+  filter?: ModelSubscriptionFriendsFilterInput | null,
 };
 
-export type GetUserQuery = {
-  getUser?:  {
-    __typename: "User",
+export type OnCreateFriendsSubscription = {
+  onCreateFriends?:  {
+    __typename: "Friends",
     id: string,
-    username: string,
-    status?: string | null,
-    image?: string | null,
-    Messages?:  {
-      __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ChatGroups?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1394,145 +1402,14 @@ export type GetUserQuery = {
   } | null,
 };
 
-export type ListUsersQueryVariables = {
-  filter?: ModelUserFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
+export type OnUpdateFriendsSubscriptionVariables = {
+  filter?: ModelSubscriptionFriendsFilterInput | null,
 };
 
-export type ListUsersQuery = {
-  listUsers?:  {
-    __typename: "ModelUserConnection",
-    items:  Array< {
-      __typename: "User",
-      id: string,
-      username: string,
-      status?: string | null,
-      image?: string | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      ChatGroups?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type SyncUsersQueryVariables = {
-  filter?: ModelUserFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-  lastSync?: number | null,
-};
-
-export type SyncUsersQuery = {
-  syncUsers?:  {
-    __typename: "ModelUserConnection",
-    items:  Array< {
-      __typename: "User",
-      id: string,
-      username: string,
-      status?: string | null,
-      image?: string | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      ChatGroups?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type GetUserChatGroupQueryVariables = {
-  id: string,
-};
-
-export type GetUserChatGroupQuery = {
-  getUserChatGroup?:  {
-    __typename: "UserChatGroup",
+export type OnUpdateFriendsSubscription = {
+  onUpdateFriends?:  {
+    __typename: "Friends",
     id: string,
-    chatGroupID: string,
-    userID: string,
-    chatGroup:  {
-      __typename: "ChatGroup",
-      id: string,
-      users?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      name?: string | null,
-      image?: string | null,
-      updatedAt: string,
-      LastMessage?:  {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-      chatGroupLastMessageId?: string | null,
-    },
-    user:  {
-      __typename: "User",
-      id: string,
-      username: string,
-      status?: string | null,
-      image?: string | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      ChatGroups?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1541,102 +1418,19 @@ export type GetUserChatGroupQuery = {
   } | null,
 };
 
-export type ListUserChatGroupsQueryVariables = {
-  filter?: ModelUserChatGroupFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
+export type OnDeleteFriendsSubscriptionVariables = {
+  filter?: ModelSubscriptionFriendsFilterInput | null,
 };
 
-export type ListUserChatGroupsQuery = {
-  listUserChatGroups?:  {
-    __typename: "ModelUserChatGroupConnection",
-    items:  Array< {
-      __typename: "UserChatGroup",
-      id: string,
-      chatGroupID: string,
-      userID: string,
-      chatGroup:  {
-        __typename: "ChatGroup",
-        id: string,
-        name?: string | null,
-        image?: string | null,
-        updatedAt: string,
-        createdAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-        chatGroupLastMessageId?: string | null,
-      },
-      user:  {
-        __typename: "User",
-        id: string,
-        username: string,
-        status?: string | null,
-        image?: string | null,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      },
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type SyncUserChatGroupsQueryVariables = {
-  filter?: ModelUserChatGroupFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-  lastSync?: number | null,
-};
-
-export type SyncUserChatGroupsQuery = {
-  syncUserChatGroups?:  {
-    __typename: "ModelUserChatGroupConnection",
-    items:  Array< {
-      __typename: "UserChatGroup",
-      id: string,
-      chatGroupID: string,
-      userID: string,
-      chatGroup:  {
-        __typename: "ChatGroup",
-        id: string,
-        name?: string | null,
-        image?: string | null,
-        updatedAt: string,
-        createdAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-        chatGroupLastMessageId?: string | null,
-      },
-      user:  {
-        __typename: "User",
-        id: string,
-        username: string,
-        status?: string | null,
-        image?: string | null,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      },
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
+export type OnDeleteFriendsSubscription = {
+  onDeleteFriends?:  {
+    __typename: "Friends",
+    id: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
   } | null,
 };
 
@@ -1648,25 +1442,8 @@ export type OnCreateChatGroupSubscription = {
   onCreateChatGroup?:  {
     __typename: "ChatGroup",
     id: string,
-    users?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
     name?: string | null,
     image?: string | null,
-    updatedAt: string,
     LastMessage?:  {
       __typename: "Message",
       id: string,
@@ -1681,22 +1458,16 @@ export type OnCreateChatGroupSubscription = {
     } | null,
     Messages?:  {
       __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    users?:  {
+      __typename: "ModelUserChatGroupConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
     createdAt: string,
+    updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
@@ -1712,25 +1483,8 @@ export type OnUpdateChatGroupSubscription = {
   onUpdateChatGroup?:  {
     __typename: "ChatGroup",
     id: string,
-    users?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
     name?: string | null,
     image?: string | null,
-    updatedAt: string,
     LastMessage?:  {
       __typename: "Message",
       id: string,
@@ -1745,22 +1499,16 @@ export type OnUpdateChatGroupSubscription = {
     } | null,
     Messages?:  {
       __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    users?:  {
+      __typename: "ModelUserChatGroupConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
     createdAt: string,
+    updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
@@ -1776,25 +1524,8 @@ export type OnDeleteChatGroupSubscription = {
   onDeleteChatGroup?:  {
     __typename: "ChatGroup",
     id: string,
-    users?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
     name?: string | null,
     image?: string | null,
-    updatedAt: string,
     LastMessage?:  {
       __typename: "Message",
       id: string,
@@ -1809,26 +1540,233 @@ export type OnDeleteChatGroupSubscription = {
     } | null,
     Messages?:  {
       __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
       nextToken?: string | null,
       startedAt?: number | null,
+    } | null,
+    users?:  {
+      __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    chatGroupLastMessageId?: string | null,
+  } | null,
+};
+
+export type OnCreateUserSubscriptionVariables = {
+  filter?: ModelSubscriptionUserFilterInput | null,
+};
+
+export type OnCreateUserSubscription = {
+  onCreateUser?:  {
+    __typename: "User",
+    id: string,
+    username: string,
+    status?: string | null,
+    image?: string | null,
+    Messages?:  {
+      __typename: "ModelMessageConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ChatGroups?:  {
+      __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateUserSubscriptionVariables = {
+  filter?: ModelSubscriptionUserFilterInput | null,
+};
+
+export type OnUpdateUserSubscription = {
+  onUpdateUser?:  {
+    __typename: "User",
+    id: string,
+    username: string,
+    status?: string | null,
+    image?: string | null,
+    Messages?:  {
+      __typename: "ModelMessageConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ChatGroups?:  {
+      __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteUserSubscriptionVariables = {
+  filter?: ModelSubscriptionUserFilterInput | null,
+};
+
+export type OnDeleteUserSubscription = {
+  onDeleteUser?:  {
+    __typename: "User",
+    id: string,
+    username: string,
+    status?: string | null,
+    image?: string | null,
+    Messages?:  {
+      __typename: "ModelMessageConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    ChatGroups?:  {
+      __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateUserChatGroupSubscriptionVariables = {
+  filter?: ModelSubscriptionUserChatGroupFilterInput | null,
+};
+
+export type OnCreateUserChatGroupSubscription = {
+  onCreateUserChatGroup?:  {
+    __typename: "UserChatGroup",
+    id: string,
+    userID: string,
+    chatgroupID: string,
+    updatedAt: string,
+    Chatgroup?:  {
+      __typename: "ChatGroup",
+      id: string,
+      name?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      chatGroupLastMessageId?: string | null,
+    } | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
     } | null,
     createdAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
-    chatGroupLastMessageId?: string | null,
+  } | null,
+};
+
+export type OnUpdateUserChatGroupSubscriptionVariables = {
+  filter?: ModelSubscriptionUserChatGroupFilterInput | null,
+};
+
+export type OnUpdateUserChatGroupSubscription = {
+  onUpdateUserChatGroup?:  {
+    __typename: "UserChatGroup",
+    id: string,
+    userID: string,
+    chatgroupID: string,
+    updatedAt: string,
+    Chatgroup?:  {
+      __typename: "ChatGroup",
+      id: string,
+      name?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      chatGroupLastMessageId?: string | null,
+    } | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteUserChatGroupSubscriptionVariables = {
+  filter?: ModelSubscriptionUserChatGroupFilterInput | null,
+};
+
+export type OnDeleteUserChatGroupSubscription = {
+  onDeleteUserChatGroup?:  {
+    __typename: "UserChatGroup",
+    id: string,
+    userID: string,
+    chatgroupID: string,
+    updatedAt: string,
+    Chatgroup?:  {
+      __typename: "ChatGroup",
+      id: string,
+      name?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      chatGroupLastMessageId?: string | null,
+    } | null,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    createdAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
   } | null,
 };
 
@@ -1882,384 +1820,6 @@ export type OnDeleteMessageSubscription = {
     message?: string | null,
     userID: string,
     chatgroupID: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnCreateUserSubscriptionVariables = {
-  filter?: ModelSubscriptionUserFilterInput | null,
-};
-
-export type OnCreateUserSubscription = {
-  onCreateUser?:  {
-    __typename: "User",
-    id: string,
-    username: string,
-    status?: string | null,
-    image?: string | null,
-    Messages?:  {
-      __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ChatGroups?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnUpdateUserSubscriptionVariables = {
-  filter?: ModelSubscriptionUserFilterInput | null,
-};
-
-export type OnUpdateUserSubscription = {
-  onUpdateUser?:  {
-    __typename: "User",
-    id: string,
-    username: string,
-    status?: string | null,
-    image?: string | null,
-    Messages?:  {
-      __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ChatGroups?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnDeleteUserSubscriptionVariables = {
-  filter?: ModelSubscriptionUserFilterInput | null,
-};
-
-export type OnDeleteUserSubscription = {
-  onDeleteUser?:  {
-    __typename: "User",
-    id: string,
-    username: string,
-    status?: string | null,
-    image?: string | null,
-    Messages?:  {
-      __typename: "ModelMessageConnection",
-      items:  Array< {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    ChatGroups?:  {
-      __typename: "ModelUserChatGroupConnection",
-      items:  Array< {
-        __typename: "UserChatGroup",
-        id: string,
-        chatGroupID: string,
-        userID: string,
-        createdAt: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null >,
-      nextToken?: string | null,
-      startedAt?: number | null,
-    } | null,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnCreateUserChatGroupSubscriptionVariables = {
-  filter?: ModelSubscriptionUserChatGroupFilterInput | null,
-};
-
-export type OnCreateUserChatGroupSubscription = {
-  onCreateUserChatGroup?:  {
-    __typename: "UserChatGroup",
-    id: string,
-    chatGroupID: string,
-    userID: string,
-    chatGroup:  {
-      __typename: "ChatGroup",
-      id: string,
-      users?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      name?: string | null,
-      image?: string | null,
-      updatedAt: string,
-      LastMessage?:  {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-      chatGroupLastMessageId?: string | null,
-    },
-    user:  {
-      __typename: "User",
-      id: string,
-      username: string,
-      status?: string | null,
-      image?: string | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      ChatGroups?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnUpdateUserChatGroupSubscriptionVariables = {
-  filter?: ModelSubscriptionUserChatGroupFilterInput | null,
-};
-
-export type OnUpdateUserChatGroupSubscription = {
-  onUpdateUserChatGroup?:  {
-    __typename: "UserChatGroup",
-    id: string,
-    chatGroupID: string,
-    userID: string,
-    chatGroup:  {
-      __typename: "ChatGroup",
-      id: string,
-      users?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      name?: string | null,
-      image?: string | null,
-      updatedAt: string,
-      LastMessage?:  {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-      chatGroupLastMessageId?: string | null,
-    },
-    user:  {
-      __typename: "User",
-      id: string,
-      username: string,
-      status?: string | null,
-      image?: string | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      ChatGroups?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnDeleteUserChatGroupSubscriptionVariables = {
-  filter?: ModelSubscriptionUserChatGroupFilterInput | null,
-};
-
-export type OnDeleteUserChatGroupSubscription = {
-  onDeleteUserChatGroup?:  {
-    __typename: "UserChatGroup",
-    id: string,
-    chatGroupID: string,
-    userID: string,
-    chatGroup:  {
-      __typename: "ChatGroup",
-      id: string,
-      users?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      name?: string | null,
-      image?: string | null,
-      updatedAt: string,
-      LastMessage?:  {
-        __typename: "Message",
-        id: string,
-        createdAt?: string | null,
-        message?: string | null,
-        userID: string,
-        chatgroupID: string,
-        updatedAt: string,
-        _version: number,
-        _deleted?: boolean | null,
-        _lastChangedAt: number,
-      } | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-      chatGroupLastMessageId?: string | null,
-    },
-    user:  {
-      __typename: "User",
-      id: string,
-      username: string,
-      status?: string | null,
-      image?: string | null,
-      Messages?:  {
-        __typename: "ModelMessageConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      ChatGroups?:  {
-        __typename: "ModelUserChatGroupConnection",
-        nextToken?: string | null,
-        startedAt?: number | null,
-      } | null,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    },
-    createdAt: string,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,

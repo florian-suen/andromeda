@@ -2,29 +2,50 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateFriends = /* GraphQL */ `
+  subscription OnCreateFriends($filter: ModelSubscriptionFriendsFilterInput) {
+    onCreateFriends(filter: $filter) {
+      id
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateFriends = /* GraphQL */ `
+  subscription OnUpdateFriends($filter: ModelSubscriptionFriendsFilterInput) {
+    onUpdateFriends(filter: $filter) {
+      id
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteFriends = /* GraphQL */ `
+  subscription OnDeleteFriends($filter: ModelSubscriptionFriendsFilterInput) {
+    onDeleteFriends(filter: $filter) {
+      id
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const onCreateChatGroup = /* GraphQL */ `
   subscription OnCreateChatGroup(
     $filter: ModelSubscriptionChatGroupFilterInput
   ) {
     onCreateChatGroup(filter: $filter) {
       id
-      users {
-        items {
-          id
-          chatGroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
       name
       image
-      updatedAt
       LastMessage {
         id
         createdAt
@@ -37,21 +58,15 @@ export const onCreateChatGroup = /* GraphQL */ `
         _lastChangedAt
       }
       Messages {
-        items {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
+        nextToken
+        startedAt
+      }
+      users {
         nextToken
         startedAt
       }
       createdAt
+      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -65,23 +80,8 @@ export const onUpdateChatGroup = /* GraphQL */ `
   ) {
     onUpdateChatGroup(filter: $filter) {
       id
-      users {
-        items {
-          id
-          chatGroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
       name
       image
-      updatedAt
       LastMessage {
         id
         createdAt
@@ -94,21 +94,15 @@ export const onUpdateChatGroup = /* GraphQL */ `
         _lastChangedAt
       }
       Messages {
-        items {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
+        nextToken
+        startedAt
+      }
+      users {
         nextToken
         startedAt
       }
       createdAt
+      updatedAt
       _version
       _deleted
       _lastChangedAt
@@ -122,23 +116,8 @@ export const onDeleteChatGroup = /* GraphQL */ `
   ) {
     onDeleteChatGroup(filter: $filter) {
       id
-      users {
-        items {
-          id
-          chatGroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
       name
       image
-      updatedAt
       LastMessage {
         id
         createdAt
@@ -151,25 +130,202 @@ export const onDeleteChatGroup = /* GraphQL */ `
         _lastChangedAt
       }
       Messages {
-        items {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
         nextToken
         startedAt
+      }
+      users {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      chatGroupLastMessageId
+    }
+  }
+`;
+export const onCreateUser = /* GraphQL */ `
+  subscription OnCreateUser($filter: ModelSubscriptionUserFilterInput) {
+    onCreateUser(filter: $filter) {
+      id
+      username
+      status
+      image
+      Messages {
+        nextToken
+        startedAt
+      }
+      ChatGroups {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateUser = /* GraphQL */ `
+  subscription OnUpdateUser($filter: ModelSubscriptionUserFilterInput) {
+    onUpdateUser(filter: $filter) {
+      id
+      username
+      status
+      image
+      Messages {
+        nextToken
+        startedAt
+      }
+      ChatGroups {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteUser = /* GraphQL */ `
+  subscription OnDeleteUser($filter: ModelSubscriptionUserFilterInput) {
+    onDeleteUser(filter: $filter) {
+      id
+      username
+      status
+      image
+      Messages {
+        nextToken
+        startedAt
+      }
+      ChatGroups {
+        nextToken
+        startedAt
+      }
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onCreateUserChatGroup = /* GraphQL */ `
+  subscription OnCreateUserChatGroup(
+    $filter: ModelSubscriptionUserChatGroupFilterInput
+  ) {
+    onCreateUserChatGroup(filter: $filter) {
+      id
+      userID
+      chatgroupID
+      updatedAt
+      Chatgroup {
+        id
+        name
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatGroupLastMessageId
+      }
+      user {
+        id
+        username
+        status
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       createdAt
       _version
       _deleted
       _lastChangedAt
-      chatGroupLastMessageId
+    }
+  }
+`;
+export const onUpdateUserChatGroup = /* GraphQL */ `
+  subscription OnUpdateUserChatGroup(
+    $filter: ModelSubscriptionUserChatGroupFilterInput
+  ) {
+    onUpdateUserChatGroup(filter: $filter) {
+      id
+      userID
+      chatgroupID
+      updatedAt
+      Chatgroup {
+        id
+        name
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatGroupLastMessageId
+      }
+      user {
+        id
+        username
+        status
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      createdAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteUserChatGroup = /* GraphQL */ `
+  subscription OnDeleteUserChatGroup(
+    $filter: ModelSubscriptionUserChatGroupFilterInput
+  ) {
+    onDeleteUserChatGroup(filter: $filter) {
+      id
+      userID
+      chatgroupID
+      updatedAt
+      Chatgroup {
+        id
+        name
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatGroupLastMessageId
+      }
+      user {
+        id
+        username
+        status
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      createdAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -211,333 +367,6 @@ export const onDeleteMessage = /* GraphQL */ `
       message
       userID
       chatgroupID
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const onCreateUser = /* GraphQL */ `
-  subscription OnCreateUser($filter: ModelSubscriptionUserFilterInput) {
-    onCreateUser(filter: $filter) {
-      id
-      username
-      status
-      image
-      Messages {
-        items {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      ChatGroups {
-        items {
-          id
-          chatGroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const onUpdateUser = /* GraphQL */ `
-  subscription OnUpdateUser($filter: ModelSubscriptionUserFilterInput) {
-    onUpdateUser(filter: $filter) {
-      id
-      username
-      status
-      image
-      Messages {
-        items {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      ChatGroups {
-        items {
-          id
-          chatGroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const onDeleteUser = /* GraphQL */ `
-  subscription OnDeleteUser($filter: ModelSubscriptionUserFilterInput) {
-    onDeleteUser(filter: $filter) {
-      id
-      username
-      status
-      image
-      Messages {
-        items {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      ChatGroups {
-        items {
-          id
-          chatGroupID
-          userID
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        nextToken
-        startedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const onCreateUserChatGroup = /* GraphQL */ `
-  subscription OnCreateUserChatGroup(
-    $filter: ModelSubscriptionUserChatGroupFilterInput
-  ) {
-    onCreateUserChatGroup(filter: $filter) {
-      id
-      chatGroupID
-      userID
-      chatGroup {
-        id
-        users {
-          nextToken
-          startedAt
-        }
-        name
-        image
-        updatedAt
-        LastMessage {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        Messages {
-          nextToken
-          startedAt
-        }
-        createdAt
-        _version
-        _deleted
-        _lastChangedAt
-        chatGroupLastMessageId
-      }
-      user {
-        id
-        username
-        status
-        image
-        Messages {
-          nextToken
-          startedAt
-        }
-        ChatGroups {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const onUpdateUserChatGroup = /* GraphQL */ `
-  subscription OnUpdateUserChatGroup(
-    $filter: ModelSubscriptionUserChatGroupFilterInput
-  ) {
-    onUpdateUserChatGroup(filter: $filter) {
-      id
-      chatGroupID
-      userID
-      chatGroup {
-        id
-        users {
-          nextToken
-          startedAt
-        }
-        name
-        image
-        updatedAt
-        LastMessage {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        Messages {
-          nextToken
-          startedAt
-        }
-        createdAt
-        _version
-        _deleted
-        _lastChangedAt
-        chatGroupLastMessageId
-      }
-      user {
-        id
-        username
-        status
-        image
-        Messages {
-          nextToken
-          startedAt
-        }
-        ChatGroups {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const onDeleteUserChatGroup = /* GraphQL */ `
-  subscription OnDeleteUserChatGroup(
-    $filter: ModelSubscriptionUserChatGroupFilterInput
-  ) {
-    onDeleteUserChatGroup(filter: $filter) {
-      id
-      chatGroupID
-      userID
-      chatGroup {
-        id
-        users {
-          nextToken
-          startedAt
-        }
-        name
-        image
-        updatedAt
-        LastMessage {
-          id
-          createdAt
-          message
-          userID
-          chatgroupID
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        Messages {
-          nextToken
-          startedAt
-        }
-        createdAt
-        _version
-        _deleted
-        _lastChangedAt
-        chatGroupLastMessageId
-      }
-      user {
-        id
-        username
-        status
-        image
-        Messages {
-          nextToken
-          startedAt
-        }
-        ChatGroups {
-          nextToken
-          startedAt
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      createdAt
       updatedAt
       _version
       _deleted

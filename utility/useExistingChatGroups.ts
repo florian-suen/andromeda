@@ -16,7 +16,7 @@ export const useExistingChatGroups = async (userID: string) => {
       : [];
 
   const chatGroups = chatGroupItems.find((v: any) =>
-    v.chatGroup.users.items.some((u: any) => u.user.id === userID)
+    v.Chatgroup.users.items.some((u: any) => u.user.id === userID)
   );
 
   return chatGroups;
