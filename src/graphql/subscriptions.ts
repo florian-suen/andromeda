@@ -80,33 +80,12 @@ export const onUpdateChatGroup = /* GraphQL */ `
   ) {
     onUpdateChatGroup(filter: $filter) {
       id
-      name
       image
+      name
       LastMessage {
-        id
-        createdAt
         message
-        userID
-        chatgroupID
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
+        createdAt
       }
-      Messages {
-        nextToken
-        startedAt
-      }
-      users {
-        nextToken
-        startedAt
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      chatGroupLastMessageId
     }
   }
 `;

@@ -5,6 +5,11 @@ export const GetUser = /* GraphQL */ `
       ChatGroups(sortDirection: DESC) {
         items {
           Chatgroup {
+            LastMessage {
+              id
+              createdAt
+              message
+            }
             id
             users {
               items {
