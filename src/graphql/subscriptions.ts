@@ -82,9 +82,12 @@ export const onUpdateChatGroup = /* GraphQL */ `
       id
       image
       name
+      _version
       LastMessage {
         message
         createdAt
+        updatedAt
+        _version
       }
     }
   }

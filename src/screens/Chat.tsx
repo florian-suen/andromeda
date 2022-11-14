@@ -12,18 +12,43 @@ import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { getChatGroup, listMessagesByChatGroup } from "../graphql/queries";
 import { onCreateMessage, onUpdateChatGroup } from "../graphql/subscriptions";
-
+import { ChatGroupType } from "../screens/ChatsList/ChatsList";
 import { useState } from "react";
 type ChatGroupParam = {
-  user: { chatGroupId: string; username: string };
+  user: { chatGroup: Partial<ChatGroupType>; username: string };
 };
 
 export const Chat = () => {
   const route = useRoute<RouteProp<ChatGroupParam>>();
   const navigation = useNavigation();
-  const chatGroupId = route.params.chatGroupId;
+  const chatGroupId = route.params.chatGroup.Chatgroup?.id;
   const [chatGroupData, setChatGroupData] = useState<any>(null);
   const [messages, setMessages] = useState<any>([]);
+  chatGroupData && console.log(chatGroupData);
+  useEffect(() => {
+    const onUpdateChatGrp = API.graphql(
+      graphqlOperation(onUpdateChatGroup, {
+        filter: { id: { eq: chatGroupId } },
+      })
+    );
+
+    const chatGrpSubscription =
+      "subscribe" in onUpdateChatGrp &&
+      onUpdateChatGrp.subscribe({
+        next: ({ value }: any) => {
+          setChatGroupData((chatGroup: any) => {
+            console.log(value.data.onUpdateChatGroup);
+            return { ...(chatGroup || {}), ...value.data.onUpdateChatGroup };
+          });
+        },
+        error: (err) => console.log(err),
+      });
+
+    return () => {
+      console.log("unsubscribe Chatgroup");
+      chatGrpSubscription && chatGrpSubscription.unsubscribe;
+    };
+  }, [chatGroupId]);
 
   useEffect(() => {
     const chatGroupResp = API.graphql(

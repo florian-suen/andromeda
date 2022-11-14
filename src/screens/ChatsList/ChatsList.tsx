@@ -36,12 +36,11 @@ export const ChatList = () => {
     const sortedChatGroup = chatGroup.sort(
       (a: ChatGroupType, b: ChatGroupType) => {
         if (a.Chatgroup.id === chatGroupId) return -1;
-
         return 0;
       }
     );
 
-    setload(true);
+    setload(!load);
     setChatGroup([...sortedChatGroup]);
   };
 
@@ -72,10 +71,11 @@ export const ChatList = () => {
     fetchChatGroup();
   }, []);
 
-  console.log("first", chatGroup.length && chatGroup[0].Chatgroup.id);
   return chatGroup?.length ? (
     <FlatList
-      keyExtractor={(item) => item.Chatgroup.id}
+      keyExtractor={(item) => {
+        return item.Chatgroup.id;
+      }}
       extraData={load}
       data={chatGroup ? chatGroup : []}
       renderItem={({ item }) => {

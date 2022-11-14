@@ -11,7 +11,7 @@ import { ChatGroupType } from "../../screens/ChatsList/ChatsList";
 dayjs.extend(relativeTime);
 
 type ChatGroupParam = {
-  Chat: { chatGroupId: string; username: string };
+  Chat: { chatGroup: Partial<ChatGroupType>; username: string };
 };
 const styleSheet = {
   pressed: { opacity: 0.7, backgroundColor: "#151b26" },
@@ -68,6 +68,8 @@ export const ChatGroup = ({
       "subscribe" in onUpdateChatGrp &&
       onUpdateChatGrp.subscribe({
         next: ({ value }: any) => {
+          console.log(value.data.onUpdateChatGroup);
+
           setReOrder(value.data.onUpdateChatGroup.id);
           setChatGroupData((chatGroup: any) => {
             return { ...(chatGroup || {}), ...value.data.onUpdateChatGroup };
@@ -91,7 +93,7 @@ export const ChatGroup = ({
       ]}
       onPress={() =>
         navigation.navigate("Chat", {
-          chatGroupId: chatGroupData.id,
+          chatGroup: { Chatgroup: chatGroupData },
           username: chatGroupData.users.items[0].user.username,
         })
       }
