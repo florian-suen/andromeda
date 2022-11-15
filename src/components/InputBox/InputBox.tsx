@@ -11,7 +11,6 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
   const inputOpacity = new Animated.Value(0);
   const inputScale = new Animated.Value(0);
   const animateInput = useRef(true);
-  console.log("version", chatGroup);
 
   const interpo = inputScale.interpolate({
     inputRange: [0, 0.5, 1],

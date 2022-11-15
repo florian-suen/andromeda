@@ -15,16 +15,16 @@ import { onCreateMessage, onUpdateChatGroup } from "../graphql/subscriptions";
 import { ChatGroupType } from "../screens/ChatsList/ChatsList";
 import { useState } from "react";
 type ChatGroupParam = {
-  user: { chatGroup: Partial<ChatGroupType>; username: string };
+  user: { chatGroupId: string; username: string };
 };
 
 export const Chat = () => {
   const route = useRoute<RouteProp<ChatGroupParam>>();
   const navigation = useNavigation();
-  const chatGroupId = route.params.chatGroup.Chatgroup?.id;
+  const chatGroupId = route.params.chatGroupId;
   const [chatGroupData, setChatGroupData] = useState<any>(null);
   const [messages, setMessages] = useState<any>([]);
-  chatGroupData && console.log(chatGroupData);
+
   useEffect(() => {
     const onUpdateChatGrp = API.graphql(
       graphqlOperation(onUpdateChatGroup, {
@@ -37,7 +37,6 @@ export const Chat = () => {
       onUpdateChatGrp.subscribe({
         next: ({ value }: any) => {
           setChatGroupData((chatGroup: any) => {
-            console.log(value.data.onUpdateChatGroup);
             return { ...(chatGroup || {}), ...value.data.onUpdateChatGroup };
           });
         },

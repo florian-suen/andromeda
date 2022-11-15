@@ -8,6 +8,7 @@ import {
 } from "../../../src/graphql/mutations";
 import { Auth, API, graphqlOperation } from "aws-amplify";
 import { useExistingChatGroups } from "../../../utility/useExistingChatGroups";
+import { ChatGroupType } from "../../screens/ChatsList/ChatsList";
 type RootStackParamList = {
   Chat: { chatGroupId: string; username: string };
 };
@@ -37,6 +38,8 @@ export const ChatContactsComponent = ({ user }: { user: User }) => {
 
     const newChatGroup =
       "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
+
+    console.log(newChatGroup.id);
 
     await API.graphql(
       graphqlOperation(createUserChatGroup, {
