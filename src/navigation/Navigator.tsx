@@ -1,7 +1,7 @@
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Chat } from "../screens/Chat";
-import { ChatContacts } from "../screens/ChatContacts";
+import { Chat } from "../screens/ChatScreen";
+import { ChatContacts } from "../screens/ChatContactsScreen";
 import { TabNavigator } from "./TabNavigator";
 export const Navigator = () => {
   const Stack = createNativeStackNavigator();
@@ -12,7 +12,7 @@ export const Navigator = () => {
     colors: {
       ...DefaultTheme.colors,
       primary: "#c2bdb6",
-      background: "#141A26",
+      background: "#1c222e",
       text: "#212020",
       border: "green",
       card: "#2E3D59",

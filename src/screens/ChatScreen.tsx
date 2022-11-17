@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { getChatGroup, listMessagesByChatGroup } from "../graphql/queries";
 import { onCreateMessage, onUpdateChatGroup } from "../graphql/subscriptions";
-import { ChatGroupType } from "../screens/ChatsList/ChatsList";
+import { ChatGroupType } from "./ChatsList/ChatsListScreen";
 import { useState } from "react";
 type ChatGroupParam = {
   user: { chatGroupId: string; username: string };

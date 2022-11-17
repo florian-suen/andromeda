@@ -1,8 +1,8 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, Animated, StyleSheet } from "react-native";
 import { ChatGroup } from "../../components/ChatList/ChatList";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { GetUser } from "./queries";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { onUpdateUserChatGroup } from "../../graphql/subscriptions";
 
 export type ChatGroupType = {
@@ -31,7 +31,6 @@ export type ChatGroupType = {
 
 export const ChatList = () => {
   const [chatGroup, setChatGroup] = useState<any>([]);
-  const [load, setload] = useState(false);
   const reOrderHandler = (chatGroupId: string) => {
     const sortedChatGroup = chatGroup.sort(
       (a: ChatGroupType, b: ChatGroupType) => {
@@ -40,7 +39,6 @@ export const ChatList = () => {
       }
     );
 
-    setload(!load);
     setChatGroup([...sortedChatGroup]);
   };
 
@@ -50,21 +48,21 @@ export const ChatList = () => {
       const chatGroupResp = await API.graphql(
         graphqlOperation(GetUser, { id: currentUser.attributes.sub })
       );
-      if ("data" in chatGroupResp && chatGroupResp.data.getUser.ChatGroups) {
-        const filteredGroup = chatGroupResp.data.getUser.ChatGroups.items.map(
-          (group: any) => {
-            let filterUser;
-            if (group?.Chatgroup?.users) {
-              filterUser = group?.Chatgroup?.users?.items.filter(
-                (v: any) => v.user.id !== currentUser.attributes.sub
-              );
-            }
-            if (group.Chatgroup.users) group.Chatgroup.users.items = filterUser;
-            return group;
+      const chatgroupItems =
+        "data" in chatGroupResp && chatGroupResp.data.getUser.ChatGroups
+          ? chatGroupResp.data.getUser.ChatGroups.items
+          : null;
+      if (chatgroupItems.length) {
+        for (let x = 0; x < chatgroupItems.length; x += 1) {
+          let filterUser;
+          if (chatgroupItems[x].Chatgroup?.users) {
+            filterUser = chatgroupItems[x].Chatgroup?.users?.items.filter(
+              (v: any) => v.user.id !== currentUser.attributes.sub
+            );
           }
-        );
-
-        setChatGroup(filteredGroup);
+          chatgroupItems[x].Chatgroup.users.items = filterUser;
+        }
+        setChatGroup(chatgroupItems);
       }
     };
 
@@ -76,9 +74,9 @@ export const ChatList = () => {
       keyExtractor={(item) => {
         return item.Chatgroup.id;
       }}
-      extraData={load}
+      extraData={chatGroup.updatedAt}
       data={chatGroup ? chatGroup : []}
-      renderItem={({ item }) => {
+      renderItem={({ item, index }) => {
         return <ChatGroup chat={item} setReOrder={reOrderHandler} />;
       }}
     ></FlatList>

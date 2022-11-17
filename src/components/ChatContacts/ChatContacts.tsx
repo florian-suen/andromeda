@@ -8,16 +8,23 @@ import {
 } from "../../../src/graphql/mutations";
 import { Auth, API, graphqlOperation } from "aws-amplify";
 import { useExistingChatGroups } from "../../../utility/useExistingChatGroups";
-import { ChatGroupType } from "../../screens/ChatsList/ChatsList";
+import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
+import { useThemeColor } from "../../../utility/useStyles";
 type RootStackParamList = {
   Chat: { chatGroupId: string; username: string };
 };
 
-export const ChatContactsComponent = ({ user }: { user: User }) => {
+export const ChatContactsComponent = ({
+  user,
+  selected = false,
+}: {
+  user: User;
+  selected: boolean;
+}) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const image = user.image ? user.image : undefined;
-
+  const styles = useThemeColor(styleSheet);
   const createChatGroupHandler = async () => {
     const existingChatGroup = await useExistingChatGroups(user.id);
 
@@ -73,6 +80,10 @@ export const ChatContactsComponent = ({ user }: { user: User }) => {
         pressed ? styles.pressed : null,
       ]}
     >
+      <View style={styles.circle}>
+        <View style={styles.circleTwo} />
+      </View>
+
       <Image
         source={{
           uri: image,
@@ -91,9 +102,24 @@ export const ChatContactsComponent = ({ user }: { user: User }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styleSheet = {
   pressed: { opacity: 0.7, backgroundColor: "#151b26" },
-
+  circle: {
+    height: 12,
+    width: 12,
+    borderRadius: 6,
+    backgroundColor: "gainsboro",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 15,
+  },
+  circleTwo: {
+    justifyContent: "flex-start",
+    height: 8,
+    width: 8,
+    borderRadius: 4,
+    backgroundColor: "steelblue",
+  },
   container: {
     flexDirection: "row",
     marginVertical: 0,
@@ -103,7 +129,7 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: "#18202e",
-    backgroundColor: "#1c222e",
+    backgroundColor: "background",
   },
   main: {
     flex: 1,
@@ -125,4 +151,4 @@ const styles = StyleSheet.create({
     marginRight: 15,
     borderRadius: 5,
   },
-});
+};

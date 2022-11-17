@@ -7,43 +7,11 @@ import { useThemeColor } from "../../../utility/useStyles";
 import { useState, useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { onUpdateChatGroup } from "../../graphql/subscriptions";
-import { ChatGroupType } from "../../screens/ChatsList/ChatsList";
+import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
 dayjs.extend(relativeTime);
 
 type ChatGroupParam = {
   Chat: { chatGroupId: string; username: string };
-};
-const styleSheet = {
-  pressed: { opacity: 0.7, backgroundColor: "#151b26" },
-
-  container: {
-    flexDirection: "row",
-    marginVertical: 0,
-    marginHorizontal: 8,
-    height: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: "#18202e",
-  },
-  main: {
-    flex: 1,
-  },
-  item: { flexDirection: "row" },
-  name: {
-    flex: 1,
-    fontWeight: "bold",
-    color: "primary",
-    fontSize: 18,
-  },
-  subtext: {
-    color: "gray",
-  },
-  time: {
-    color: "gray",
-    marginBottom: 0,
-  },
-  image: { width: 80, height: 80, marginRight: 10, borderRadius: 5 },
 };
 
 export const ChatGroup = ({
@@ -123,4 +91,37 @@ export const ChatGroup = ({
       </View>
     </Pressable>
   );
+};
+
+const styleSheet = {
+  pressed: { opacity: 0.7, backgroundColor: "#151b26" },
+
+  container: {
+    flexDirection: "row",
+    marginVertical: 0,
+    marginHorizontal: 8,
+    height: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: "#18202e",
+  },
+  main: {
+    flex: 1,
+  },
+  item: { flexDirection: "row" },
+  name: {
+    flex: 1,
+    fontWeight: "bold",
+    color: "primary",
+    fontSize: 18,
+  },
+  subtext: {
+    color: "gray",
+  },
+  time: {
+    color: "gray",
+    marginBottom: 0,
+  },
+  image: { width: 80, height: 80, marginRight: 10, borderRadius: 5 },
 };
