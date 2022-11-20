@@ -14,7 +14,7 @@ function App() {
       const userAuth = await Auth.currentAuthenticatedUser({
         bypassCache: true,
       });
-      console.log(userAuth.attributes.sub);
+
       const user = await API.graphql(
         graphqlOperation(getUser, { id: userAuth.attributes.sub })
       );

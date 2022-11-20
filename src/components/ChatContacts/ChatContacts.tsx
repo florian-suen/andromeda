@@ -1,4 +1,15 @@
-import { Text, Image, View, StyleSheet, Pressable } from "react-native";
+import {
+  Text,
+  Image,
+  View,
+  StyleSheet,
+  Pressable,
+  Animated,
+  ViewStyle,
+  TextStyle,
+  ImageStyle,
+} from "react-native";
+import { useState, useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { User } from "../../models/index";
@@ -16,15 +27,22 @@ type RootStackParamList = {
 
 export const ChatContactsComponent = ({
   user,
-  selected = false,
+  isSelected = false,
+  onSelectHandler,
+  isSelectable,
 }: {
   user: User;
-  selected: boolean;
+  isSelected: boolean;
+  isSelectable: boolean;
+  onSelectHandler: () => void;
 }) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const image = user.image ? user.image : undefined;
   const styles = useThemeColor(styleSheet);
+  const translateX = useRef(new Animated.Value(0)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+  let flex = useRef("flex").current;
   const createChatGroupHandler = async () => {
     const existingChatGroup = await useExistingChatGroups(user.id);
 
@@ -71,39 +89,94 @@ export const ChatContactsComponent = ({
     });
   };
 
-  return (
-    <Pressable
-      android_ripple={{ color: "#222b3d" }}
-      onPress={createChatGroupHandler}
-      style={({ pressed }) => [
-        styles.container,
-        pressed ? styles.pressed : null,
-      ]}
-    >
-      <View style={styles.circle}>
-        <View style={styles.circleTwo} />
-      </View>
+  useEffect(() => {
+    const translateXTiming = Animated.timing(translateX, {
+      toValue: 50,
+      duration: 500,
+      useNativeDriver: true,
+    });
 
-      <Image
-        source={{
-          uri: image,
+    const translateRevertXTiming = Animated.timing(translateX, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true,
+    });
+
+    const opacityTiming = Animated.timing(opacity, {
+      toValue: 1,
+      duration: 500,
+      delay: 280,
+      useNativeDriver: true,
+    });
+
+    const opacityRevertTiming = Animated.timing(opacity, {
+      toValue: 0,
+      duration: 400,
+      useNativeDriver: true,
+    });
+
+    if (isSelectable)
+      Animated.parallel([translateXTiming, opacityTiming], {
+        stopTogether: true,
+      }).start();
+    if (!isSelectable)
+      Animated.parallel([translateRevertXTiming, opacityRevertTiming], {
+        stopTogether: true,
+      }).start(() => {});
+  }, [isSelectable]);
+  return (
+    <>
+      <Pressable
+        android_ripple={{ color: "#222b3d" }}
+        onPress={() => {
+          if (!isSelectable) createChatGroupHandler();
+          if (isSelectable) onSelectHandler();
         }}
-        style={styles.image}
-      />
-      <View style={styles.main}>
-        <View style={styles.item}>
-          <Text style={styles.name} numberOfLines={1}>
-            {user.username}
-          </Text>
+        style={({ pressed }) => [pressed ? styles.pressed : null]}
+      >
+        <View>
+          <Animated.View
+            style={{
+              ...styles.container,
+              translateX: translateX,
+              position: "relative",
+            }}
+          >
+            <Animated.View
+              style={{
+                ...styles.circle,
+                opacity: opacity,
+                position: "absolute",
+                left: -53,
+                margin: 0,
+              }}
+            >
+              {isSelected && <View style={styles.circleTwo} />}
+            </Animated.View>
+            <Image
+              source={{
+                uri: image,
+              }}
+              style={styles.image}
+            />
+            <View style={styles.main}>
+              <View style={styles.item}>
+                <Text style={styles.name} numberOfLines={1}>
+                  {user.username}
+                </Text>
+              </View>
+              <Text style={styles.status}>{user.status}</Text>
+            </View>
+          </Animated.View>
         </View>
-        <Text style={styles.status}>{user.status}</Text>
-      </View>
-    </Pressable>
+      </Pressable>
+    </>
   );
 };
 
-const styleSheet = {
-  pressed: { opacity: 0.7, backgroundColor: "#151b26" },
+const styleSheet: StyleSheet.NamedStyles<{
+  [p: string]: ViewStyle | ImageStyle | TextStyle;
+}> = {
   circle: {
     height: 12,
     width: 12,
@@ -111,7 +184,7 @@ const styleSheet = {
     backgroundColor: "gainsboro",
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: 15,
+    marginLeft: 30,
   },
   circleTwo: {
     justifyContent: "flex-start",
@@ -120,6 +193,7 @@ const styleSheet = {
     borderRadius: 4,
     backgroundColor: "steelblue",
   },
+  pressed: { opacity: 0.7, backgroundColor: "#151b26" },
   container: {
     flexDirection: "row",
     marginVertical: 0,
