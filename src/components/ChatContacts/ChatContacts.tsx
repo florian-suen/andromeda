@@ -42,7 +42,7 @@ export const ChatContactsComponent = ({
   const styles = useThemeColor(styleSheet);
   const translateX = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
-  let flex = useRef("flex").current;
+
   const createChatGroupHandler = async () => {
     const existingChatGroup = await useExistingChatGroups(user.id);
 
@@ -63,8 +63,6 @@ export const ChatContactsComponent = ({
 
     const newChatGroup =
       "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
-
-    console.log(newChatGroup.id);
 
     await API.graphql(
       graphqlOperation(createUserChatGroup, {
