@@ -25,7 +25,7 @@ import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useThemeColor } from "../../utility/useStyles";
 
 type RootStackParamList = {
-  Chat: { chatGroupId: string; username: string };
+  GroupChat: { chatGroupId: string; username: string };
 };
 
 export const ChatContacts = () => {
@@ -38,8 +38,23 @@ export const ChatContacts = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const createGroupHandler = async () => {
+    const userNames = [];
+    function* getNames() {
+      for (const id of selectedUserId) {
+        yield users.find((user) => user.id === id)?.username;
+      }
+    }
+    for (const username of getNames()) userNames.push(username);
+
+    const userAuth = await Auth.currentAuthenticatedUser();
+
     const newChatGroupResp = await API.graphql(
-      graphqlOperation(createChatGroup, { input: {} })
+      graphqlOperation(createChatGroup, {
+        input: {
+          leaderID: userAuth.attributes.sub,
+          name: `${userNames.join(" ")} Group Chat`,
+        },
+      })
     );
 
     if ("data" in newChatGroupResp && !newChatGroupResp.data?.createChatGroup)
@@ -58,8 +73,6 @@ export const ChatContacts = () => {
       })
     );
 
-    const userAuth = await Auth.currentAuthenticatedUser();
-
     await API.graphql(
       graphqlOperation(createUserChatGroup, {
         input: {
@@ -69,7 +82,7 @@ export const ChatContacts = () => {
       })
     );
 
-    navigation.navigate("Chat", {
+    navigation.navigate("GroupChat", {
       chatGroupId: newChatGroup.id,
       username: userAuth.attributes.email,
     });

@@ -11,7 +11,7 @@ import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
 dayjs.extend(relativeTime);
 
 type ChatGroupParam = {
-  Chat: { chatGroupId: string; username: string };
+  GroupChat: { chatGroupId: string; username: string };
 };
 
 export const ChatGroup = ({
@@ -58,7 +58,7 @@ export const ChatGroup = ({
         pressed ? styles.pressed : null,
       ]}
       onPress={() =>
-        navigation.navigate("Chat", {
+        navigation.navigate("GroupChat", {
           chatGroupId: chatGroupData.id,
           username: chatGroupData.users.items[0].user.username,
         })

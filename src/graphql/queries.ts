@@ -66,6 +66,7 @@ export const getChatGroup = /* GraphQL */ `
       id
       name
       image
+      leaderID
       LastMessage {
         id
         createdAt
@@ -82,8 +83,14 @@ export const getChatGroup = /* GraphQL */ `
         startedAt
       }
       users {
-        nextToken
-        startedAt
+        items {
+          user {
+            image
+            status
+            username
+            id
+          }
+        }
       }
       createdAt
       updatedAt
