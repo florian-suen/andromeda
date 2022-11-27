@@ -11,7 +11,7 @@ import {
   Modal,
   Pressable,
 } from "react-native";
-
+import GestureRecognizer from "react-native-swipe-gestures";
 import { InputBox as InputBx } from "./InputBox/InputBox";
 import { Message } from "./Message/Message";
 import { useRoute, RouteProp } from "@react-navigation/native";
@@ -150,7 +150,11 @@ function Menu() {
   });
 
   return (
-    <>
+    <GestureRecognizer
+      style={{ flex: 1, position: "absolute" }}
+      onSwipeUp={() => setModalVisible(false)}
+      onSwipeDown={() => setModalVisible(false)}
+    >
       <Modal
         animationType="fade"
         transparent={true}
@@ -166,7 +170,7 @@ function Menu() {
 
         <View style={styles.modalContainer}>
           <Text style={{ fontSize: 18, fontWeight: "500", marginBottom: 15 }}>
-            Group Members
+            Users
           </Text>
           <FlatList
             data={sortedUsers}
@@ -177,7 +181,7 @@ function Menu() {
                     source={{ uri: item.user.image }}
                     style={styles.image}
                   />
-                  {index === 0 ? (
+                  {index === 0 && leaderId ? (
                     <Text>{item.user.username}(Owner)</Text>
                   ) : (
                     <Text>{item.user.username}</Text>
@@ -188,7 +192,7 @@ function Menu() {
           ></FlatList>
         </View>
       </Modal>
-    </>
+    </GestureRecognizer>
   );
 }
 

@@ -22,7 +22,7 @@ import { useExistingChatGroups } from "../../../utility/useExistingChatGroups";
 import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
 import { useThemeColor } from "../../../utility/useStyles";
 type RootStackParamList = {
-  Chat: { chatGroupId: string; username: string };
+  GroupChat: { chatGroupId: string; username: string };
 };
 
 export const ChatContactsComponent = ({
@@ -47,7 +47,7 @@ export const ChatContactsComponent = ({
     const existingChatGroup = await useExistingChatGroups(user.id);
 
     if (existingChatGroup) {
-      navigation.navigate("Chat", {
+      navigation.navigate("GroupChat", {
         chatGroupId: existingChatGroup.Chatgroup.id,
         username: user.username,
       });
@@ -81,7 +81,7 @@ export const ChatContactsComponent = ({
       })
     );
 
-    navigation.navigate("Chat", {
+    navigation.navigate("GroupChat", {
       chatGroupId: newChatGroup.id,
       username: user.username,
     });

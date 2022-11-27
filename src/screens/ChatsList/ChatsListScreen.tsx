@@ -9,6 +9,8 @@ export type ChatGroupType = {
   Chatgroup: {
     LastMessage: { message: string; id: string; createdAt: string };
     id: string;
+    name: string;
+    image: string;
     users: {
       items: {
         user: { id: string; image: string | null; username: string };

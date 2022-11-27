@@ -1,3 +1,4 @@
+import { Image } from "react-native";
 export const GetUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
@@ -5,6 +6,8 @@ export const GetUser = /* GraphQL */ `
       ChatGroups(sortDirection: DESC) {
         items {
           Chatgroup {
+            name
+            image
             LastMessage {
               id
               createdAt

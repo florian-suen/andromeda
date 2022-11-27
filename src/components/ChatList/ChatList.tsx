@@ -24,7 +24,7 @@ export const ChatGroup = ({
   const navigation = useNavigation<NativeStackNavigationProp<ChatGroupParam>>();
   const styles = StyleSheet.create(useThemeColor(styleSheet));
   const [chatGroupData, setChatGroupData] = useState(chat.Chatgroup);
-
+  console.log(chatGroupData);
   useEffect(() => {
     const onUpdateChatGrp = API.graphql(
       graphqlOperation(onUpdateChatGroup, {
@@ -75,7 +75,9 @@ export const ChatGroup = ({
       <View style={styles.main}>
         <View style={styles.item}>
           <Text style={styles.name} numberOfLines={1}>
-            {chatGroupData.users.items[0].user.username}
+            {chatGroupData.name
+              ? chatGroupData.name
+              : chatGroupData.users.items[0].user.username}
           </Text>
           {chatGroupData.LastMessage ? (
             <Text style={styles.time}>
