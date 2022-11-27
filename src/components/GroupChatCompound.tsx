@@ -7,7 +7,11 @@ import {
   Animated,
   Image,
   Text,
+  StyleSheet,
+  Modal,
+  Pressable,
 } from "react-native";
+
 import { InputBox as InputBx } from "./InputBox/InputBox";
 import { Message } from "./Message/Message";
 import { useRoute, RouteProp } from "@react-navigation/native";
@@ -37,7 +41,7 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   const chatGroupId = route.params.chatGroupId;
   const [chatGroupData, setChatGroupData] = useState<any>();
   const [messages, setMessages] = useState<any>([]);
-  const translateX = useRef(new Animated.Value(500)).current;
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const messageResp = API.graphql(
@@ -89,14 +93,17 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
       navigation.setOptions({
         title: route.params.username,
         headerRight: () => {
-          return (
+          return modalVisible ? (
+            <MaterialIcons
+              style={{ zIndex: 20 }}
+              name="menu-open"
+              size={24}
+              color="black"
+            />
+          ) : (
             <MaterialIcons
               onPress={() => {
-                Animated.timing(translateX, {
-                  toValue: 30,
-                  useNativeDriver: true,
-                  duration: 400,
-                }).start();
+                setModalVisible(true);
               }}
               name="menu"
               size={24}
@@ -105,20 +112,19 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
           );
         },
       }),
-    [route.params.username]
+    [modalVisible]
   );
 
-  console.log(chatGroupData);
   return (
     <UserContext.Provider
       value={{
-        /* user: {
-          users: "users" in chatGroupData ? chatGroupData?.users?.items : [],
-          leaderId: chatGroupData.leaderID || null,
-        }, */
+        user: {
+          users: chatGroupData ? chatGroupData?.users?.items : [],
+          leaderId: chatGroupData ? chatGroupData.leaderID : null,
+        },
         chatGroup: { chatGroupData, setChatGroupData },
         messages: { messages, setMessages },
-        animation: { translateX },
+        modal: { modalVisible, setModalVisible },
       }}
     >
       <KeyboardAvoidingView
@@ -132,33 +138,58 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
 };
 
 function Menu() {
-  /*  const {
+  const {
     user: { users, leaderId },
-    animation: { translateX },
+    modal: { modalVisible, setModalVisible },
   } = useContext(UserContext);
 
+  const sortedUsers = users.sort((user: any) => {
+    if (user.user.id === leaderId) return -1;
+
+    return 0;
+  });
+
   return (
-    <Animated.View
-      style={{
-        width: 200,
-        height: 200,
-        backgroundColor: "black",
-        translateX: translateX,
-      }}
-    >
-      <FlatList
-        data={users}
-        renderItem={({ item }) => {
-          return (
-            <View>
-              <Image source={item.user.image} />
-              <Text>{item.user.username}</Text>
-            </View>
-          );
+    <>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
         }}
-      ></FlatList>
-    </Animated.View>
-  ); */
+      >
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setModalVisible(!modalVisible)}
+        ></Pressable>
+
+        <View style={styles.modalContainer}>
+          <Text style={{ fontSize: 18, fontWeight: "500", marginBottom: 15 }}>
+            Group Members
+          </Text>
+          <FlatList
+            data={sortedUsers}
+            renderItem={({ item, index }) => {
+              return (
+                <View style={styles.menuContainer}>
+                  <Image
+                    source={{ uri: item.user.image }}
+                    style={styles.image}
+                  />
+                  {index === 0 ? (
+                    <Text>{item.user.username}(Owner)</Text>
+                  ) : (
+                    <Text>{item.user.username}</Text>
+                  )}
+                </View>
+              );
+            }}
+          ></FlatList>
+        </View>
+      </Modal>
+    </>
+  );
 }
 
 function Messages() {
@@ -187,64 +218,34 @@ GroupChat.Menu = Menu;
 GroupChat.Messages = Messages;
 GroupChat.InputBox = InputBox;
 
-/*  export const Chat = () => {
-    const route = useRoute<RouteProp<ChatGroupParam>>();
-    const navigation = useNavigation();
-    const chatGroupId = route.params.chatGroupId;
-    const [chatGroupData, setChatGroupData] = useState<any>(null);
-  
-  
-    useEffect(() => {
-      const onUpdateChatGrp = API.graphql(
-        graphqlOperation(onUpdateChatGroup, {
-          filter: { id: { eq: chatGroupId } },
-        })
-      );
-  
-      const chatGrpSubscription =
-        "subscribe" in onUpdateChatGrp &&
-        onUpdateChatGrp.subscribe({
-          next: ({ value }: any) => {
-            setChatGroupData((chatGroup: any) => {
-              return { ...(chatGroup || {}), ...value.data.onUpdateChatGroup };
-            });
-          },
-          error: (err) => console.log(err),
-        });
-  
-      return () => {
-        console.log("unsubscribe Chatgroup");
-        chatGrpSubscription && chatGrpSubscription.unsubscribe;
-      };
-    }, [chatGroupId]);
-  
-    useEffect(() => {
-      const chatGroupResp = API.graphql(
-        graphqlOperation(getChatGroup, { id: chatGroupId })
-      );
-      "then" in chatGroupResp &&
-        chatGroupResp.then((results) =>
-          setChatGroupData(results.data.getChatGroup)
-        );
-    }, [chatGroupId]);
-  
-    useEffect(
-      () => navigation.setOptions({ title: route.params.username }),
-      [route.params.username]
-    );
-  
-    if (!chatGroupId) return <ActivityIndicator size="large" color="#00ff00" />;
-    return (
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        <FlatList
-          inverted
-          data={messages}
-          renderItem={({ item }) => <Message message={item} />}
-        ></FlatList>
-        <InputBox chatGroup={chatGroupData} />
-      </KeyboardAvoidingView>
-    );
-  }; */
+const styles = StyleSheet.create({
+  image: { width: 80, height: 80, marginRight: 10, borderRadius: 5 },
+  menuContainer: {
+    width: 200,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalOverlay: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(0,0,0,0.3)",
+  },
+  modalContainer: {
+    alignItems: "center",
+    margin: 75,
+    backgroundColor: "white",
+    borderRadius: 5,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+});
