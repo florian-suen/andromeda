@@ -24,7 +24,7 @@ export const ChatGroup = ({
   const navigation = useNavigation<NativeStackNavigationProp<ChatGroupParam>>();
   const styles = StyleSheet.create(useThemeColor(styleSheet));
   const [chatGroupData, setChatGroupData] = useState(chat.Chatgroup);
-  console.log(chatGroupData);
+
   useEffect(() => {
     const onUpdateChatGrp = API.graphql(
       graphqlOperation(onUpdateChatGroup, {

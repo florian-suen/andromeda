@@ -44,6 +44,30 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
+    const onUpdateChatGrp = API.graphql(
+      graphqlOperation(onUpdateChatGroup, {
+        filter: { id: { eq: chatGroupId } },
+      })
+    );
+
+    const chatGrpSubscription =
+      "subscribe" in onUpdateChatGrp &&
+      onUpdateChatGrp.subscribe({
+        next: ({ value }: any) => {
+          setChatGroupData((chatGroup: any) => {
+            return { ...(chatGroup || {}), ...value.data.onUpdateChatGroup };
+          });
+        },
+        error: (err) => console.log(err),
+      });
+
+    return () => {
+      console.log("unsubscribe Chatgroup");
+      chatGrpSubscription && chatGrpSubscription.unsubscribe;
+    };
+  }, [chatGroupId]);
+
+  useEffect(() => {
     const messageResp = API.graphql(
       graphqlOperation(listMessagesByChatGroup, {
         chatgroupID: chatGroupId,

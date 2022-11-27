@@ -1,6 +1,5 @@
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Chat } from "../screens/ChatScreen";
 import { ChatContacts } from "../screens/ChatContactsScreen";
 import { TabNavigator } from "./TabNavigator";
 import { GroupChatScreen } from "../screens/GroupChatScreen";
@@ -34,13 +33,6 @@ export const Navigator = () => {
           name="Home"
           component={TabNavigator}
           options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Chat"
-          component={Chat}
-          options={{
-            headerTitleAlign: "left",
-          }}
         />
         <Stack.Screen
           name="GroupChat"
