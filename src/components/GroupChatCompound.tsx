@@ -11,12 +11,13 @@ import {
   Modal,
   Pressable,
   Alert,
+  Button,
 } from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import GestureRecognizer from "react-native-swipe-gestures";
 import { InputBox as InputBx } from "./InputBox/InputBox";
 import { Message } from "./Message/Message";
-import { useRoute, RouteProp } from "@react-navigation/native";
-import { useNavigation } from "@react-navigation/native";
+import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { getChatGroup, listMessagesByChatGroup } from "../graphql/queries";
@@ -32,14 +33,22 @@ import {
 import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
 
 type ChatGroupParam = {
-  user: { chatGroupId: string; username: string };
+  chat: { chatGroupId: string; username: string };
 };
 
-const UserContext = createContext<{ [p: string]: any }>({});
+type AddContactParam = {
+  AddContact: { chatGroupId: string; chatGroup: any };
+};
+
+const UserContext = createContext<{
+  [p: string]: any;
+  navigation?: NativeStackNavigationProp<AddContactParam>;
+}>({});
 
 export const GroupChat = ({ children }: PropsWithChildren) => {
   const route = useRoute<RouteProp<ChatGroupParam>>();
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AddContactParam>>();
   const chatGroupId = route.params.chatGroupId;
   const [chatGroupData, setChatGroupData] = useState<any>();
   const [messages, setMessages] = useState<any>([]);
@@ -128,7 +137,10 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   useEffect(
     () =>
       navigation.setOptions({
-        title: route.params.username,
+        title:
+          chatGroupData && chatGroupData.name
+            ? chatGroupData.name
+            : chatGroupData?.users?.items[0]?.user?.username,
         headerRight: () => {
           return modalVisible ? (
             <MaterialIcons
@@ -149,12 +161,13 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
           );
         },
       }),
-    [modalVisible]
+    [modalVisible, chatGroupData]
   );
 
   return (
     <UserContext.Provider
       value={{
+        navigation,
         user: {
           users: chatGroupData ? chatGroupData?.users?.items : [],
           leaderId: chatGroupData ? chatGroupData.leaderID : null,
@@ -177,6 +190,8 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
 
 function Menu({ children }: PropsWithChildren) {
   const {
+    chatGroup: { chatGroupData },
+    navigation,
     delete: { removeUserHandler },
     user: { users, leaderId },
     modal: { modalVisible, setModalVisible },
@@ -187,73 +202,76 @@ function Menu({ children }: PropsWithChildren) {
 
     return 0;
   });
-
   const filteredUsers = sortedUsers.filter((user: any) => !user._deleted);
 
   return (
-    <GestureRecognizer
-      style={{ flex: 1, position: "absolute" }}
-      onSwipeUp={() => setModalVisible(false)}
-      onSwipeDown={() => setModalVisible(false)}
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        setModalVisible(!modalVisible);
+      }}
     >
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setModalVisible(!modalVisible)}
-        ></Pressable>
-        <View style={styles.modalContainer}>
-          <Text style={{ fontSize: 18, fontWeight: "500", marginBottom: 15 }}>
-            Users
-          </Text>
-          <FlatList
-            data={filteredUsers}
-            renderItem={({ item, index }) => {
-              return (
-                <>
-                  <View style={styles.menuContainer}>
-                    <Image
-                      source={{ uri: item.user.image }}
-                      style={styles.image}
-                    />
-                    {index === 0 && leaderId ? (
-                      <Text>{item.user.username}(Owner)</Text>
-                    ) : (
-                      <Text>{item.user.username}</Text>
-                    )}
-                  </View>
-                  <FontAwesome
-                    onPress={() =>
-                      Alert.alert(
-                        "Removing User",
-                        `Are you sure that you want to remove ${item.user.username} from this group?`,
-                        [
-                          { text: "Cancel", style: "cancel" },
-                          {
-                            text: "Remove",
-                            style: "destructive",
-                            onPress: () => removeUserHandler(item),
-                          },
-                        ]
-                      )
-                    }
-                    name="remove"
-                    size={24}
-                    color="black"
+      <Pressable
+        style={styles.modalOverlay}
+        onPress={() => setModalVisible(!modalVisible)}
+      ></Pressable>
+      <View style={styles.modalContainer}>
+        <Text style={{ fontSize: 18, fontWeight: "500", marginBottom: 15 }}>
+          Users
+        </Text>
+        <FlatList
+          data={filteredUsers}
+          renderItem={({ item, index }) => {
+            return (
+              <>
+                <View style={styles.menuContainer}>
+                  <Image
+                    source={{ uri: item.user.image }}
+                    style={styles.image}
                   />
-                </>
-              );
-            }}
-          ></FlatList>
-        </View>
-      </Modal>
-    </GestureRecognizer>
+                  {index === 0 && leaderId ? (
+                    <Text>{item.user.username}(Owner)</Text>
+                  ) : (
+                    <Text>{item.user.username}</Text>
+                  )}
+                </View>
+                <FontAwesome
+                  onPress={() =>
+                    Alert.alert(
+                      "Removing User",
+                      `Are you sure that you want to remove ${item.user.username} from this group?`,
+                      [
+                        { text: "Cancel", style: "cancel" },
+                        {
+                          text: "Remove",
+                          style: "destructive",
+                          onPress: () => removeUserHandler(item),
+                        },
+                      ]
+                    )
+                  }
+                  name="remove"
+                  size={24}
+                  color="black"
+                />
+              </>
+            );
+          }}
+        ></FlatList>
+        <Button
+          title="Add Friends to Group"
+          accessibilityLabel="Adding Friends Button"
+          onPress={() =>
+            navigation!.navigate("AddContact", {
+              chatGroupId: chatGroupData.id,
+              chatGroup: chatGroupData,
+            })
+          }
+        />
+      </View>
+    </Modal>
   );
 }
 

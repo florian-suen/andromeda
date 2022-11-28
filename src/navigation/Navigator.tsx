@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ChatContacts } from "../screens/ChatContactsScreen";
 import { TabNavigator } from "./TabNavigator";
 import { GroupChatScreen } from "../screens/GroupChatScreen";
+import { AddContacts } from "../screens/AddNewContactScreen";
 export const Navigator = () => {
   const Stack = createNativeStackNavigator();
 
@@ -43,6 +44,8 @@ export const Navigator = () => {
         />
 
         <Stack.Screen name="Select Contacts" component={ChatContacts} />
+
+        <Stack.Screen name="AddContact" component={AddContacts} />
       </Stack.Navigator>
     </NavigationContainer>
   );

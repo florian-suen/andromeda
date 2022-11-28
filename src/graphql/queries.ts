@@ -87,6 +87,7 @@ export const getChatGroup = /* GraphQL */ `
           id
           _version
           _deleted
+          userID
           user {
             image
             status
