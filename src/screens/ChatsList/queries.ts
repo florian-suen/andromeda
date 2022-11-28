@@ -5,6 +5,7 @@ export const GetUser = /* GraphQL */ `
       id
       ChatGroups(sortDirection: DESC) {
         items {
+          _deleted
           Chatgroup {
             name
             image

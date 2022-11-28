@@ -55,16 +55,19 @@ export const ChatList = () => {
           ? chatGroupResp.data.getUser.ChatGroups.items
           : null;
       if (chatgroupItems.length) {
-        for (let x = 0; x < chatgroupItems.length; x += 1) {
+        const filteredChatGroup = chatgroupItems.filter(
+          (value: any) => !value._deleted
+        );
+        for (let x = 0; x < filteredChatGroup.length; x += 1) {
           let filterUser;
-          if (chatgroupItems[x].Chatgroup?.users) {
-            filterUser = chatgroupItems[x].Chatgroup?.users?.items.filter(
+          if (filteredChatGroup[x].Chatgroup?.users) {
+            filterUser = filteredChatGroup[x].Chatgroup?.users?.items.filter(
               (v: any) => v.user.id !== currentUser.attributes.sub
             );
           }
-          chatgroupItems[x].Chatgroup.users.items = filterUser;
+          filteredChatGroup[x].Chatgroup.users.items = filterUser;
         }
-        setChatGroup(chatgroupItems);
+        setChatGroup(filteredChatGroup);
       }
     };
 

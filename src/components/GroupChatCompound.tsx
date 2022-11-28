@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Modal,
   Pressable,
+  Alert,
 } from "react-native";
 import GestureRecognizer from "react-native-swipe-gestures";
 import { InputBox as InputBx } from "./InputBox/InputBox";
@@ -19,6 +20,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { getChatGroup, listMessagesByChatGroup } from "../graphql/queries";
+import { deleteUserChatGroup } from "../graphql/mutations";
 import { onCreateMessage, onUpdateChatGroup } from "../graphql/subscriptions";
 import {
   useState,
@@ -27,7 +29,7 @@ import {
   PropsWithChildren,
   useRef,
 } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
 
 type ChatGroupParam = {
   user: { chatGroupId: string; username: string };
@@ -42,6 +44,17 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   const [chatGroupData, setChatGroupData] = useState<any>();
   const [messages, setMessages] = useState<any>([]);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const removeUserHandler = (userChatGroup: {
+    _version: string;
+    id: string;
+  }) => {
+    const response = API.graphql(
+      graphqlOperation(deleteUserChatGroup, {
+        input: { _version: userChatGroup._version, id: userChatGroup.id },
+      })
+    );
+  };
 
   useEffect(() => {
     const onUpdateChatGrp = API.graphql(
@@ -149,6 +162,7 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
         chatGroup: { chatGroupData, setChatGroupData },
         messages: { messages, setMessages },
         modal: { modalVisible, setModalVisible },
+        delete: { removeUserHandler },
       }}
     >
       <KeyboardAvoidingView
@@ -161,8 +175,9 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   );
 };
 
-function Menu() {
+function Menu({ children }: PropsWithChildren) {
   const {
+    delete: { removeUserHandler },
     user: { users, leaderId },
     modal: { modalVisible, setModalVisible },
   } = useContext(UserContext);
@@ -172,6 +187,8 @@ function Menu() {
 
     return 0;
   });
+
+  const filteredUsers = sortedUsers.filter((user: any) => !user._deleted);
 
   return (
     <GestureRecognizer
@@ -191,26 +208,46 @@ function Menu() {
           style={styles.modalOverlay}
           onPress={() => setModalVisible(!modalVisible)}
         ></Pressable>
-
         <View style={styles.modalContainer}>
           <Text style={{ fontSize: 18, fontWeight: "500", marginBottom: 15 }}>
             Users
           </Text>
           <FlatList
-            data={sortedUsers}
+            data={filteredUsers}
             renderItem={({ item, index }) => {
               return (
-                <View style={styles.menuContainer}>
-                  <Image
-                    source={{ uri: item.user.image }}
-                    style={styles.image}
+                <>
+                  <View style={styles.menuContainer}>
+                    <Image
+                      source={{ uri: item.user.image }}
+                      style={styles.image}
+                    />
+                    {index === 0 && leaderId ? (
+                      <Text>{item.user.username}(Owner)</Text>
+                    ) : (
+                      <Text>{item.user.username}</Text>
+                    )}
+                  </View>
+                  <FontAwesome
+                    onPress={() =>
+                      Alert.alert(
+                        "Removing User",
+                        `Are you sure that you want to remove ${item.user.username} from this group?`,
+                        [
+                          { text: "Cancel", style: "cancel" },
+                          {
+                            text: "Remove",
+                            style: "destructive",
+                            onPress: () => removeUserHandler(item),
+                          },
+                        ]
+                      )
+                    }
+                    name="remove"
+                    size={24}
+                    color="black"
                   />
-                  {index === 0 && leaderId ? (
-                    <Text>{item.user.username}(Owner)</Text>
-                  ) : (
-                    <Text>{item.user.username}</Text>
-                  )}
-                </View>
+                </>
               );
             }}
           ></FlatList>
