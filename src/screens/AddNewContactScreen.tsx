@@ -54,8 +54,6 @@ export const AddContacts = () => {
     }
     for (const username of getNames()) userNames.push(username);
 
-    const userAuth = await Auth.currentAuthenticatedUser();
-
     await Promise.all(
       selectedUserId.map((userId) => {
         API.graphql(
@@ -80,7 +78,6 @@ export const AddContacts = () => {
   };
 
   useEffect(() => {
-    console.log(chatGroup.users.items);
     const api = API.graphql(graphqlOperation(listUsers));
     if ("then" in api)
       api.then((results) => {

@@ -45,33 +45,7 @@ export const ChatList = () => {
   };
 
   useEffect(() => {
-    const fetchChatGroup = async () => {
-      const currentUser = await Auth.currentAuthenticatedUser();
-      const chatGroupResp = await API.graphql(
-        graphqlOperation(GetUser, { id: currentUser.attributes.sub })
-      );
-      const chatgroupItems =
-        "data" in chatGroupResp && chatGroupResp.data.getUser.ChatGroups
-          ? chatGroupResp.data.getUser.ChatGroups.items
-          : null;
-      if (chatgroupItems.length) {
-        const filteredChatGroup = chatgroupItems.filter(
-          (value: any) => !value._deleted
-        );
-        for (let x = 0; x < filteredChatGroup.length; x += 1) {
-          let filterUser;
-          if (filteredChatGroup[x].Chatgroup?.users) {
-            filterUser = filteredChatGroup[x].Chatgroup?.users?.items.filter(
-              (v: any) => v.user.id !== currentUser.attributes.sub
-            );
-          }
-          filteredChatGroup[x].Chatgroup.users.items = filterUser;
-        }
-        setChatGroup(filteredChatGroup);
-      }
-    };
-
-    fetchChatGroup();
+    fetchChatGroup(setChatGroup);
   }, []);
 
   return chatGroup?.length ? (
@@ -90,4 +64,30 @@ export const ChatList = () => {
       <Text>Welcome to Andromeda</Text>
     </View>
   );
+};
+
+const fetchChatGroup = async (setChatGroup: React.Dispatch<any>) => {
+  const currentUser = await Auth.currentAuthenticatedUser();
+  const chatGroupResp = await API.graphql(
+    graphqlOperation(GetUser, { id: currentUser.attributes.sub })
+  );
+  const chatgroupItems =
+    "data" in chatGroupResp && chatGroupResp.data.getUser.ChatGroups
+      ? chatGroupResp.data.getUser.ChatGroups.items
+      : null;
+  if (chatgroupItems.length) {
+    const filteredChatGroup = chatgroupItems.filter(
+      (value: any) => !value._deleted
+    );
+    for (let x = 0; x < filteredChatGroup.length; x += 1) {
+      let filterUser;
+      if (filteredChatGroup[x].Chatgroup?.users) {
+        filterUser = filteredChatGroup[x].Chatgroup?.users?.items.filter(
+          (v: any) => v.user.id !== currentUser.attributes.sub
+        );
+      }
+      filteredChatGroup[x].Chatgroup.users.items = filterUser;
+    }
+    setChatGroup(filteredChatGroup);
+  }
 };
