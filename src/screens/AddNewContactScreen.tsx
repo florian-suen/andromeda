@@ -40,35 +40,10 @@ export const AddContacts = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const createGroupOpacity = useRef(new Animated.Value(0)).current;
   const styles = StyleSheet.create(useThemeColor(styleSheet));
+  const route = useRoute<RouteProp<RouteParam>>();
+  const chatGroup = route.params.chatGroup;
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const route = useRoute<RouteProp<RouteParam>>();
-  const chatGroupId = route.params.chatGroupId;
-  const chatGroup = route.params.chatGroup;
-  const addGroupHandler = async () => {
-    const userNames = [];
-    function* getNames() {
-      for (const id of selectedUserId) {
-        yield users.find((user) => user.id === id)?.username;
-      }
-    }
-    for (const username of getNames()) userNames.push(username);
-
-    await Promise.all(
-      selectedUserId.map((userId) => {
-        API.graphql(
-          graphqlOperation(createUserChatGroup, {
-            input: { chatgroupID: chatGroupId, userID: userId },
-          })
-        );
-      })
-    );
-
-    navigation.goBack();
-
-    setSelectedUserId([]);
-  };
-
   const contactSelectHandler = (id: string) => {
     setSelectedUserId((userIds) => {
       if (userIds.includes(id))
@@ -186,7 +161,15 @@ export const AddContacts = () => {
           <Button
             disabled={selectedUserId.length < 1}
             color="royalblue"
-            onPress={addGroupHandler}
+            onPress={() =>
+              addGroupHandler(
+                users,
+                route,
+                navigation,
+                selectedUserId,
+                setSelectedUserId
+              )
+            }
             title="Add to Group"
           />
         </Animated.View>
@@ -224,3 +207,34 @@ const styleSheet: StyleSheet.NamedStyles<{
     fontWeight: "bold",
   },
 };
+
+async function addGroupHandler(
+  users: User[],
+  route: RouteProp<RouteParam, "GroupChat">,
+  navigation: NativeStackNavigationProp<RootStackParamList>,
+  selectedUserId: string[],
+  setSelectedUserId: React.Dispatch<React.SetStateAction<string[]>>
+) {
+  const chatGroupId = route.params.chatGroupId;
+  const userNames = [];
+  function* getNames() {
+    for (const id of selectedUserId) {
+      yield users.find((user) => user.id === id)?.username;
+    }
+  }
+  for (const username of getNames()) userNames.push(username);
+
+  await Promise.all(
+    selectedUserId.map((userId) => {
+      API.graphql(
+        graphqlOperation(createUserChatGroup, {
+          input: { chatgroupID: chatGroupId, userID: userId },
+        })
+      );
+    })
+  );
+
+  navigation.goBack();
+
+  setSelectedUserId([]);
+}

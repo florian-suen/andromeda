@@ -36,56 +36,10 @@ export const ChatContactsComponent = ({
   isSelectable: boolean;
   onSelectHandler: () => void;
 }) => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const image = user.image ? user.image : undefined;
   const styles = useThemeColor(styleSheet);
   const translateX = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
-
-  const createChatGroupHandler = async () => {
-    const existingChatGroup = await useExistingChatGroups(user.id);
-
-    if (existingChatGroup) {
-      navigation.navigate("GroupChat", {
-        chatGroupId: existingChatGroup.Chatgroup.id,
-        username: user.username,
-      });
-      return;
-    }
-
-    const newChatGroupResp = await API.graphql(
-      graphqlOperation(createChatGroup, { input: {} })
-    );
-
-    if ("data" in newChatGroupResp && !newChatGroupResp.data?.createChatGroup)
-      console.log("Error creating chatgroup");
-
-    const newChatGroup =
-      "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
-
-    await API.graphql(
-      graphqlOperation(createUserChatGroup, {
-        input: { chatgroupID: newChatGroup.id, userID: user.id },
-      })
-    );
-
-    const userAuth = await Auth.currentAuthenticatedUser();
-
-    await API.graphql(
-      graphqlOperation(createUserChatGroup, {
-        input: {
-          chatgroupID: newChatGroup.id,
-          userID: userAuth.attributes.sub,
-        },
-      })
-    );
-
-    navigation.navigate("GroupChat", {
-      chatGroupId: newChatGroup.id,
-      username: user.username,
-    });
-  };
 
   useEffect(() => {
     const translateXTiming = Animated.timing(translateX, {
@@ -127,7 +81,7 @@ export const ChatContactsComponent = ({
       <Pressable
         android_ripple={{ color: "#222b3d" }}
         onPress={() => {
-          if (!isSelectable) createChatGroupHandler();
+          if (!isSelectable) createChatGroupHandler(user);
           if (isSelectable) onSelectHandler();
         }}
         style={({ pressed }) => [pressed ? styles.pressed : null]}
@@ -224,3 +178,49 @@ const styleSheet: StyleSheet.NamedStyles<{
     borderRadius: 5,
   },
 };
+
+async function createChatGroupHandler(user: User) {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const existingChatGroup = await useExistingChatGroups(user.id);
+
+  if (existingChatGroup) {
+    navigation.navigate("GroupChat", {
+      chatGroupId: existingChatGroup.Chatgroup.id,
+      username: user.username,
+    });
+    return;
+  }
+
+  const newChatGroupResp = await API.graphql(
+    graphqlOperation(createChatGroup, { input: {} })
+  );
+
+  if ("data" in newChatGroupResp && !newChatGroupResp.data?.createChatGroup)
+    console.log("Error creating chatgroup");
+
+  const newChatGroup =
+    "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
+
+  await API.graphql(
+    graphqlOperation(createUserChatGroup, {
+      input: { chatgroupID: newChatGroup.id, userID: user.id },
+    })
+  );
+
+  const userAuth = await Auth.currentAuthenticatedUser();
+
+  await API.graphql(
+    graphqlOperation(createUserChatGroup, {
+      input: {
+        chatgroupID: newChatGroup.id,
+        userID: userAuth.attributes.sub,
+      },
+    })
+  );
+
+  navigation.navigate("GroupChat", {
+    chatGroupId: newChatGroup.id,
+    username: user.username,
+  });
+}

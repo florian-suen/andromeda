@@ -1,10 +1,8 @@
 import {
-  ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
   Platform,
   View,
-  Animated,
   Image,
   Text,
   StyleSheet,
@@ -14,7 +12,7 @@ import {
   Button,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import GestureRecognizer from "react-native-swipe-gestures";
+
 import { InputBox as InputBx } from "./InputBox/InputBox";
 import { Message } from "./Message/Message";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
@@ -22,20 +20,17 @@ import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { getChatGroup, listMessagesByChatGroup } from "../graphql/queries";
 import { deleteUserChatGroup } from "../graphql/mutations";
-import { onCreateMessage, onUpdateChatGroup } from "../graphql/subscriptions";
-import {
-  useState,
-  useContext,
-  createContext,
-  PropsWithChildren,
-  useRef,
-} from "react";
-import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
+import { onCreateMessage } from "../graphql/subscriptions";
+import { useState, useContext, createContext, PropsWithChildren } from "react";
+import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { useUpdateChatGroup } from "../../utility/useUpdateChatGroup";
+import { ChatGroupType } from "../screens/ChatsList/ChatsListScreen";
+
+type ChatGroup = ChatGroupType["Chatgroup"];
 
 type ChatGroupParam = {
   chat: { chatGroupId: string; username: string };
 };
-
 type AddContactParam = {
   AddContact: { chatGroupId: string; chatGroup: any };
 };
@@ -53,116 +48,10 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   const [chatGroupData, setChatGroupData] = useState<any>();
   const [messages, setMessages] = useState<any>([]);
   const [modalVisible, setModalVisible] = useState(false);
-
-  const removeUserHandler = (userChatGroup: {
-    _version: string;
-    id: string;
-  }) => {
-    const response = API.graphql(
-      graphqlOperation(deleteUserChatGroup, {
-        input: { _version: userChatGroup._version, id: userChatGroup.id },
-      })
-    );
-  };
-
-  useEffect(() => {
-    const onUpdateChatGrp = API.graphql(
-      graphqlOperation(onUpdateChatGroup, {
-        filter: { id: { eq: chatGroupId } },
-      })
-    );
-
-    const chatGrpSubscription =
-      "subscribe" in onUpdateChatGrp &&
-      onUpdateChatGrp.subscribe({
-        next: ({ value }: any) => {
-          setChatGroupData((chatGroup: any) => {
-            return { ...(chatGroup || {}), ...value.data.onUpdateChatGroup };
-          });
-        },
-        error: (err) => console.log(err),
-      });
-
-    return () => {
-      console.log("unsubscribe Chatgroup");
-      chatGrpSubscription && chatGrpSubscription.unsubscribe;
-    };
-  }, [chatGroupId]);
-
-  useEffect(() => {
-    const messageResp = API.graphql(
-      graphqlOperation(listMessagesByChatGroup, {
-        chatgroupID: chatGroupId,
-        sortDirection: "DESC",
-      })
-    );
-
-    "then" in messageResp &&
-      messageResp.then((results) =>
-        setMessages(results.data?.listMessagesByChatGroup?.items)
-      );
-
-    const onCreateMsg = API.graphql(
-      graphqlOperation(onCreateMessage, {
-        filter: { chatgroupID: { eq: chatGroupId } },
-      })
-    );
-
-    const msgSubscription =
-      "subscribe" in onCreateMsg &&
-      onCreateMsg.subscribe({
-        next: ({ value }: any) => {
-          setMessages((msg: any) => [value.data.onCreateMessage, ...msg]);
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
-
-    return () => {
-      msgSubscription && msgSubscription.unsubscribe();
-    };
-  }, [chatGroupId]);
-
-  useEffect(() => {
-    const chatGroupResp = API.graphql(
-      graphqlOperation(getChatGroup, { id: chatGroupId })
-    );
-    "then" in chatGroupResp &&
-      chatGroupResp.then((results) =>
-        setChatGroupData(results.data.getChatGroup)
-      );
-  }, [chatGroupId]);
-
-  useEffect(
-    () =>
-      navigation.setOptions({
-        title:
-          chatGroupData && chatGroupData.name
-            ? chatGroupData.name
-            : chatGroupData?.users?.items[0]?.user?.username,
-        headerRight: () => {
-          return modalVisible ? (
-            <MaterialIcons
-              style={{ zIndex: 20 }}
-              name="menu-open"
-              size={24}
-              color="black"
-            />
-          ) : (
-            <MaterialIcons
-              onPress={() => {
-                setModalVisible(true);
-              }}
-              name="menu"
-              size={24}
-              color="black"
-            />
-          );
-        },
-      }),
-    [modalVisible, chatGroupData]
-  );
+  getChatGroupData(chatGroupId, setChatGroupData);
+  setNavHeaderOptions(navigation, chatGroupData, modalVisible, setModalVisible);
+  getandSubMessages(chatGroupId, setMessages);
+  useUpdateChatGroup(chatGroupData, setChatGroupData, chatGroupId);
 
   return (
     <UserContext.Provider
@@ -297,9 +186,105 @@ function InputBox() {
   return <InputBx chatGroup={chatGroupData} />;
 }
 
-GroupChat.Menu = Menu;
-GroupChat.Messages = Messages;
-GroupChat.InputBox = InputBox;
+function removeUserHandler(userChatGroup: { _version: string; id: string }) {
+  API.graphql(
+    graphqlOperation(deleteUserChatGroup, {
+      input: { _version: userChatGroup._version, id: userChatGroup.id },
+    })
+  );
+}
+
+function getandSubMessages(
+  chatGroupId: string,
+  setMessages: React.Dispatch<any>
+) {
+  useEffect(() => {
+    const messageResp = API.graphql(
+      graphqlOperation(listMessagesByChatGroup, {
+        chatgroupID: chatGroupId,
+        sortDirection: "DESC",
+      })
+    );
+
+    "then" in messageResp &&
+      messageResp.then((results) =>
+        setMessages(results.data?.listMessagesByChatGroup?.items)
+      );
+
+    const onCreateMsg = API.graphql(
+      graphqlOperation(onCreateMessage, {
+        filter: { chatgroupID: { eq: chatGroupId } },
+      })
+    );
+
+    const msgSubscription =
+      "subscribe" in onCreateMsg &&
+      onCreateMsg.subscribe({
+        next: ({ value }: any) => {
+          setMessages((msg: any) => [value.data.onCreateMessage, ...msg]);
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+
+    return () => {
+      msgSubscription && msgSubscription.unsubscribe();
+    };
+  }, [chatGroupId]);
+}
+
+function setNavHeaderOptions(
+  navigation: NativeStackNavigationProp<AddContactParam>,
+  chatGroupData: ChatGroup,
+  modalVisible: boolean,
+  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>
+) {
+  useEffect(
+    () =>
+      navigation.setOptions({
+        title:
+          chatGroupData && chatGroupData.name
+            ? chatGroupData.name
+            : chatGroupData?.users?.items[0]?.user?.username,
+        headerRight: () => {
+          return modalVisible ? (
+            <MaterialIcons
+              style={{ zIndex: 20 }}
+              name="menu-open"
+              size={24}
+              color="black"
+            />
+          ) : (
+            <MaterialIcons
+              onPress={() => {
+                setModalVisible(true);
+              }}
+              name="menu"
+              size={24}
+              color="black"
+            />
+          );
+        },
+      }),
+    [modalVisible, chatGroupData]
+  );
+}
+
+function getChatGroupData(
+  chatGroupId: string,
+  setChatGroupData: React.Dispatch<ChatGroup>
+) {
+  useEffect(() => {
+    const chatGroupResp = API.graphql(
+      graphqlOperation(getChatGroup, { id: chatGroupId })
+    );
+    "then" in chatGroupResp &&
+      chatGroupResp.then((results) =>
+        setChatGroupData(results.data.getChatGroup)
+      );
+  }, [chatGroupId]);
+}
 
 const styles = StyleSheet.create({
   image: { width: 80, height: 80, marginRight: 10, borderRadius: 5 },
@@ -332,3 +317,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
+
+GroupChat.Menu = Menu;
+GroupChat.Messages = Messages;
+GroupChat.InputBox = InputBox;

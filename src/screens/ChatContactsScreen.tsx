@@ -37,60 +37,6 @@ export const ChatContacts = () => {
   const styles = StyleSheet.create(useThemeColor(styleSheet));
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const createGroupHandler = async () => {
-    const userNames = [];
-    function* getNames() {
-      for (const id of selectedUserId) {
-        yield users.find((user) => user.id === id)?.username;
-      }
-    }
-    for (const username of getNames()) userNames.push(username);
-
-    const userAuth = await Auth.currentAuthenticatedUser();
-
-    const newChatGroupResp = await API.graphql(
-      graphqlOperation(createChatGroup, {
-        input: {
-          leaderID: userAuth.attributes.sub,
-          name: `${userNames.join(" ")} Group Chat`,
-        },
-      })
-    );
-
-    if ("data" in newChatGroupResp && !newChatGroupResp.data?.createChatGroup)
-      console.log("Error creating chatgroup");
-
-    const newChatGroup =
-      "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
-
-    await Promise.all(
-      selectedUserId.map((userId) => {
-        API.graphql(
-          graphqlOperation(createUserChatGroup, {
-            input: { chatgroupID: newChatGroup.id, userID: userId },
-          })
-        );
-      })
-    );
-
-    await API.graphql(
-      graphqlOperation(createUserChatGroup, {
-        input: {
-          chatgroupID: newChatGroup.id,
-          userID: userAuth.attributes.sub,
-        },
-      })
-    );
-
-    navigation.navigate("GroupChat", {
-      chatGroupId: newChatGroup.id,
-      username: userAuth.attributes.email,
-    });
-
-    setIsSelectable(false);
-    setSelectedUserId([]);
-  };
-
   const contactSelectHandler = (id: string) => {
     setSelectedUserId((userIds) => {
       if (userIds.includes(id))
@@ -207,7 +153,15 @@ export const ChatContacts = () => {
           <Button
             disabled={selectedUserId.length < 1}
             color="royalblue"
-            onPress={createGroupHandler}
+            onPress={() =>
+              createChatGroupHandler(
+                users,
+                navigation,
+                selectedUserId,
+                setSelectedUserId,
+                setIsSelectable
+              )
+            }
             title="Create Group"
           />
         </Animated.View>
@@ -245,3 +199,63 @@ const styleSheet: StyleSheet.NamedStyles<{
     fontWeight: "bold",
   },
 };
+
+async function createChatGroupHandler(
+  users: User[],
+  navigation: NativeStackNavigationProp<RootStackParamList>,
+  selectedUserId: string[],
+  setSelectedUserId: React.Dispatch<React.SetStateAction<string[]>>,
+  setIsSelectable: React.Dispatch<React.SetStateAction<boolean>>
+) {
+  const userNames = [];
+  function* getNames() {
+    for (const id of selectedUserId) {
+      yield users.find((user) => user.id === id)?.username;
+    }
+  }
+  for (const username of getNames()) userNames.push(username);
+
+  const userAuth = await Auth.currentAuthenticatedUser();
+
+  const newChatGroupResp = await API.graphql(
+    graphqlOperation(createChatGroup, {
+      input: {
+        leaderID: userAuth.attributes.sub,
+        name: `${userNames.join(" ")} Group Chat`,
+      },
+    })
+  );
+
+  if ("data" in newChatGroupResp && !newChatGroupResp.data?.createChatGroup)
+    console.log("Error creating chatgroup");
+
+  const newChatGroup =
+    "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
+
+  await Promise.all(
+    selectedUserId.map((userId) => {
+      API.graphql(
+        graphqlOperation(createUserChatGroup, {
+          input: { chatgroupID: newChatGroup.id, userID: userId },
+        })
+      );
+    })
+  );
+
+  await API.graphql(
+    graphqlOperation(createUserChatGroup, {
+      input: {
+        chatgroupID: newChatGroup.id,
+        userID: userAuth.attributes.sub,
+      },
+    })
+  );
+
+  navigation.navigate("GroupChat", {
+    chatGroupId: newChatGroup.id,
+    username: userAuth.attributes.email,
+  });
+
+  setIsSelectable(false);
+  setSelectedUserId([]);
+}

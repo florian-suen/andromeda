@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { onUpdateChatGroup } from "../../graphql/subscriptions";
 import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
+import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
 dayjs.extend(relativeTime);
 
 type ChatGroupParam = {
@@ -25,30 +26,12 @@ export const ChatGroup = ({
   const styles = StyleSheet.create(useThemeColor(styleSheet));
   const [chatGroupData, setChatGroupData] = useState(chat.Chatgroup);
 
-  useEffect(() => {
-    const onUpdateChatGrp = API.graphql(
-      graphqlOperation(onUpdateChatGroup, {
-        filter: { id: { eq: chatGroupData.id } },
-      })
-    );
-
-    const chatGrpSubscription =
-      "subscribe" in onUpdateChatGrp &&
-      onUpdateChatGrp.subscribe({
-        next: ({ value }: any) => {
-          setReOrder(value.data.onUpdateChatGroup.id);
-          setChatGroupData((chatGroup: any) => {
-            return { ...(chatGroup || {}), ...value.data.onUpdateChatGroup };
-          });
-        },
-        error: (err) => console.log(err),
-      });
-
-    return () => {
-      console.log("Unsubscribing Chatgroup");
-      chatGrpSubscription && chatGrpSubscription.unsubscribe;
-    };
-  }, [chatGroupData.id]);
+  useUpdateChatGroup(
+    chatGroupData,
+    setChatGroupData,
+    chat.Chatgroup.id,
+    setReOrder
+  );
 
   return (
     <Pressable

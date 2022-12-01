@@ -3,7 +3,6 @@ import { ChatGroup } from "../../components/ChatList/ChatList";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { GetUser } from "./queries";
 import { useEffect, useState, useRef } from "react";
-import { onUpdateUserChatGroup } from "../../graphql/subscriptions";
 
 export type ChatGroupType = {
   Chatgroup: {
