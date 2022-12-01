@@ -25,7 +25,10 @@ import { useState, useContext, createContext, PropsWithChildren } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { useUpdateChatGroup } from "../../utility/useUpdateChatGroup";
 import { ChatGroupType } from "../screens/ChatsList/ChatsListScreen";
-import { useOnDeleteUserChatGroup } from "../../utility/useOnDeleteUserChatGroup";
+import {
+  useOnDeleteUserChatGroup,
+  useOnCreateUserChatGroup,
+} from "../../utility/useUpdateUserChatGroup";
 
 type ChatGroup = ChatGroupType["Chatgroup"];
 
@@ -153,12 +156,13 @@ function Menu({ children }: PropsWithChildren) {
         <Button
           title="Add Friends to Group"
           accessibilityLabel="Adding Friends Button"
-          onPress={() =>
+          onPress={() => {
+            setModalVisible(false);
             navigation!.navigate("AddContact", {
               chatGroupId: chatGroupData.id,
               chatGroup: chatGroupData,
-            })
-          }
+            });
+          }}
         />
       </View>
     </Modal>
@@ -277,7 +281,8 @@ function getChatGroupData(
   setChatGroupData: React.Dispatch<any>
 ) {
   useEffect(() => {
-    let unsubDelUserChatGroup;
+    let unsubDelUserChatGroup: () => void;
+    let unsubCreateUserChatGroup: () => void;
     const chatGroupResp = API.graphql(
       graphqlOperation(getChatGroup, { id: chatGroupId })
     );
@@ -288,9 +293,16 @@ function getChatGroupData(
           results.data.getChatGroup,
           setChatGroupData
         );
+
+        unsubCreateUserChatGroup = useOnCreateUserChatGroup(
+          results.data.getChatGroup,
+          setChatGroupData
+        );
       });
 
-    return unsubDelUserChatGroup;
+    return () => {
+      unsubDelUserChatGroup(), unsubCreateUserChatGroup();
+    };
   }, [chatGroupId]);
 }
 
