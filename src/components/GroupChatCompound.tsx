@@ -25,6 +25,7 @@ import { useState, useContext, createContext, PropsWithChildren } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { useUpdateChatGroup } from "../../utility/useUpdateChatGroup";
 import { ChatGroupType } from "../screens/ChatsList/ChatsListScreen";
+import { useOnDeleteUserChatGroup } from "../../utility/useOnDeleteUserChatGroup";
 
 type ChatGroup = ChatGroupType["Chatgroup"];
 
@@ -273,16 +274,23 @@ function setNavHeaderOptions(
 
 function getChatGroupData(
   chatGroupId: string,
-  setChatGroupData: React.Dispatch<ChatGroup>
+  setChatGroupData: React.Dispatch<any>
 ) {
   useEffect(() => {
+    let unsubDelUserChatGroup;
     const chatGroupResp = API.graphql(
       graphqlOperation(getChatGroup, { id: chatGroupId })
     );
     "then" in chatGroupResp &&
-      chatGroupResp.then((results) =>
-        setChatGroupData(results.data.getChatGroup)
-      );
+      chatGroupResp.then((results) => {
+        setChatGroupData(results.data.getChatGroup);
+        unsubDelUserChatGroup = useOnDeleteUserChatGroup(
+          results.data.getChatGroup,
+          setChatGroupData
+        );
+      });
+
+    return unsubDelUserChatGroup;
   }, [chatGroupId]);
 }
 
