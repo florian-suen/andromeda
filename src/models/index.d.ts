@@ -47,6 +47,7 @@ type EagerChatGroup = {
   readonly LastMessage?: Message | null;
   readonly Messages?: (Message | null)[] | null;
   readonly users?: (UserChatGroup | null)[] | null;
+  readonly leaderID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly chatGroupLastMessageId?: string | null;
@@ -59,6 +60,7 @@ type LazyChatGroup = {
   readonly LastMessage: AsyncItem<Message | undefined>;
   readonly Messages: AsyncCollection<Message>;
   readonly users: AsyncCollection<UserChatGroup>;
+  readonly leaderID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly chatGroupLastMessageId?: string | null;
@@ -76,6 +78,7 @@ type EagerMessage = {
   readonly message?: string | null;
   readonly userID: string;
   readonly chatgroupID: string;
+  readonly images?: (string | null)[] | null;
   readonly updatedAt?: string | null;
 }
 
@@ -85,6 +88,7 @@ type LazyMessage = {
   readonly message?: string | null;
   readonly userID: string;
   readonly chatgroupID: string;
+  readonly images?: (string | null)[] | null;
   readonly updatedAt?: string | null;
 }
 
@@ -123,6 +127,7 @@ type EagerUser = {
   readonly image?: string | null;
   readonly Messages?: (Message | null)[] | null;
   readonly ChatGroups?: (UserChatGroup | null)[] | null;
+  readonly Leader?: (ChatGroup | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -134,6 +139,7 @@ type LazyUser = {
   readonly image?: string | null;
   readonly Messages: AsyncCollection<Message>;
   readonly ChatGroups: AsyncCollection<UserChatGroup>;
+  readonly Leader: AsyncCollection<ChatGroup>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

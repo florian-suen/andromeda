@@ -118,6 +118,13 @@ export const schema = {
                         "associatedWith": "Chatgroup"
                     }
                 },
+                "leaderID": {
+                    "name": "leaderID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -148,6 +155,15 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byUser",
+                        "fields": [
+                            "leaderID"
+                        ]
+                    }
                 },
                 {
                     "type": "auth",
@@ -204,6 +220,14 @@ export const schema = {
                     "type": "ID",
                     "isRequired": true,
                     "attributes": []
+                },
+                "images": {
+                    "name": "images",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
                 },
                 "updatedAt": {
                     "name": "updatedAt",
@@ -417,6 +441,20 @@ export const schema = {
                         "associatedWith": "user"
                     }
                 },
+                "Leader": {
+                    "name": "Leader",
+                    "isArray": true,
+                    "type": {
+                        "model": "ChatGroup"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": "leaderID"
+                    }
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -463,5 +501,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.3.1",
-    "version": "211e9ff27c1cd1ec36bd758b1e1eddb2"
+    "version": "48b188bed7f86e0d5eb735b22373c75b"
 };

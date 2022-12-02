@@ -9,6 +9,7 @@ type ChatGroup @model @auth(rules: [{allow: public}]) {
   LastMessage: Message @hasOne
   Messages: [Message] @hasMany(indexName: "byChatGroup", fields: ["id"])
   users: [UserChatGroup] @hasMany(indexName: "byChatGroupUser", fields: ["id"])
+  leaderID: ID @index(name: "byUser")
 }
 
 type User @model @auth(rules: [{allow: public}]) {
@@ -18,6 +19,7 @@ type User @model @auth(rules: [{allow: public}]) {
   image: String
   Messages: [Message] @hasMany(indexName: "byUser", fields: ["id"])
   ChatGroups: [UserChatGroup] @hasMany(indexName: "byUserChatGroup", fields: ["id"])
+  Leader: [ChatGroup] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
 type UserChatGroup @model @auth(rules: [{allow: public}]) {
@@ -35,5 +37,6 @@ type Message @model @auth(rules: [{allow: public}]) {
   message: String
   userID: ID! @index(name: "byUser")
   chatgroupID: ID! @index(name: "byChatGroup", sortKeyFields: ["createdAt"], queryField: "listMessagesByChatGroup")
+  images: [String]
 }
-   
+  

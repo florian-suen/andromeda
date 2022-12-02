@@ -1,13 +1,22 @@
-import { View, Text, StyleSheet, TextInput, Animated } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Animated,
+  Image,
+} from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createMessage, updateChatGroup } from "../../graphql/mutations";
 import { API, Auth, graphqlOperation } from "aws-amplify";
 import react from "react";
+import * as imagePicker from "expo-image-picker";
 
 export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
   const [inputText, setInputText] = useState("");
+  const [image, setImage] = useState<string | null>(null);
   const inputOpacity = new Animated.Value(0);
   const inputScale = new Animated.Value(0);
   const animateInput = useRef(true);
@@ -16,6 +25,17 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
     outputRange: [0, 0.6, 1],
   });
 
+  const pickImage = async () => {
+    let result = await imagePicker.launchImageLibraryAsync({
+      mediaTypes: imagePicker.MediaTypeOptions.All,
+      quality: 1,
+    });
+
+    console.log(result);
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
   const sendHandler = async () => {
     console.log("sending message");
     const currentUser = await Auth.currentAuthenticatedUser();
@@ -70,42 +90,64 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
   }, [inputText]);
 
   return (
-    <SafeAreaView edges={["bottom"]} style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Message"
-        value={inputText}
-        onChangeText={setInputText}
-      />
-      <MaterialCommunityIcons
-        style={styles.plusCircleIcon}
-        name="plus-circle-outline"
-        size={30}
-        color={"white"}
-      />
-      {true ? (
-        <Animated.View
-          style={{
-            width: 22,
-            marginRight: 7,
-            //opacity: inputOpacity,
-            // transform: [{ scale: interpo }],
-          }}
-        >
+    <>
+      {image && (
+        <View>
           <Ionicons
-            style={styles.sendIcon}
-            name="send"
-            size={25}
-            color={"white"}
-            onPress={sendHandler}
+            name="remove-circle-outline"
+            size={24}
+            color="black"
+            style={styles.removeSelectedImage}
+            onPress={() => setImage(null)}
           />
-        </Animated.View>
-      ) : null}
-    </SafeAreaView>
+          <Image
+            resizeMode="contain"
+            style={styles.selectedImage}
+            source={{ uri: image }}
+          />
+        </View>
+      )}
+
+      <SafeAreaView edges={["bottom"]} style={styles.container}>
+        <TextInput
+          style={styles.input}
+          placeholder="Message"
+          value={inputText}
+          onChangeText={setInputText}
+        />
+        <MaterialCommunityIcons
+          onPress={pickImage}
+          style={styles.plusCircleIcon}
+          name="plus-circle-outline"
+          size={30}
+          color={"white"}
+        />
+        {true ? (
+          <Animated.View
+            style={{
+              width: 22,
+              marginRight: 7,
+              //opacity: inputOpacity,
+              // transform: [{ scale: interpo }],
+            }}
+          >
+            <Ionicons
+              style={styles.sendIcon}
+              name="send"
+              size={25}
+              color={"white"}
+              onPress={sendHandler}
+            />
+          </Animated.View>
+        ) : null}
+      </SafeAreaView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
+  selectedImage: { width: 120, height: 120 },
+  removeSelectedImage: {},
   container: {
     flexDirection: "row",
     backgroundColor: "#2E3D59",

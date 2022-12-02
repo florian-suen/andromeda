@@ -73,5 +73,12 @@
         ]
       }
     }
+  },
+  "storage": {
+    "s3andromedastoragef7667f24": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    }
   }
 }

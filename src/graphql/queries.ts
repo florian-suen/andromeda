@@ -66,13 +66,13 @@ export const getChatGroup = /* GraphQL */ `
       id
       name
       image
-      leaderID
       LastMessage {
         id
         createdAt
         message
         userID
         chatgroupID
+        images
         updatedAt
         _version
         _deleted
@@ -83,19 +83,10 @@ export const getChatGroup = /* GraphQL */ `
         startedAt
       }
       users {
-        items {
-          id
-          _version
-          _deleted
-          userID
-          user {
-            image
-            status
-            username
-            id
-          }
-        }
+        nextToken
+        startedAt
       }
+      leaderID
       createdAt
       updatedAt
       _version
@@ -116,6 +107,7 @@ export const listChatGroups = /* GraphQL */ `
         id
         name
         image
+        leaderID
         createdAt
         updatedAt
         _version
@@ -145,6 +137,7 @@ export const syncChatGroups = /* GraphQL */ `
         id
         name
         image
+        leaderID
         createdAt
         updatedAt
         _version
@@ -169,6 +162,10 @@ export const getUser = /* GraphQL */ `
         startedAt
       }
       ChatGroups {
+        nextToken
+        startedAt
+      }
+      Leader {
         nextToken
         startedAt
       }
@@ -243,6 +240,7 @@ export const getUserChatGroup = /* GraphQL */ `
         id
         name
         image
+        leaderID
         createdAt
         updatedAt
         _version
@@ -390,6 +388,7 @@ export const getMessage = /* GraphQL */ `
       message
       userID
       chatgroupID
+      images
       updatedAt
       _version
       _deleted
@@ -410,6 +409,7 @@ export const listMessages = /* GraphQL */ `
         message
         userID
         chatgroupID
+        images
         updatedAt
         _version
         _deleted
@@ -439,6 +439,7 @@ export const syncMessages = /* GraphQL */ `
         message
         userID
         chatgroupID
+        images
         updatedAt
         _version
         _deleted
@@ -472,6 +473,7 @@ export const listMessagesByChatGroup = /* GraphQL */ `
         message
         userID
         chatgroupID
+        images
         updatedAt
         _version
         _deleted

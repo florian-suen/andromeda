@@ -62,6 +62,7 @@ export const createChatGroup = /* GraphQL */ `
         message
         userID
         chatgroupID
+        images
         updatedAt
         _version
         _deleted
@@ -75,6 +76,7 @@ export const createChatGroup = /* GraphQL */ `
         nextToken
         startedAt
       }
+      leaderID
       createdAt
       updatedAt
       _version
@@ -99,6 +101,7 @@ export const updateChatGroup = /* GraphQL */ `
         message
         userID
         chatgroupID
+        images
         updatedAt
         _version
         _deleted
@@ -112,6 +115,7 @@ export const updateChatGroup = /* GraphQL */ `
         nextToken
         startedAt
       }
+      leaderID
       createdAt
       updatedAt
       _version
@@ -136,6 +140,7 @@ export const deleteChatGroup = /* GraphQL */ `
         message
         userID
         chatgroupID
+        images
         updatedAt
         _version
         _deleted
@@ -149,6 +154,7 @@ export const deleteChatGroup = /* GraphQL */ `
         nextToken
         startedAt
       }
+      leaderID
       createdAt
       updatedAt
       _version
@@ -173,6 +179,10 @@ export const createUser = /* GraphQL */ `
         startedAt
       }
       ChatGroups {
+        nextToken
+        startedAt
+      }
+      Leader {
         nextToken
         startedAt
       }
@@ -202,6 +212,10 @@ export const updateUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      Leader {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -228,6 +242,10 @@ export const deleteUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      Leader {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -250,6 +268,7 @@ export const createUserChatGroup = /* GraphQL */ `
         id
         name
         image
+        leaderID
         createdAt
         updatedAt
         _version
@@ -289,6 +308,7 @@ export const updateUserChatGroup = /* GraphQL */ `
         id
         name
         image
+        leaderID
         createdAt
         updatedAt
         _version
@@ -328,6 +348,7 @@ export const deleteUserChatGroup = /* GraphQL */ `
         id
         name
         image
+        leaderID
         createdAt
         updatedAt
         _version
@@ -364,6 +385,7 @@ export const createMessage = /* GraphQL */ `
       message
       userID
       chatgroupID
+      images
       updatedAt
       _version
       _deleted
@@ -382,6 +404,7 @@ export const updateMessage = /* GraphQL */ `
       message
       userID
       chatgroupID
+      images
       updatedAt
       _version
       _deleted
@@ -400,6 +423,7 @@ export const deleteMessage = /* GraphQL */ `
       message
       userID
       chatgroupID
+      images
       updatedAt
       _version
       _deleted
