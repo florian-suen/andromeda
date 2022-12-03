@@ -5,15 +5,30 @@ import awsconfig from "./src/aws-exports";
 import { useEffect } from "react";
 import { getUser } from "./src/graphql/queries";
 import { createUser } from "./src/graphql/mutations";
+import { CognitoUserPool } from "amazon-cognito-identity-js";
 
 Amplify.configure({ ...awsconfig, Analytics: { disabled: true } });
 
 function App() {
   useEffect(() => {
     const userSync = async () => {
-      const userAuth = await Auth.currentAuthenticatedUser({
-        bypassCache: true,
-      });
+      let userAuth;
+
+      try {
+        userAuth = await Auth.currentAuthenticatedUser({
+          bypassCache: true,
+        });
+
+        const currentSession = userAuth.signInUserSession;
+        userAuth.refreshSession(
+          currentSession.refreshToken,
+          (err: any, session: any) => {
+            err && console.log("refresh token error", err);
+          }
+        );
+      } catch (e) {
+        console.log("unable to refresh token", e);
+      }
 
       const user = await API.graphql(
         graphqlOperation(getUser, { id: userAuth.attributes.sub })
