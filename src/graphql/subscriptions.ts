@@ -100,10 +100,6 @@ export const onUpdateChatGroup = /* GraphQL */ `
         nextToken
         startedAt
       }
-      users {
-        nextToken
-        startedAt
-      }
       leaderID
       createdAt
       updatedAt

@@ -10,9 +10,18 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createMessage, updateChatGroup } from "../../graphql/mutations";
-import { API, Auth, graphqlOperation } from "aws-amplify";
+import { API, Auth, graphqlOperation, Storage } from "aws-amplify";
 import react from "react";
 import * as imagePicker from "expo-image-picker";
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
+
+type messageInput = {
+  chatgroupID: string;
+  message: string;
+  userID: string;
+  images: string[];
+};
 
 export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
   const [inputText, setInputText] = useState("");
@@ -24,6 +33,21 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
     inputRange: [0, 0.5, 1],
     outputRange: [0, 0.6, 1],
   });
+
+  const uploadFile = async (fileUri: string) => {
+    try {
+      const response = await fetch(fileUri);
+      const blob = await response.blob();
+      const key = `${uuidv4()}.png`;
+      await Storage.put(key, blob, {
+        contentType: "image/png", // contentType is optional
+      });
+      return key;
+    } catch (err) {
+      console.log("Error uploading file:", err);
+      return null;
+    }
+  };
 
   const pickImage = async () => {
     let result = await imagePicker.launchImageLibraryAsync({
@@ -40,11 +64,18 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
     console.log("sending message");
     const currentUser = await Auth.currentAuthenticatedUser();
 
-    const newInput = {
+    const newInput: messageInput = {
       chatgroupID: chatGroup.id,
       message: inputText,
       userID: currentUser.attributes.sub,
+      images: [],
     };
+
+    if (image) {
+      const file = await uploadFile(image);
+      file ? (newInput.images = [file]) : null;
+      setImage(null);
+    }
 
     const newMessage = await API.graphql(
       graphqlOperation(createMessage, { input: newInput })

@@ -40,7 +40,8 @@ export const ChatContactsComponent = ({
   const styles = useThemeColor(styleSheet);
   const translateX = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
-
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   useEffect(() => {
     const translateXTiming = Animated.timing(translateX, {
       toValue: 50,
@@ -81,7 +82,7 @@ export const ChatContactsComponent = ({
       <Pressable
         android_ripple={{ color: "#222b3d" }}
         onPress={() => {
-          if (!isSelectable) createChatGroupHandler(user);
+          if (!isSelectable) createChatGroupHandler(user, navigation);
           if (isSelectable) onSelectHandler();
         }}
         style={({ pressed }) => [pressed ? styles.pressed : null]}
@@ -179,9 +180,10 @@ const styleSheet: StyleSheet.NamedStyles<{
   },
 };
 
-async function createChatGroupHandler(user: User) {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+async function createChatGroupHandler(
+  user: User,
+  navigation: NativeStackNavigationProp<RootStackParamList>
+) {
   const existingChatGroup = await useExistingChatGroups(user.id);
 
   if (existingChatGroup) {

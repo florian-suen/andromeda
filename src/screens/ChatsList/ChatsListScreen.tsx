@@ -31,7 +31,7 @@ export type ChatGroupType = {
 };
 
 export const ChatList = () => {
-  const [chatGroup, setChatGroup] = useState<any>([]);
+  const [chatGroup, setChatGroup] = useState<any>();
   const reOrderHandler = (chatGroupId: string) => {
     const sortedChatGroup = chatGroup.sort(
       (a: ChatGroupType, b: ChatGroupType) => {
