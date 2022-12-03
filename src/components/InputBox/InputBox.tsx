@@ -20,7 +20,7 @@ type messageInput = {
   chatgroupID: string;
   message: string;
   userID: string;
-  images: string[];
+  images: [] | [string];
 };
 
 export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
@@ -40,7 +40,7 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
       const blob = await response.blob();
       const key = `${uuidv4()}.png`;
       await Storage.put(key, blob, {
-        contentType: "image/png", // contentType is optional
+        contentType: "image/png",
       });
       return key;
     } catch (err) {
@@ -55,7 +55,6 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
       quality: 1,
     });
 
-    console.log(result);
     if (!result.cancelled) {
       setImage(result.uri);
     }

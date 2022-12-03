@@ -212,9 +212,9 @@ function getandSubMessages(
     );
 
     "then" in messageResp &&
-      messageResp.then((results) =>
-        setMessages(results.data?.listMessagesByChatGroup?.items)
-      );
+      messageResp.then((results) => {
+        setMessages(results.data?.listMessagesByChatGroup?.items);
+      });
 
     const onCreateMsg = API.graphql(
       graphqlOperation(onCreateMessage, {

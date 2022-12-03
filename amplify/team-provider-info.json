@@ -23,6 +23,9 @@
       },
       "api": {
         "Andromeda": {}
+      },
+      "storage": {
+        "s3andromedastoragef7667f24": {}
       }
     }
   }
