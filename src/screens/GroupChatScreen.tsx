@@ -1,4 +1,4 @@
-import { GroupChat } from "../components/GroupChatCompound";
+import { GroupChat } from "../components/GroupChatCompound/GroupChatCompound";
 
 export const GroupChatScreen = () => {
   return (

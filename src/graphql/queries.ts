@@ -1,7 +1,87 @@
+import { Attachment } from "./../API";
 /* tslint:disable */
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getAttachment = /* GraphQL */ `
+  query GetAttachment($id: ID!) {
+    getAttachment(id: $id) {
+      id
+      storageKey
+      type
+      width
+      height
+      duration
+      messageID
+      chatgroupID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listAttachments = /* GraphQL */ `
+  query ListAttachments(
+    $filter: ModelAttachmentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listAttachments(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        storageKey
+        type
+        width
+        height
+        duration
+        messageID
+        chatgroupID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncAttachments = /* GraphQL */ `
+  query SyncAttachments(
+    $filter: ModelAttachmentFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncAttachments(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        storageKey
+        type
+        width
+        height
+        duration
+        messageID
+        chatgroupID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
 export const getFriends = /* GraphQL */ `
   query GetFriends($id: ID!) {
     getFriends(id: $id) {
@@ -97,6 +177,10 @@ export const getChatGroup = /* GraphQL */ `
         }
       }
       leaderID
+      Attachments {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -399,6 +483,10 @@ export const getMessage = /* GraphQL */ `
       userID
       chatgroupID
       images
+      Attachments {
+        nextToken
+        startedAt
+      }
       updatedAt
       _version
       _deleted
@@ -484,6 +572,12 @@ export const listMessagesByChatGroup = /* GraphQL */ `
         userID
         chatgroupID
         images
+        Attachments {
+          items{
+
+            
+          }
+        }
         updatedAt
         _version
         _deleted

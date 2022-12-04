@@ -1,0 +1,50 @@
+export const listMessagesByChatGroup = /* GraphQL */ `
+  query ListMessagesByChatGroup(
+    $chatgroupID: ID!
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listMessagesByChatGroup(
+      chatgroupID: $chatgroupID
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        createdAt
+        message
+        userID
+        chatgroupID
+        images
+        Attachments {
+          items {
+            storageKey
+            type
+            width
+            height
+            duration
+            messageID
+            chatgroupID
+            createdAt
+            updatedAt
+            _version
+            _deleted
+            _lastChangedAt
+          }
+        }
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;

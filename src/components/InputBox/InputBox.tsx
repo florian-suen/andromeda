@@ -10,7 +10,11 @@ import {
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { createMessage, updateChatGroup } from "../../graphql/mutations";
+import {
+  createMessage,
+  updateChatGroup,
+  createAttachment,
+} from "../../graphql/mutations";
 import { API, Auth, graphqlOperation, Storage } from "aws-amplify";
 import react from "react";
 import * as imagePicker from "expo-image-picker";
@@ -24,8 +28,31 @@ type messageInput = {
   images: [] | string[];
 };
 
+enum FileType {
+  image = "IMAGE",
+  video = "VIDEO",
+}
+
+enum exts {
+  image = "png",
+  video = "mp4",
+}
+enum contentTypes {
+  image = "image/png",
+  video = "video/mp4",
+}
+
+type file = {
+  uri: string;
+  type: "image" | "video";
+  width: string;
+  height: string;
+  duration: string;
+};
+
 export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
   const [inputText, setInputText] = useState("");
+  const [attachments, setAttachments] = useState<any[]>([]);
   const [images, setImages] = useState<any[]>([]);
   const inputOpacity = new Animated.Value(0);
   const inputScale = new Animated.Value(0);
@@ -34,35 +61,26 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
     inputRange: [0, 0.5, 1],
     outputRange: [0, 0.6, 1],
   });
+  // note to create alert for attachments and possible zip the file. download button while listing all files.
 
-  const uploadFile = async (fileUri: string) => {
-    try {
-      const response = await fetch(fileUri);
-      const blob = await response.blob();
-      const key = `${uuidv4()}.png`;
-      await Storage.put(key, blob, {
-        contentType: "image/png",
-      });
-      return key;
-    } catch (err) {
-      console.log("Error uploading file:", err);
-      return null;
-    }
-  };
-
-  const pickImage = async () => {
+  const pickImage = async (attachment: boolean) => {
     let result = await imagePicker.launchImageLibraryAsync({
       mediaTypes: imagePicker.MediaTypeOptions.All,
       quality: 1,
       allowsMultipleSelection: true,
     });
 
-    if (!result.cancelled) {
+    if (!result.cancelled && !attachment) {
       ((result as any).uri && setImages([(result as any).uri])) ||
         (result.selected &&
           setImages(result.selected.map((images) => images.uri)));
+    } else if (!result.cancelled) {
+      result.selected
+        ? setAttachments(result.selected)
+        : setAttachments([result]);
     }
   };
+
   const sendHandler = async () => {
     console.log("sending message");
     const currentUser = await Auth.currentAuthenticatedUser();
@@ -75,11 +93,13 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
     };
 
     if (images.length) {
-      const files = await Promise.all(images.map(uploadFile));
-      const filteredFiles = files.filter(
+      const imageFiles = await Promise.all(
+        images.map((uri) => uploadFile(uri, "image"))
+      );
+      const filteredImageFiles = imageFiles.filter(
         (val): val is string => typeof val === "string"
       );
-      filteredFiles.length ? (newInput.images = filteredFiles) : null;
+      filteredImageFiles.length ? (newInput.images = filteredImageFiles) : null;
       setImages([]);
     }
 
@@ -88,6 +108,15 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
     );
     const newMessageId =
       "data" in newMessage && newMessage.data.createMessage.id;
+    console.log(attachments);
+
+    attachments &&
+      (await Promise.all(
+        attachments.map((file) =>
+          addAttachment(file, newMessageId, chatGroup.id)
+        )
+      ));
+
     API.graphql(
       graphqlOperation(updateChatGroup, {
         input: {
@@ -167,7 +196,7 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
           onChangeText={setInputText}
         />
         <MaterialCommunityIcons
-          onPress={pickImage}
+          onPress={() => pickImage(true)}
           style={styles.plusCircleIcon}
           name="plus-circle-outline"
           size={30}
@@ -194,6 +223,38 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
       </SafeAreaView>
     </>
   );
+};
+
+const addAttachment = async (
+  file: file,
+  messageId: string,
+  chatGroupId: string
+) => {
+  const newAttachment = {
+    storageKey: await uploadFile(file.uri, file.type),
+    type: FileType[file.type],
+    width: file.width,
+    height: file.height,
+    duration: file.duration,
+    messageID: messageId,
+    chatgroupID: chatGroupId,
+  };
+  API.graphql(graphqlOperation(createAttachment, { input: newAttachment }));
+};
+
+const uploadFile = async (uri: string, type: "video" | "image") => {
+  try {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const key = `${uuidv4()}.${exts[type]}`;
+    await Storage.put(key, blob, {
+      contentType: contentTypes[type],
+    });
+    return key;
+  } catch (err) {
+    console.log("Error uploading file:", err);
+    return null;
+  }
 };
 
 const styles = StyleSheet.create({

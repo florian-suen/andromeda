@@ -2,6 +2,15 @@ import { ModelInit, MutableModel } from "@aws-amplify/datastore";
 // @ts-ignore
 import { LazyLoading, LazyLoadingDisabled, AsyncItem, AsyncCollection } from "@aws-amplify/datastore";
 
+export enum AttachmentType {
+  IMAGE = "IMAGE",
+  VIDEO = "VIDEO"
+}
+
+type AttachmentMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
 type FriendsMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
@@ -20,6 +29,38 @@ type UserChatGroupMetaData = {
 
 type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
+type EagerAttachment = {
+  readonly id: string;
+  readonly storageKey: string;
+  readonly typ: AttachmentType | keyof typeof AttachmentType;
+  readonly width?: number | null;
+  readonly height?: number | null;
+  readonly duration?: number | null;
+  readonly messageID: string;
+  readonly chatgroupID: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyAttachment = {
+  readonly id: string;
+  readonly storageKey: string;
+  readonly typ: AttachmentType | keyof typeof AttachmentType;
+  readonly width?: number | null;
+  readonly height?: number | null;
+  readonly duration?: number | null;
+  readonly messageID: string;
+  readonly chatgroupID: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Attachment = LazyLoading extends LazyLoadingDisabled ? EagerAttachment : LazyAttachment
+
+export declare const Attachment: (new (init: ModelInit<Attachment, AttachmentMetaData>) => Attachment) & {
+  copyOf(source: Attachment, mutator: (draft: MutableModel<Attachment, AttachmentMetaData>) => MutableModel<Attachment, AttachmentMetaData> | void): Attachment;
 }
 
 type EagerFriends = {
@@ -48,6 +89,7 @@ type EagerChatGroup = {
   readonly Messages?: (Message | null)[] | null;
   readonly users?: (UserChatGroup | null)[] | null;
   readonly leaderID?: string | null;
+  readonly Attachments?: (Attachment | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly chatGroupLastMessageId?: string | null;
@@ -61,6 +103,7 @@ type LazyChatGroup = {
   readonly Messages: AsyncCollection<Message>;
   readonly users: AsyncCollection<UserChatGroup>;
   readonly leaderID?: string | null;
+  readonly Attachments: AsyncCollection<Attachment>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly chatGroupLastMessageId?: string | null;
@@ -79,6 +122,7 @@ type EagerMessage = {
   readonly userID: string;
   readonly chatgroupID: string;
   readonly images?: (string | null)[] | null;
+  readonly Attachments?: (Attachment | null)[] | null;
   readonly updatedAt?: string | null;
 }
 
@@ -89,6 +133,7 @@ type LazyMessage = {
   readonly userID: string;
   readonly chatgroupID: string;
   readonly images?: (string | null)[] | null;
+  readonly Attachments: AsyncCollection<Attachment>;
   readonly updatedAt?: string | null;
 }
 

@@ -2,6 +2,69 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateAttachment = /* GraphQL */ `
+  subscription OnCreateAttachment(
+    $filter: ModelSubscriptionAttachmentFilterInput
+  ) {
+    onCreateAttachment(filter: $filter) {
+      id
+      storageKey
+      type
+      width
+      height
+      duration
+      messageID
+      chatgroupID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateAttachment = /* GraphQL */ `
+  subscription OnUpdateAttachment(
+    $filter: ModelSubscriptionAttachmentFilterInput
+  ) {
+    onUpdateAttachment(filter: $filter) {
+      id
+      storageKey
+      type
+      width
+      height
+      duration
+      messageID
+      chatgroupID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteAttachment = /* GraphQL */ `
+  subscription OnDeleteAttachment(
+    $filter: ModelSubscriptionAttachmentFilterInput
+  ) {
+    onDeleteAttachment(filter: $filter) {
+      id
+      storageKey
+      type
+      width
+      height
+      duration
+      messageID
+      chatgroupID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const onCreateFriends = /* GraphQL */ `
   subscription OnCreateFriends($filter: ModelSubscriptionFriendsFilterInput) {
     onCreateFriends(filter: $filter) {
@@ -67,6 +130,10 @@ export const onCreateChatGroup = /* GraphQL */ `
         startedAt
       }
       leaderID
+      Attachments {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -100,7 +167,12 @@ export const onUpdateChatGroup = /* GraphQL */ `
         nextToken
         startedAt
       }
+
       leaderID
+      Attachments {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -139,6 +211,10 @@ export const onDeleteChatGroup = /* GraphQL */ `
         startedAt
       }
       leaderID
+      Attachments {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -355,6 +431,10 @@ export const onCreateMessage = /* GraphQL */ `
       userID
       chatgroupID
       images
+      Attachments {
+        nextToken
+        startedAt
+      }
       updatedAt
       _version
       _deleted
@@ -371,6 +451,10 @@ export const onUpdateMessage = /* GraphQL */ `
       userID
       chatgroupID
       images
+      Attachments {
+        nextToken
+        startedAt
+      }
       updatedAt
       _version
       _deleted
@@ -387,6 +471,10 @@ export const onDeleteMessage = /* GraphQL */ `
       userID
       chatgroupID
       images
+      Attachments {
+        nextToken
+        startedAt
+      }
       updatedAt
       _version
       _deleted

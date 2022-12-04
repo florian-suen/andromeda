@@ -2,6 +2,144 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
+export type CreateAttachmentInput = {
+  id?: string | null,
+  storageKey: string,
+  typ: AttachmentType,
+  width?: number | null,
+  height?: number | null,
+  duration?: number | null,
+  messageID: string,
+  chatgroupID: string,
+  _version?: number | null,
+};
+
+export enum AttachmentType {
+  IMAGE = "IMAGE",
+  VIDEO = "VIDEO",
+}
+
+
+export type ModelAttachmentConditionInput = {
+  storageKey?: ModelStringInput | null,
+  typ?: ModelAttachmentTypeInput | null,
+  width?: ModelIntInput | null,
+  height?: ModelIntInput | null,
+  duration?: ModelIntInput | null,
+  messageID?: ModelIDInput | null,
+  chatgroupID?: ModelIDInput | null,
+  and?: Array< ModelAttachmentConditionInput | null > | null,
+  or?: Array< ModelAttachmentConditionInput | null > | null,
+  not?: ModelAttachmentConditionInput | null,
+};
+
+export type ModelStringInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
+};
+
+export enum ModelAttributeTypes {
+  binary = "binary",
+  binarySet = "binarySet",
+  bool = "bool",
+  list = "list",
+  map = "map",
+  number = "number",
+  numberSet = "numberSet",
+  string = "string",
+  stringSet = "stringSet",
+  _null = "_null",
+}
+
+
+export type ModelSizeInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+};
+
+export type ModelAttachmentTypeInput = {
+  eq?: AttachmentType | null,
+  ne?: AttachmentType | null,
+};
+
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
+};
+
+export type Attachment = {
+  __typename: "Attachment",
+  id: string,
+  storageKey: string,
+  typ: AttachmentType,
+  width?: number | null,
+  height?: number | null,
+  duration?: number | null,
+  messageID: string,
+  chatgroupID: string,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateAttachmentInput = {
+  id: string,
+  storageKey?: string | null,
+  typ?: AttachmentType | null,
+  width?: number | null,
+  height?: number | null,
+  duration?: number | null,
+  messageID?: string | null,
+  chatgroupID?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteAttachmentInput = {
+  id: string,
+  _version?: number | null,
+};
+
 export type CreateFriendsInput = {
   id?: string | null,
   _version?: number | null,
@@ -52,62 +190,6 @@ export type ModelChatGroupConditionInput = {
   chatGroupLastMessageId?: ModelIDInput | null,
 };
 
-export type ModelStringInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
-};
-
-export enum ModelAttributeTypes {
-  binary = "binary",
-  binarySet = "binarySet",
-  bool = "bool",
-  list = "list",
-  map = "map",
-  number = "number",
-  numberSet = "numberSet",
-  string = "string",
-  stringSet = "stringSet",
-  _null = "_null",
-}
-
-
-export type ModelSizeInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-};
-
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
-};
-
 export type ChatGroup = {
   __typename: "ChatGroup",
   id: string,
@@ -117,6 +199,7 @@ export type ChatGroup = {
   Messages?: ModelMessageConnection | null,
   users?: ModelUserChatGroupConnection | null,
   leaderID?: string | null,
+  Attachments?: ModelAttachmentConnection | null,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -133,10 +216,18 @@ export type Message = {
   userID: string,
   chatgroupID: string,
   images?: Array< string | null > | null,
+  Attachments?: ModelAttachmentConnection | null,
   updatedAt: string,
   _version: number,
   _deleted?: boolean | null,
   _lastChangedAt: number,
+};
+
+export type ModelAttachmentConnection = {
+  __typename: "ModelAttachmentConnection",
+  items:  Array<Attachment | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
 };
 
 export type ModelMessageConnection = {
@@ -300,6 +391,20 @@ export type DeleteMessageInput = {
   _version?: number | null,
 };
 
+export type ModelAttachmentFilterInput = {
+  id?: ModelIDInput | null,
+  storageKey?: ModelStringInput | null,
+  typ?: ModelAttachmentTypeInput | null,
+  width?: ModelIntInput | null,
+  height?: ModelIntInput | null,
+  duration?: ModelIntInput | null,
+  messageID?: ModelIDInput | null,
+  chatgroupID?: ModelIDInput | null,
+  and?: Array< ModelAttachmentFilterInput | null > | null,
+  or?: Array< ModelAttachmentFilterInput | null > | null,
+  not?: ModelAttachmentFilterInput | null,
+};
+
 export type ModelFriendsFilterInput = {
   id?: ModelIDInput | null,
   and?: Array< ModelFriendsFilterInput | null > | null,
@@ -380,10 +485,17 @@ export type ModelMessageFilterInput = {
   not?: ModelMessageFilterInput | null,
 };
 
-export type ModelSubscriptionFriendsFilterInput = {
+export type ModelSubscriptionAttachmentFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  and?: Array< ModelSubscriptionFriendsFilterInput | null > | null,
-  or?: Array< ModelSubscriptionFriendsFilterInput | null > | null,
+  storageKey?: ModelSubscriptionStringInput | null,
+  typ?: ModelSubscriptionStringInput | null,
+  width?: ModelSubscriptionIntInput | null,
+  height?: ModelSubscriptionIntInput | null,
+  duration?: ModelSubscriptionIntInput | null,
+  messageID?: ModelSubscriptionIDInput | null,
+  chatgroupID?: ModelSubscriptionIDInput | null,
+  and?: Array< ModelSubscriptionAttachmentFilterInput | null > | null,
+  or?: Array< ModelSubscriptionAttachmentFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -401,15 +513,6 @@ export type ModelSubscriptionIDInput = {
   notIn?: Array< string | null > | null,
 };
 
-export type ModelSubscriptionChatGroupFilterInput = {
-  id?: ModelSubscriptionIDInput | null,
-  name?: ModelSubscriptionStringInput | null,
-  image?: ModelSubscriptionStringInput | null,
-  leaderID?: ModelSubscriptionIDInput | null,
-  and?: Array< ModelSubscriptionChatGroupFilterInput | null > | null,
-  or?: Array< ModelSubscriptionChatGroupFilterInput | null > | null,
-};
-
 export type ModelSubscriptionStringInput = {
   ne?: string | null,
   eq?: string | null,
@@ -423,6 +526,33 @@ export type ModelSubscriptionStringInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
+};
+
+export type ModelSubscriptionIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  in?: Array< number | null > | null,
+  notIn?: Array< number | null > | null,
+};
+
+export type ModelSubscriptionFriendsFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  and?: Array< ModelSubscriptionFriendsFilterInput | null > | null,
+  or?: Array< ModelSubscriptionFriendsFilterInput | null > | null,
+};
+
+export type ModelSubscriptionChatGroupFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  image?: ModelSubscriptionStringInput | null,
+  leaderID?: ModelSubscriptionIDInput | null,
+  and?: Array< ModelSubscriptionChatGroupFilterInput | null > | null,
+  or?: Array< ModelSubscriptionChatGroupFilterInput | null > | null,
 };
 
 export type ModelSubscriptionUserFilterInput = {
@@ -452,6 +582,78 @@ export type ModelSubscriptionMessageFilterInput = {
   images?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionMessageFilterInput | null > | null,
   or?: Array< ModelSubscriptionMessageFilterInput | null > | null,
+};
+
+export type CreateAttachmentMutationVariables = {
+  input: CreateAttachmentInput,
+  condition?: ModelAttachmentConditionInput | null,
+};
+
+export type CreateAttachmentMutation = {
+  createAttachment?:  {
+    __typename: "Attachment",
+    id: string,
+    storageKey: string,
+    typ: AttachmentType,
+    width?: number | null,
+    height?: number | null,
+    duration?: number | null,
+    messageID: string,
+    chatgroupID: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateAttachmentMutationVariables = {
+  input: UpdateAttachmentInput,
+  condition?: ModelAttachmentConditionInput | null,
+};
+
+export type UpdateAttachmentMutation = {
+  updateAttachment?:  {
+    __typename: "Attachment",
+    id: string,
+    storageKey: string,
+    typ: AttachmentType,
+    width?: number | null,
+    height?: number | null,
+    duration?: number | null,
+    messageID: string,
+    chatgroupID: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteAttachmentMutationVariables = {
+  input: DeleteAttachmentInput,
+  condition?: ModelAttachmentConditionInput | null,
+};
+
+export type DeleteAttachmentMutation = {
+  deleteAttachment?:  {
+    __typename: "Attachment",
+    id: string,
+    storageKey: string,
+    typ: AttachmentType,
+    width?: number | null,
+    height?: number | null,
+    duration?: number | null,
+    messageID: string,
+    chatgroupID: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
 };
 
 export type CreateFriendsMutationVariables = {
@@ -540,6 +742,11 @@ export type CreateChatGroupMutation = {
       startedAt?: number | null,
     } | null,
     leaderID?: string | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -584,6 +791,11 @@ export type UpdateChatGroupMutation = {
       startedAt?: number | null,
     } | null,
     leaderID?: string | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -628,6 +840,11 @@ export type DeleteChatGroupMutation = {
       startedAt?: number | null,
     } | null,
     leaderID?: string | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -888,6 +1105,11 @@ export type CreateMessageMutation = {
     userID: string,
     chatgroupID: string,
     images?: Array< string | null > | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
@@ -909,6 +1131,11 @@ export type UpdateMessageMutation = {
     userID: string,
     chatgroupID: string,
     images?: Array< string | null > | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
@@ -930,10 +1157,99 @@ export type DeleteMessageMutation = {
     userID: string,
     chatgroupID: string,
     images?: Array< string | null > | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type GetAttachmentQueryVariables = {
+  id: string,
+};
+
+export type GetAttachmentQuery = {
+  getAttachment?:  {
+    __typename: "Attachment",
+    id: string,
+    storageKey: string,
+    typ: AttachmentType,
+    width?: number | null,
+    height?: number | null,
+    duration?: number | null,
+    messageID: string,
+    chatgroupID: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListAttachmentsQueryVariables = {
+  filter?: ModelAttachmentFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListAttachmentsQuery = {
+  listAttachments?:  {
+    __typename: "ModelAttachmentConnection",
+    items:  Array< {
+      __typename: "Attachment",
+      id: string,
+      storageKey: string,
+      typ: AttachmentType,
+      width?: number | null,
+      height?: number | null,
+      duration?: number | null,
+      messageID: string,
+      chatgroupID: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncAttachmentsQueryVariables = {
+  filter?: ModelAttachmentFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncAttachmentsQuery = {
+  syncAttachments?:  {
+    __typename: "ModelAttachmentConnection",
+    items:  Array< {
+      __typename: "Attachment",
+      id: string,
+      storageKey: string,
+      typ: AttachmentType,
+      width?: number | null,
+      height?: number | null,
+      duration?: number | null,
+      messageID: string,
+      chatgroupID: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
   } | null,
 };
 
@@ -1034,6 +1350,11 @@ export type GetChatGroupQuery = {
       startedAt?: number | null,
     } | null,
     leaderID?: string | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1348,6 +1669,11 @@ export type GetMessageQuery = {
     userID: string,
     chatgroupID: string,
     images?: Array< string | null > | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
@@ -1440,6 +1766,75 @@ export type ListMessagesByChatGroupQuery = {
   } | null,
 };
 
+export type OnCreateAttachmentSubscriptionVariables = {
+  filter?: ModelSubscriptionAttachmentFilterInput | null,
+};
+
+export type OnCreateAttachmentSubscription = {
+  onCreateAttachment?:  {
+    __typename: "Attachment",
+    id: string,
+    storageKey: string,
+    typ: AttachmentType,
+    width?: number | null,
+    height?: number | null,
+    duration?: number | null,
+    messageID: string,
+    chatgroupID: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateAttachmentSubscriptionVariables = {
+  filter?: ModelSubscriptionAttachmentFilterInput | null,
+};
+
+export type OnUpdateAttachmentSubscription = {
+  onUpdateAttachment?:  {
+    __typename: "Attachment",
+    id: string,
+    storageKey: string,
+    typ: AttachmentType,
+    width?: number | null,
+    height?: number | null,
+    duration?: number | null,
+    messageID: string,
+    chatgroupID: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteAttachmentSubscriptionVariables = {
+  filter?: ModelSubscriptionAttachmentFilterInput | null,
+};
+
+export type OnDeleteAttachmentSubscription = {
+  onDeleteAttachment?:  {
+    __typename: "Attachment",
+    id: string,
+    storageKey: string,
+    typ: AttachmentType,
+    width?: number | null,
+    height?: number | null,
+    duration?: number | null,
+    messageID: string,
+    chatgroupID: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
 export type OnCreateFriendsSubscriptionVariables = {
   filter?: ModelSubscriptionFriendsFilterInput | null,
 };
@@ -1522,6 +1917,11 @@ export type OnCreateChatGroupSubscription = {
       startedAt?: number | null,
     } | null,
     leaderID?: string | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1565,6 +1965,11 @@ export type OnUpdateChatGroupSubscription = {
       startedAt?: number | null,
     } | null,
     leaderID?: string | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1608,6 +2013,11 @@ export type OnDeleteChatGroupSubscription = {
       startedAt?: number | null,
     } | null,
     leaderID?: string | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1861,6 +2271,11 @@ export type OnCreateMessageSubscription = {
     userID: string,
     chatgroupID: string,
     images?: Array< string | null > | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
@@ -1881,6 +2296,11 @@ export type OnUpdateMessageSubscription = {
     userID: string,
     chatgroupID: string,
     images?: Array< string | null > | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
@@ -1901,6 +2321,11 @@ export type OnDeleteMessageSubscription = {
     userID: string,
     chatgroupID: string,
     images?: Array< string | null > | null,
+    Attachments?:  {
+      __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,

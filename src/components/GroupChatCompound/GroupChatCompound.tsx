@@ -13,22 +13,23 @@ import {
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-import { InputBox as InputBx } from "./InputBox/InputBox";
-import { Message } from "./Message/Message";
+import { InputBox as InputBx } from "../InputBox/InputBox";
+import { Message } from "../Message/Message";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-import { getChatGroup, listMessagesByChatGroup } from "../graphql/queries";
-import { deleteUserChatGroup } from "../graphql/mutations";
-import { onCreateMessage } from "../graphql/subscriptions";
+import { getChatGroup } from "../../graphql/queries";
+import { listMessagesByChatGroup } from "./GroupChatCompoundQueries";
+import { deleteUserChatGroup } from "../../graphql/mutations";
+import { onCreateMessage } from "../../graphql/subscriptions";
 import { useState, useContext, createContext, PropsWithChildren } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
-import { useUpdateChatGroup } from "../../utility/useUpdateChatGroup";
-import { ChatGroupType } from "../screens/ChatsList/ChatsListScreen";
+import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
+import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
 import {
   useOnDeleteUserChatGroup,
   useOnCreateUserChatGroup,
-} from "../../utility/useUpdateUserChatGroup";
+} from "../../../utility/useUpdateUserChatGroup";
 
 type ChatGroup = ChatGroupType["Chatgroup"];
 

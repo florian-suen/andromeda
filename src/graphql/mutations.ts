@@ -2,6 +2,72 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createAttachment = /* GraphQL */ `
+  mutation CreateAttachment(
+    $input: CreateAttachmentInput!
+    $condition: ModelAttachmentConditionInput
+  ) {
+    createAttachment(input: $input, condition: $condition) {
+      id
+      storageKey
+      type
+      width
+      height
+      duration
+      messageID
+      chatgroupID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateAttachment = /* GraphQL */ `
+  mutation UpdateAttachment(
+    $input: UpdateAttachmentInput!
+    $condition: ModelAttachmentConditionInput
+  ) {
+    updateAttachment(input: $input, condition: $condition) {
+      id
+      storageKey
+      type
+      width
+      height
+      duration
+      messageID
+      chatgroupID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteAttachment = /* GraphQL */ `
+  mutation DeleteAttachment(
+    $input: DeleteAttachmentInput!
+    $condition: ModelAttachmentConditionInput
+  ) {
+    deleteAttachment(input: $input, condition: $condition) {
+      id
+      storageKey
+      type
+      width
+      height
+      duration
+      messageID
+      chatgroupID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const createFriends = /* GraphQL */ `
   mutation CreateFriends(
     $input: CreateFriendsInput!
@@ -77,6 +143,10 @@ export const createChatGroup = /* GraphQL */ `
         startedAt
       }
       leaderID
+      Attachments {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -116,6 +186,10 @@ export const updateChatGroup = /* GraphQL */ `
         startedAt
       }
       leaderID
+      Attachments {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -155,6 +229,10 @@ export const deleteChatGroup = /* GraphQL */ `
         startedAt
       }
       leaderID
+      Attachments {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -386,6 +464,10 @@ export const createMessage = /* GraphQL */ `
       userID
       chatgroupID
       images
+      Attachments {
+        nextToken
+        startedAt
+      }
       updatedAt
       _version
       _deleted
@@ -405,6 +487,10 @@ export const updateMessage = /* GraphQL */ `
       userID
       chatgroupID
       images
+      Attachments {
+        nextToken
+        startedAt
+      }
       updatedAt
       _version
       _deleted
@@ -424,6 +510,10 @@ export const deleteMessage = /* GraphQL */ `
       userID
       chatgroupID
       images
+      Attachments {
+        nextToken
+        startedAt
+      }
       updatedAt
       _version
       _deleted

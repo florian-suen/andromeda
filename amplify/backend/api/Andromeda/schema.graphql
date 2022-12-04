@@ -1,3 +1,19 @@
+enum AttachmentType {
+  IMAGE
+  VIDEO
+}
+
+type Attachment @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  storageKey: String!
+  typ: AttachmentType!
+  width: Int
+  height: Int
+  duration: Int
+  messageID: ID! @index(name: "byMessage")
+  chatgroupID: ID! @index(name: "byChatGroup")
+}
+
 type Friends @model @auth(rules: [{allow: public}]) {
   id: ID!
 }
@@ -10,6 +26,7 @@ type ChatGroup @model @auth(rules: [{allow: public}]) {
   Messages: [Message] @hasMany(indexName: "byChatGroup", fields: ["id"])
   users: [UserChatGroup] @hasMany(indexName: "byChatGroupUser", fields: ["id"])
   leaderID: ID @index(name: "byUser")
+  Attachments: [Attachment] @hasMany(indexName: "byChatGroup", fields: ["id"])
 }
 
 type User @model @auth(rules: [{allow: public}]) {
@@ -38,5 +55,6 @@ type Message @model @auth(rules: [{allow: public}]) {
   userID: ID! @index(name: "byUser")
   chatgroupID: ID! @index(name: "byChatGroup", sortKeyFields: ["createdAt"], queryField: "listMessagesByChatGroup")
   images: [String]
+  Attachments: [Attachment] @hasMany(indexName: "byMessage", fields: ["id"])
 }
   

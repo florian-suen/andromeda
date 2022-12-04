@@ -22,13 +22,16 @@ type Message = {
   userID: string;
   id: string;
   images: [string];
+  Attachments: any;
 };
 
 export const Message = ({ message }: { message: Message }) => {
   const [myMsg, setMymsg] = useState(false);
+  const [attachments, setAttachments] = useState<any>([]);
   const [imageSrc, setImageSrc] = useState<any>([]);
   const [imageViewerVisibility, setimageViewerVisibility] = useState(false);
   let imgViewerIndex = useRef(0);
+
   useEffect(() => {
     (async () => {
       const currentUser = await Auth.currentAuthenticatedUser();
@@ -37,6 +40,20 @@ export const Message = ({ message }: { message: Message }) => {
   }, []);
 
   useEffect(() => {
+    const getAttachements = async () => {
+      if (message?.Attachments.items.length) {
+        const uriAttachments = await Promise.all(
+          message.Attachments.items.map((attachment: any) =>
+            Storage.get(attachment.storageKey).then((uri) => ({
+              ...attachment,
+              uri,
+            }))
+          )
+        );
+
+        setAttachments(uriAttachments);
+      }
+    };
     const getImages = async () => {
       if (message.images?.length) {
         const uri = await Storage.get(message.images[0]);
