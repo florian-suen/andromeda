@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Auth } from "aws-amplify";
+import { Auth, Storage } from "aws-amplify";
 import { useState, useEffect } from "react";
 import { S3Image } from "aws-amplify-react-native";
+import ImageView from "react-native-image-viewing";
 dayjs.extend(relativeTime);
 
 type Message = {
@@ -17,13 +18,24 @@ type Message = {
 
 export const Message = ({ message }: { message: Message }) => {
   const [myMsg, setMymsg] = useState(false);
-
+  const [imageSrc, setImageSrc] = useState<any>([]);
+  const [imageViewerVisibility, setimageViewerVisibility] = useState(false);
   useEffect(() => {
     (async () => {
       const currentUser = await Auth.currentAuthenticatedUser();
       setMymsg(message.userID === currentUser.attributes.sub);
     })();
   }, []);
+
+  useEffect(() => {
+    const getImages = async () => {
+      if (message.images?.length) {
+        const uri = await Storage.get(message.images[0]);
+        setImageSrc([{ uri }]);
+      }
+    };
+    getImages();
+  }, [message.images]);
 
   return (
     <View
@@ -33,8 +45,18 @@ export const Message = ({ message }: { message: Message }) => {
         myMsg ? styles.containerme : styles.containerfriend,
       ]}
     >
-      {message.images && message.images.length > 0 && (
-        <S3Image style={styles.image} imgKey={message.images[0]} />
+      {imageSrc.length > 0 && (
+        <>
+          <ImageView
+            images={imageSrc}
+            visible={imageViewerVisibility}
+            imageIndex={0}
+            onRequestClose={() => setimageViewerVisibility(false)}
+          />
+          <Pressable onPress={() => setimageViewerVisibility(true)}>
+            <Image style={styles.image} source={imageSrc[0]} />
+          </Pressable>
+        </>
       )}
       <Text style={styles.message}>{message.message}</Text>
       <Text style={styles.time}>{dayjs(message.createdAt).fromNow(true)}</Text>
