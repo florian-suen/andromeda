@@ -5,6 +5,7 @@ import {
   TextInput,
   Animated,
   Image,
+  FlatList,
 } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState, useEffect, useRef } from "react";
@@ -20,12 +21,12 @@ type messageInput = {
   chatgroupID: string;
   message: string;
   userID: string;
-  images: [] | [string];
+  images: [] | string[];
 };
 
 export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
   const [inputText, setInputText] = useState("");
-  const [image, setImage] = useState<string | null>(null);
+  const [images, setImages] = useState<any[]>([]);
   const inputOpacity = new Animated.Value(0);
   const inputScale = new Animated.Value(0);
   const animateInput = useRef(true);
@@ -53,10 +54,13 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
     let result = await imagePicker.launchImageLibraryAsync({
       mediaTypes: imagePicker.MediaTypeOptions.All,
       quality: 1,
+      allowsMultipleSelection: true,
     });
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      ((result as any).uri && setImages([(result as any).uri])) ||
+        (result.selected &&
+          setImages(result.selected.map((images) => images.uri)));
     }
   };
   const sendHandler = async () => {
@@ -70,10 +74,13 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
       images: [],
     };
 
-    if (image) {
-      const file = await uploadFile(image);
-      file ? (newInput.images = [file]) : null;
-      setImage(null);
+    if (images.length) {
+      const files = await Promise.all(images.map(uploadFile));
+      const filteredFiles = files.filter(
+        (val): val is string => typeof val === "string"
+      );
+      filteredFiles.length ? (newInput.images = filteredFiles) : null;
+      setImages([]);
     }
 
     const newMessage = await API.graphql(
@@ -121,19 +128,33 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
 
   return (
     <>
-      {image && (
+      {images.length > 0 && (
         <View>
-          <Ionicons
-            name="remove-circle-outline"
-            size={24}
-            color="black"
-            style={styles.removeSelectedImage}
-            onPress={() => setImage(null)}
-          />
-          <Image
-            resizeMode="contain"
-            style={styles.selectedImage}
-            source={{ uri: image }}
+          <FlatList
+            data={images}
+            horizontal
+            renderItem={({ item }) => {
+              return (
+                <>
+                  <Ionicons
+                    name="remove-circle-outline"
+                    size={24}
+                    color="black"
+                    style={styles.removeSelectedImage}
+                    onPress={() =>
+                      setImages((images) => {
+                        return images.filter((images) => images !== item);
+                      })
+                    }
+                  />
+                  <Image
+                    resizeMode="contain"
+                    style={styles.selectedImage}
+                    source={{ uri: item }}
+                  />
+                </>
+              );
+            }}
           />
         </View>
       )}

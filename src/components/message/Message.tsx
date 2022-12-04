@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  FlatList,
+} from "react-native";
+import { useRef } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Auth, Storage } from "aws-amplify";
@@ -20,6 +28,7 @@ export const Message = ({ message }: { message: Message }) => {
   const [myMsg, setMymsg] = useState(false);
   const [imageSrc, setImageSrc] = useState<any>([]);
   const [imageViewerVisibility, setimageViewerVisibility] = useState(false);
+  let imgViewerIndex = useRef(0);
   useEffect(() => {
     (async () => {
       const currentUser = await Auth.currentAuthenticatedUser();
@@ -31,7 +40,9 @@ export const Message = ({ message }: { message: Message }) => {
     const getImages = async () => {
       if (message.images?.length) {
         const uri = await Storage.get(message.images[0]);
-        setImageSrc([{ uri }]);
+        const uris = await Promise.all(message.images.map(Storage.get as any));
+        const mappedUris = uris.map((uri) => ({ uri }));
+        setImageSrc(mappedUris);
       }
     };
     getImages();
@@ -50,12 +61,25 @@ export const Message = ({ message }: { message: Message }) => {
           <ImageView
             images={imageSrc}
             visible={imageViewerVisibility}
-            imageIndex={0}
+            imageIndex={imgViewerIndex.current}
             onRequestClose={() => setimageViewerVisibility(false)}
           />
-          <Pressable onPress={() => setimageViewerVisibility(true)}>
-            <Image style={styles.image} source={imageSrc[0]} />
-          </Pressable>
+
+          <FlatList
+            data={imageSrc}
+            renderItem={({ item, index }) => {
+              return (
+                <Pressable
+                  onPress={() => {
+                    imgViewerIndex.current = index;
+                    setimageViewerVisibility(true);
+                  }}
+                >
+                  <Image style={styles.image} source={item} />
+                </Pressable>
+              );
+            }}
+          />
         </>
       )}
       <Text style={styles.message}>{message.message}</Text>
@@ -70,6 +94,7 @@ const styles = StyleSheet.create({
     width: 300,
     borderWidth: 3,
     borderRadius: 5,
+    maxWidth: "75%",
   },
   container: {
     margin: 6,
