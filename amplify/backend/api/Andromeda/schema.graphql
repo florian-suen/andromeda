@@ -1,3 +1,19 @@
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+type Media @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  storageKey: String
+  type: MediaType
+  messageID: ID! @index(name: "byMessage")
+  chatgroupID: ID! @index(name: "byChatGroup")
+  duration: String
+  width: String
+  height: String
+}
+
 enum AttachmentType {
   IMAGE
   VIDEO
@@ -25,6 +41,7 @@ type ChatGroup @model @auth(rules: [{allow: public}]) {
   users: [UserChatGroup] @hasMany(indexName: "byChatGroupUser", fields: ["id"])
   leaderID: ID @index(name: "byUser")
   Attachments: [Attachment] @hasMany(indexName: "byChatGroup", fields: ["id"])
+  Media: [Media] @hasMany(indexName: "byChatGroup", fields: ["id"])
 }
 
 type User @model @auth(rules: [{allow: public}]) {
@@ -52,7 +69,7 @@ type Message @model @auth(rules: [{allow: public}]) {
   message: String
   userID: ID! @index(name: "byUser")
   chatgroupID: ID! @index(name: "byChatGroup", sortKeyFields: ["createdAt"], queryField: "listMessagesByChatGroup")
-  images: [String]
   Attachments: [Attachment] @hasMany(indexName: "byMessage", fields: ["id"])
+  Media: [Media] @hasMany(indexName: "byMessage", fields: ["id"])
 }
   

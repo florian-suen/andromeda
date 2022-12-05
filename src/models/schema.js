@@ -1,5 +1,126 @@
 export const schema = {
     "models": {
+        "Media": {
+            "name": "Media",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "storageKey": {
+                    "name": "storageKey",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "type": {
+                    "name": "type",
+                    "isArray": false,
+                    "type": {
+                        "enum": "MediaType"
+                    },
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "messageID": {
+                    "name": "messageID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "chatgroupID": {
+                    "name": "chatgroupID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "duration": {
+                    "name": "duration",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "width": {
+                    "name": "width",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "height": {
+                    "name": "height",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Media",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byMessage",
+                        "fields": [
+                            "messageID"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byChatGroup",
+                        "fields": [
+                            "chatgroupID"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "Attachment": {
             "name": "Attachment",
             "fields": {
@@ -246,6 +367,20 @@ export const schema = {
                         "associatedWith": "chatgroupID"
                     }
                 },
+                "Media": {
+                    "name": "Media",
+                    "isArray": true,
+                    "type": {
+                        "model": "Media"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": "chatgroupID"
+                    }
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -342,19 +477,25 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "images": {
-                    "name": "images",
-                    "isArray": true,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true
-                },
                 "Attachments": {
                     "name": "Attachments",
                     "isArray": true,
                     "type": {
                         "model": "Attachment"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": "messageID"
+                    }
+                },
+                "Media": {
+                    "name": "Media",
+                    "isArray": true,
+                    "type": {
+                        "model": "Media"
                     },
                     "isRequired": false,
                     "attributes": [],
@@ -634,6 +775,13 @@ export const schema = {
         }
     },
     "enums": {
+        "MediaType": {
+            "name": "MediaType",
+            "values": [
+                "IMAGE",
+                "VIDEO"
+            ]
+        },
         "AttachmentType": {
             "name": "AttachmentType",
             "values": [
@@ -644,5 +792,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "9bf07a6948a4fbd398fece7003142b93"
+    "version": "e984d579176cab6f143566438fc8fb07"
 };

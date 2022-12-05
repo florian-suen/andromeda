@@ -2,6 +2,63 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateMedia = /* GraphQL */ `
+  subscription OnCreateMedia($filter: ModelSubscriptionMediaFilterInput) {
+    onCreateMedia(filter: $filter) {
+      id
+      storageKey
+      type
+      messageID
+      chatgroupID
+      duration
+      width
+      height
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateMedia = /* GraphQL */ `
+  subscription OnUpdateMedia($filter: ModelSubscriptionMediaFilterInput) {
+    onUpdateMedia(filter: $filter) {
+      id
+      storageKey
+      type
+      messageID
+      chatgroupID
+      duration
+      width
+      height
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteMedia = /* GraphQL */ `
+  subscription OnDeleteMedia($filter: ModelSubscriptionMediaFilterInput) {
+    onDeleteMedia(filter: $filter) {
+      id
+      storageKey
+      type
+      messageID
+      chatgroupID
+      duration
+      width
+      height
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const onCreateAttachment = /* GraphQL */ `
   subscription OnCreateAttachment(
     $filter: ModelSubscriptionAttachmentFilterInput
@@ -109,7 +166,6 @@ export const onCreateChatGroup = /* GraphQL */ `
         message
         userID
         chatgroupID
-        images
         updatedAt
         _version
         _deleted
@@ -125,6 +181,10 @@ export const onCreateChatGroup = /* GraphQL */ `
       }
       leaderID
       Attachments {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }
@@ -151,7 +211,6 @@ export const onUpdateChatGroup = /* GraphQL */ `
         message
         userID
         chatgroupID
-        images
         updatedAt
         _version
         _deleted
@@ -164,6 +223,10 @@ export const onUpdateChatGroup = /* GraphQL */ `
 
       leaderID
       Attachments {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }
@@ -190,7 +253,6 @@ export const onDeleteChatGroup = /* GraphQL */ `
         message
         userID
         chatgroupID
-        images
         updatedAt
         _version
         _deleted
@@ -206,6 +268,10 @@ export const onDeleteChatGroup = /* GraphQL */ `
       }
       leaderID
       Attachments {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }
@@ -423,6 +489,7 @@ export const onCreateMessage = /* GraphQL */ `
       createdAt
       message
       userID
+      chatgroupID
       Attachments {
         items {
           chatgroupID
@@ -438,8 +505,18 @@ export const onCreateMessage = /* GraphQL */ `
           _deleted
         }
       }
-      chatgroupID
-      images
+      Media {
+        items {
+          id
+          storageKey
+          type
+          messageID
+          chatgroupID
+          duration
+          width
+          height
+        }
+      }
       updatedAt
       _version
       _deleted
@@ -455,7 +532,6 @@ export const onUpdateMessage = /* GraphQL */ `
       message
       userID
       chatgroupID
-      images
       Attachments {
         items {
           chatgroupID
@@ -470,6 +546,10 @@ export const onUpdateMessage = /* GraphQL */ `
           _lastChangedAt
           _deleted
         }
+      }
+      Media {
+        nextToken
+        startedAt
       }
       updatedAt
       _version
@@ -486,8 +566,11 @@ export const onDeleteMessage = /* GraphQL */ `
       message
       userID
       chatgroupID
-      images
       Attachments {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }

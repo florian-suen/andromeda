@@ -15,9 +15,9 @@ import {
   createMessage,
   updateChatGroup,
   createAttachment,
+  createMedia,
 } from "../../graphql/mutations";
 import { API, Auth, graphqlOperation, Storage } from "aws-amplify";
-import react from "react";
 import * as imagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import "react-native-get-random-values";
@@ -27,7 +27,6 @@ type messageInput = {
   chatgroupID: string;
   message: string;
   userID: string;
-  images: [] | string[];
 };
 
 enum FileType {
@@ -50,10 +49,18 @@ type file = {
   name: string;
 };
 
+type mediaFile = {
+  uri: string;
+  type: "image" | "video";
+  duration: string;
+  width: string;
+  height: string;
+};
+
 export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
   const [inputText, setInputText] = useState("");
   const [attachments, setAttachments] = useState<any[]>([]);
-  const [images, setImages] = useState<any[]>([]);
+  const [media, setMedia] = useState<any[]>([]);
   const inputOpacity = new Animated.Value(0);
   const inputScale = new Animated.Value(0);
   const animateInput = useRef(true);
@@ -61,20 +68,18 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
     inputRange: [0, 0.5, 1],
     outputRange: [0, 0.6, 1],
   });
-  // note to create alert for attachments and possible zip the file. download button while listing all files.
 
-  const pickImage = async () => {
+  const pickMedia = async (multiple: boolean) => {
+    setMedia([]);
     let result = await imagePicker.launchImageLibraryAsync({
       mediaTypes: imagePicker.MediaTypeOptions.All,
       quality: 1,
-      allowsMultipleSelection: true,
+      allowsMultipleSelection: multiple,
     });
 
-    if (!result.cancelled) {
-      ((result as any).uri && setImages([(result as any).uri])) ||
-        (result.selected &&
-          setImages(result.selected.map((images) => images.uri)));
-    }
+    if (!result.cancelled && (result as any)?.selected) {
+      setMedia((result as any).selected);
+    } else if (!result.cancelled) setMedia([result]);
   };
 
   const pickAttachment = async () => {
@@ -85,7 +90,7 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
 
     if (result.type === "success" && attachments.length < 5)
       setAttachments((existing) => [...existing, result]);
-    else {
+    else if (attachments.length > 4) {
       Alert.alert(
         "Max attachment exceeded",
         `Only a maximum of 5 files are allowed`,
@@ -102,19 +107,7 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
       chatgroupID: chatGroup.id,
       message: inputText,
       userID: currentUser.attributes.sub,
-      images: [],
     };
-
-    if (images.length) {
-      const imageFiles = await Promise.all(
-        images.map((uri) => uploadFile(uri, "image"))
-      );
-      const filteredImageFiles = imageFiles.filter(
-        (val): val is string => typeof val === "string"
-      );
-      filteredImageFiles.length ? (newInput.images = filteredImageFiles) : null;
-      setImages([]);
-    }
 
     const newMessage = await API.graphql(
       graphqlOperation(createMessage, { input: newInput })
@@ -122,7 +115,13 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
     const newMessageId =
       "data" in newMessage && newMessage.data.createMessage.id;
 
-    if (attachments) {
+    if (media.length) {
+      await Promise.all(
+        media.map((file) => addMedia(file, newMessageId, chatGroup.id))
+      );
+      setMedia([]);
+    }
+    if (attachments.length) {
       await Promise.all(
         attachments.map((file) =>
           addAttachment(file, newMessageId, chatGroup.id)
@@ -183,10 +182,10 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
         </View>
       )}
 
-      {images.length > 0 && (
+      {media.length > 0 && (
         <View>
           <FlatList
-            data={images}
+            data={media}
             horizontal
             renderItem={({ item }) => {
               return (
@@ -197,15 +196,15 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
                     color="black"
                     style={styles.removeSelectedImage}
                     onPress={() =>
-                      setImages((images) => {
-                        return images.filter((images) => images !== item);
+                      setMedia((media) => {
+                        return media.filter((media) => media !== item);
                       })
                     }
                   />
                   <Image
                     resizeMode="contain"
                     style={styles.selectedImage}
-                    source={{ uri: item }}
+                    source={{ uri: item.uri }}
                   />
                 </>
               );
@@ -222,7 +221,7 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
           onChangeText={setInputText}
         />
         <MaterialCommunityIcons
-          onPress={() => pickAttachment()}
+          onPress={() => pickMedia(true)}
           style={styles.plusCircleIcon}
           name="plus-circle-outline"
           size={30}
@@ -265,6 +264,24 @@ const addAttachment = async (
     chatgroupID: chatGroupId,
   };
   API.graphql(graphqlOperation(createAttachment, { input: newAttachment }));
+};
+
+const addMedia = async (
+  file: mediaFile,
+  messageId: string,
+  chatGroupId: string
+) => {
+  const newMedia = {
+    storageKey: await uploadFile(file.uri, file.type),
+    type: FileType[file.type],
+    duration: file.duration,
+    width: file.width,
+    height: file.height,
+    messageID: messageId,
+    chatgroupID: chatGroupId,
+  };
+
+  API.graphql(graphqlOperation(createMedia, { input: newMedia }));
 };
 
 const uploadFile = async (uri: string, type: "video" | "image") => {

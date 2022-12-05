@@ -28,6 +28,7 @@ import { deleteUserChatGroup } from "../../graphql/mutations";
 import {
   onCreateMessage,
   onCreateAttachment,
+  onCreateMedia,
 } from "../../graphql/subscriptions";
 import { useState, useContext, createContext, PropsWithChildren } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
@@ -236,6 +237,7 @@ function getandSubMessages(
         next: ({ value }: any) => {
           setMessages((msg: any) => {
             value.data.onCreateMessage.Attachments = { items: [] };
+            value.data.onCreateMessage.Media = { items: [] };
             return [value.data.onCreateMessage, ...msg];
           });
         },
@@ -260,6 +262,32 @@ function getandSubMessages(
             message[0].Attachments.items = [
               ...msg[0].Attachments.items,
               value.data.onCreateAttachment,
+            ];
+
+            return [...message];
+          });
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+
+    const onCreateMediaSub = API.graphql(
+      graphqlOperation(onCreateMedia, {
+        filter: { chatgroupID: { eq: chatGroupId } },
+      })
+    );
+
+    const mediaSubscription =
+      "subscribe" in onCreateMediaSub &&
+      onCreateMediaSub.subscribe({
+        next: ({ value }: any) => {
+          setMessages((msg: any) => {
+            const message = msg;
+
+            message[0].Media.items = [
+              ...msg[0].Media.items,
+              value.data.onCreateMedia,
             ];
 
             return [...message];

@@ -2,6 +2,72 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createMedia = /* GraphQL */ `
+  mutation CreateMedia(
+    $input: CreateMediaInput!
+    $condition: ModelMediaConditionInput
+  ) {
+    createMedia(input: $input, condition: $condition) {
+      id
+      storageKey
+      type
+      messageID
+      chatgroupID
+      duration
+      width
+      height
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateMedia = /* GraphQL */ `
+  mutation UpdateMedia(
+    $input: UpdateMediaInput!
+    $condition: ModelMediaConditionInput
+  ) {
+    updateMedia(input: $input, condition: $condition) {
+      id
+      storageKey
+      type
+      messageID
+      chatgroupID
+      duration
+      width
+      height
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteMedia = /* GraphQL */ `
+  mutation DeleteMedia(
+    $input: DeleteMediaInput!
+    $condition: ModelMediaConditionInput
+  ) {
+    deleteMedia(input: $input, condition: $condition) {
+      id
+      storageKey
+      type
+      messageID
+      chatgroupID
+      duration
+      width
+      height
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const createAttachment = /* GraphQL */ `
   mutation CreateAttachment(
     $input: CreateAttachmentInput!
@@ -122,7 +188,6 @@ export const createChatGroup = /* GraphQL */ `
         message
         userID
         chatgroupID
-        images
         updatedAt
         _version
         _deleted
@@ -138,6 +203,10 @@ export const createChatGroup = /* GraphQL */ `
       }
       leaderID
       Attachments {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }
@@ -165,7 +234,6 @@ export const updateChatGroup = /* GraphQL */ `
         message
         userID
         chatgroupID
-        images
         updatedAt
         _version
         _deleted
@@ -181,6 +249,10 @@ export const updateChatGroup = /* GraphQL */ `
       }
       leaderID
       Attachments {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }
@@ -208,7 +280,6 @@ export const deleteChatGroup = /* GraphQL */ `
         message
         userID
         chatgroupID
-        images
         updatedAt
         _version
         _deleted
@@ -224,6 +295,10 @@ export const deleteChatGroup = /* GraphQL */ `
       }
       leaderID
       Attachments {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }
@@ -457,8 +532,11 @@ export const createMessage = /* GraphQL */ `
       message
       userID
       chatgroupID
-      images
       Attachments {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }
@@ -480,8 +558,11 @@ export const updateMessage = /* GraphQL */ `
       message
       userID
       chatgroupID
-      images
       Attachments {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }
@@ -503,8 +584,11 @@ export const deleteMessage = /* GraphQL */ `
       message
       userID
       chatgroupID
-      images
       Attachments {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }

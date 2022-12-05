@@ -2,31 +2,35 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateAttachmentInput = {
+export type CreateMediaInput = {
   id?: string | null,
-  storageKey: string,
-  type: AttachmentType,
+  storageKey?: string | null,
+  type?: MediaType | null,
   messageID: string,
   chatgroupID: string,
-  name: string,
+  duration?: string | null,
+  width?: string | null,
+  height?: string | null,
   _version?: number | null,
 };
 
-export enum AttachmentType {
+export enum MediaType {
   IMAGE = "IMAGE",
   VIDEO = "VIDEO",
 }
 
 
-export type ModelAttachmentConditionInput = {
+export type ModelMediaConditionInput = {
   storageKey?: ModelStringInput | null,
-  type?: ModelAttachmentTypeInput | null,
+  type?: ModelMediaTypeInput | null,
   messageID?: ModelIDInput | null,
   chatgroupID?: ModelIDInput | null,
-  name?: ModelStringInput | null,
-  and?: Array< ModelAttachmentConditionInput | null > | null,
-  or?: Array< ModelAttachmentConditionInput | null > | null,
-  not?: ModelAttachmentConditionInput | null,
+  duration?: ModelStringInput | null,
+  width?: ModelStringInput | null,
+  height?: ModelStringInput | null,
+  and?: Array< ModelMediaConditionInput | null > | null,
+  or?: Array< ModelMediaConditionInput | null > | null,
+  not?: ModelMediaConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -69,9 +73,9 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
-export type ModelAttachmentTypeInput = {
-  eq?: AttachmentType | null,
-  ne?: AttachmentType | null,
+export type ModelMediaTypeInput = {
+  eq?: MediaType | null,
+  ne?: MediaType | null,
 };
 
 export type ModelIDInput = {
@@ -88,6 +92,72 @@ export type ModelIDInput = {
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
   size?: ModelSizeInput | null,
+};
+
+export type Media = {
+  __typename: "Media",
+  id: string,
+  storageKey?: string | null,
+  type?: MediaType | null,
+  messageID: string,
+  chatgroupID: string,
+  duration?: string | null,
+  width?: string | null,
+  height?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateMediaInput = {
+  id: string,
+  storageKey?: string | null,
+  type?: MediaType | null,
+  messageID?: string | null,
+  chatgroupID?: string | null,
+  duration?: string | null,
+  width?: string | null,
+  height?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteMediaInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateAttachmentInput = {
+  id?: string | null,
+  storageKey: string,
+  type: AttachmentType,
+  messageID: string,
+  chatgroupID: string,
+  name: string,
+  _version?: number | null,
+};
+
+export enum AttachmentType {
+  IMAGE = "IMAGE",
+  VIDEO = "VIDEO",
+}
+
+
+export type ModelAttachmentConditionInput = {
+  storageKey?: ModelStringInput | null,
+  type?: ModelAttachmentTypeInput | null,
+  messageID?: ModelIDInput | null,
+  chatgroupID?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  and?: Array< ModelAttachmentConditionInput | null > | null,
+  or?: Array< ModelAttachmentConditionInput | null > | null,
+  not?: ModelAttachmentConditionInput | null,
+};
+
+export type ModelAttachmentTypeInput = {
+  eq?: AttachmentType | null,
+  ne?: AttachmentType | null,
 };
 
 export type Attachment = {
@@ -180,6 +250,7 @@ export type ChatGroup = {
   users?: ModelUserChatGroupConnection | null,
   leaderID?: string | null,
   Attachments?: ModelAttachmentConnection | null,
+  Media?: ModelMediaConnection | null,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -195,8 +266,8 @@ export type Message = {
   message?: string | null,
   userID: string,
   chatgroupID: string,
-  images?: Array< string | null > | null,
   Attachments?: ModelAttachmentConnection | null,
+  Media?: ModelMediaConnection | null,
   updatedAt: string,
   _version: number,
   _deleted?: boolean | null,
@@ -206,6 +277,13 @@ export type Message = {
 export type ModelAttachmentConnection = {
   __typename: "ModelAttachmentConnection",
   items:  Array<Attachment | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ModelMediaConnection = {
+  __typename: "ModelMediaConnection",
+  items:  Array<Media | null >,
   nextToken?: string | null,
   startedAt?: number | null,
 };
@@ -341,7 +419,6 @@ export type CreateMessageInput = {
   message?: string | null,
   userID: string,
   chatgroupID: string,
-  images?: Array< string | null > | null,
   _version?: number | null,
 };
 
@@ -350,7 +427,6 @@ export type ModelMessageConditionInput = {
   message?: ModelStringInput | null,
   userID?: ModelIDInput | null,
   chatgroupID?: ModelIDInput | null,
-  images?: ModelStringInput | null,
   and?: Array< ModelMessageConditionInput | null > | null,
   or?: Array< ModelMessageConditionInput | null > | null,
   not?: ModelMessageConditionInput | null,
@@ -362,13 +438,26 @@ export type UpdateMessageInput = {
   message?: string | null,
   userID?: string | null,
   chatgroupID?: string | null,
-  images?: Array< string | null > | null,
   _version?: number | null,
 };
 
 export type DeleteMessageInput = {
   id: string,
   _version?: number | null,
+};
+
+export type ModelMediaFilterInput = {
+  id?: ModelIDInput | null,
+  storageKey?: ModelStringInput | null,
+  type?: ModelMediaTypeInput | null,
+  messageID?: ModelIDInput | null,
+  chatgroupID?: ModelIDInput | null,
+  duration?: ModelStringInput | null,
+  width?: ModelStringInput | null,
+  height?: ModelStringInput | null,
+  and?: Array< ModelMediaFilterInput | null > | null,
+  or?: Array< ModelMediaFilterInput | null > | null,
+  not?: ModelMediaFilterInput | null,
 };
 
 export type ModelAttachmentFilterInput = {
@@ -457,21 +546,22 @@ export type ModelMessageFilterInput = {
   message?: ModelStringInput | null,
   userID?: ModelIDInput | null,
   chatgroupID?: ModelIDInput | null,
-  images?: ModelStringInput | null,
   and?: Array< ModelMessageFilterInput | null > | null,
   or?: Array< ModelMessageFilterInput | null > | null,
   not?: ModelMessageFilterInput | null,
 };
 
-export type ModelSubscriptionAttachmentFilterInput = {
+export type ModelSubscriptionMediaFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   storageKey?: ModelSubscriptionStringInput | null,
   type?: ModelSubscriptionStringInput | null,
   messageID?: ModelSubscriptionIDInput | null,
   chatgroupID?: ModelSubscriptionIDInput | null,
-  name?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionAttachmentFilterInput | null > | null,
-  or?: Array< ModelSubscriptionAttachmentFilterInput | null > | null,
+  duration?: ModelSubscriptionStringInput | null,
+  width?: ModelSubscriptionStringInput | null,
+  height?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionMediaFilterInput | null > | null,
+  or?: Array< ModelSubscriptionMediaFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -502,6 +592,17 @@ export type ModelSubscriptionStringInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
+};
+
+export type ModelSubscriptionAttachmentFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  storageKey?: ModelSubscriptionStringInput | null,
+  type?: ModelSubscriptionStringInput | null,
+  messageID?: ModelSubscriptionIDInput | null,
+  chatgroupID?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionAttachmentFilterInput | null > | null,
+  or?: Array< ModelSubscriptionAttachmentFilterInput | null > | null,
 };
 
 export type ModelSubscriptionFriendsFilterInput = {
@@ -543,9 +644,80 @@ export type ModelSubscriptionMessageFilterInput = {
   message?: ModelSubscriptionStringInput | null,
   userID?: ModelSubscriptionIDInput | null,
   chatgroupID?: ModelSubscriptionIDInput | null,
-  images?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionMessageFilterInput | null > | null,
   or?: Array< ModelSubscriptionMessageFilterInput | null > | null,
+};
+
+export type CreateMediaMutationVariables = {
+  input: CreateMediaInput,
+  condition?: ModelMediaConditionInput | null,
+};
+
+export type CreateMediaMutation = {
+  createMedia?:  {
+    __typename: "Media",
+    id: string,
+    storageKey?: string | null,
+    type?: MediaType | null,
+    messageID: string,
+    chatgroupID: string,
+    duration?: string | null,
+    width?: string | null,
+    height?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateMediaMutationVariables = {
+  input: UpdateMediaInput,
+  condition?: ModelMediaConditionInput | null,
+};
+
+export type UpdateMediaMutation = {
+  updateMedia?:  {
+    __typename: "Media",
+    id: string,
+    storageKey?: string | null,
+    type?: MediaType | null,
+    messageID: string,
+    chatgroupID: string,
+    duration?: string | null,
+    width?: string | null,
+    height?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteMediaMutationVariables = {
+  input: DeleteMediaInput,
+  condition?: ModelMediaConditionInput | null,
+};
+
+export type DeleteMediaMutation = {
+  deleteMedia?:  {
+    __typename: "Media",
+    id: string,
+    storageKey?: string | null,
+    type?: MediaType | null,
+    messageID: string,
+    chatgroupID: string,
+    duration?: string | null,
+    width?: string | null,
+    height?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
 };
 
 export type CreateAttachmentMutationVariables = {
@@ -683,7 +855,6 @@ export type CreateChatGroupMutation = {
       message?: string | null,
       userID: string,
       chatgroupID: string,
-      images?: Array< string | null > | null,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
@@ -702,6 +873,11 @@ export type CreateChatGroupMutation = {
     leaderID?: string | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -732,7 +908,6 @@ export type UpdateChatGroupMutation = {
       message?: string | null,
       userID: string,
       chatgroupID: string,
-      images?: Array< string | null > | null,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
@@ -751,6 +926,11 @@ export type UpdateChatGroupMutation = {
     leaderID?: string | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -781,7 +961,6 @@ export type DeleteChatGroupMutation = {
       message?: string | null,
       userID: string,
       chatgroupID: string,
-      images?: Array< string | null > | null,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
@@ -800,6 +979,11 @@ export type DeleteChatGroupMutation = {
     leaderID?: string | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1062,9 +1246,13 @@ export type CreateMessageMutation = {
     message?: string | null,
     userID: string,
     chatgroupID: string,
-    images?: Array< string | null > | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1088,9 +1276,13 @@ export type UpdateMessageMutation = {
     message?: string | null,
     userID: string,
     chatgroupID: string,
-    images?: Array< string | null > | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1114,9 +1306,13 @@ export type DeleteMessageMutation = {
     message?: string | null,
     userID: string,
     chatgroupID: string,
-    images?: Array< string | null > | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1124,6 +1320,90 @@ export type DeleteMessageMutation = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type GetMediaQueryVariables = {
+  id: string,
+};
+
+export type GetMediaQuery = {
+  getMedia?:  {
+    __typename: "Media",
+    id: string,
+    storageKey?: string | null,
+    type?: MediaType | null,
+    messageID: string,
+    chatgroupID: string,
+    duration?: string | null,
+    width?: string | null,
+    height?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListMediaQueryVariables = {
+  filter?: ModelMediaFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListMediaQuery = {
+  listMedia?:  {
+    __typename: "ModelMediaConnection",
+    items:  Array< {
+      __typename: "Media",
+      id: string,
+      storageKey?: string | null,
+      type?: MediaType | null,
+      messageID: string,
+      chatgroupID: string,
+      duration?: string | null,
+      width?: string | null,
+      height?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncMediaQueryVariables = {
+  filter?: ModelMediaFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncMediaQuery = {
+  syncMedia?:  {
+    __typename: "ModelMediaConnection",
+    items:  Array< {
+      __typename: "Media",
+      id: string,
+      storageKey?: string | null,
+      type?: MediaType | null,
+      messageID: string,
+      chatgroupID: string,
+      duration?: string | null,
+      width?: string | null,
+      height?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
   } | null,
 };
 
@@ -1285,7 +1565,6 @@ export type GetChatGroupQuery = {
       message?: string | null,
       userID: string,
       chatgroupID: string,
-      images?: Array< string | null > | null,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
@@ -1304,6 +1583,11 @@ export type GetChatGroupQuery = {
     leaderID?: string | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1620,9 +1904,13 @@ export type GetMessageQuery = {
     message?: string | null,
     userID: string,
     chatgroupID: string,
-    images?: Array< string | null > | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1649,7 +1937,6 @@ export type ListMessagesQuery = {
       message?: string | null,
       userID: string,
       chatgroupID: string,
-      images?: Array< string | null > | null,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
@@ -1677,7 +1964,6 @@ export type SyncMessagesQuery = {
       message?: string | null,
       userID: string,
       chatgroupID: string,
-      images?: Array< string | null > | null,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
@@ -1707,7 +1993,6 @@ export type ListMessagesByChatGroupQuery = {
       message?: string | null,
       userID: string,
       chatgroupID: string,
-      images?: Array< string | null > | null,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
@@ -1715,6 +2000,75 @@ export type ListMessagesByChatGroupQuery = {
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
+  } | null,
+};
+
+export type OnCreateMediaSubscriptionVariables = {
+  filter?: ModelSubscriptionMediaFilterInput | null,
+};
+
+export type OnCreateMediaSubscription = {
+  onCreateMedia?:  {
+    __typename: "Media",
+    id: string,
+    storageKey?: string | null,
+    type?: MediaType | null,
+    messageID: string,
+    chatgroupID: string,
+    duration?: string | null,
+    width?: string | null,
+    height?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateMediaSubscriptionVariables = {
+  filter?: ModelSubscriptionMediaFilterInput | null,
+};
+
+export type OnUpdateMediaSubscription = {
+  onUpdateMedia?:  {
+    __typename: "Media",
+    id: string,
+    storageKey?: string | null,
+    type?: MediaType | null,
+    messageID: string,
+    chatgroupID: string,
+    duration?: string | null,
+    width?: string | null,
+    height?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteMediaSubscriptionVariables = {
+  filter?: ModelSubscriptionMediaFilterInput | null,
+};
+
+export type OnDeleteMediaSubscription = {
+  onDeleteMedia?:  {
+    __typename: "Media",
+    id: string,
+    storageKey?: string | null,
+    type?: MediaType | null,
+    messageID: string,
+    chatgroupID: string,
+    duration?: string | null,
+    width?: string | null,
+    height?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
   } | null,
 };
 
@@ -1846,7 +2200,6 @@ export type OnCreateChatGroupSubscription = {
       message?: string | null,
       userID: string,
       chatgroupID: string,
-      images?: Array< string | null > | null,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
@@ -1865,6 +2218,11 @@ export type OnCreateChatGroupSubscription = {
     leaderID?: string | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1894,7 +2252,6 @@ export type OnUpdateChatGroupSubscription = {
       message?: string | null,
       userID: string,
       chatgroupID: string,
-      images?: Array< string | null > | null,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
@@ -1913,6 +2270,11 @@ export type OnUpdateChatGroupSubscription = {
     leaderID?: string | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1942,7 +2304,6 @@ export type OnDeleteChatGroupSubscription = {
       message?: string | null,
       userID: string,
       chatgroupID: string,
-      images?: Array< string | null > | null,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
@@ -1961,6 +2322,11 @@ export type OnDeleteChatGroupSubscription = {
     leaderID?: string | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -2216,9 +2582,13 @@ export type OnCreateMessageSubscription = {
     message?: string | null,
     userID: string,
     chatgroupID: string,
-    images?: Array< string | null > | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -2241,9 +2611,13 @@ export type OnUpdateMessageSubscription = {
     message?: string | null,
     userID: string,
     chatgroupID: string,
-    images?: Array< string | null > | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -2266,9 +2640,13 @@ export type OnDeleteMessageSubscription = {
     message?: string | null,
     userID: string,
     chatgroupID: string,
-    images?: Array< string | null > | null,
     Attachments?:  {
       __typename: "ModelAttachmentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,

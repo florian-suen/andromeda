@@ -22,17 +22,17 @@ type Message = {
   createdAt: string;
   userID: string;
   id: string;
-  images: [string];
+  Media: any;
   Attachments: any;
 };
 
 export const Message = ({ message }: { message: Message }) => {
   const [myMsg, setMymsg] = useState(false);
   const [attachments, setAttachments] = useState<any>([]);
-  const [imageSrc, setImageSrc] = useState<any>([]);
+  const [mediaSrc, setMediaSrc] = useState<any>([]);
   const [imageViewerVisibility, setimageViewerVisibility] = useState(false);
   let imgViewerIndex = useRef(0);
-  console.log(message.Attachments);
+
   useEffect(() => {
     (async () => {
       const currentUser = await Auth.currentAuthenticatedUser();
@@ -41,7 +41,6 @@ export const Message = ({ message }: { message: Message }) => {
   }, []);
 
   useEffect(() => {
-    console.log("run");
     const getAttachements = async () => {
       if (message && message.Attachments && message.Attachments.items.length) {
         const uriAttachments = await Promise.all(
@@ -55,17 +54,27 @@ export const Message = ({ message }: { message: Message }) => {
         setAttachments(uriAttachments);
       }
     };
-    const getImages = async () => {
-      if (message.images?.length) {
-        const uri = await Storage.get(message.images[0]);
-        const uris = await Promise.all(message.images.map(Storage.get as any));
-        const mappedUris = uris.map((uri) => ({ uri }));
-        setImageSrc(mappedUris);
+
+    getAttachements();
+  }, [message.Attachments.items]);
+
+  useEffect(() => {
+    const getMedia = async () => {
+      if (message && message.Media && message.Media.items.length) {
+        const uriMedia = await Promise.all(
+          message.Media.items.map((media: any) =>
+            Storage.get(media.storageKey).then((uri) => ({
+              ...media,
+              uri,
+            }))
+          )
+        );
+        setMediaSrc(uriMedia);
       }
     };
-    getImages();
-    getAttachements();
-  }, [message.images, message.Attachments.items]);
+    getMedia();
+  }, [message.Media.items]);
+
   return (
     <View
       key={message.id}
@@ -74,17 +83,17 @@ export const Message = ({ message }: { message: Message }) => {
         myMsg ? styles.containerme : styles.containerfriend,
       ]}
     >
-      {imageSrc.length > 0 && (
+      {mediaSrc.length > 0 && (
         <>
           <ImageView
-            images={imageSrc}
+            images={mediaSrc}
             visible={imageViewerVisibility}
             imageIndex={imgViewerIndex.current}
             onRequestClose={() => setimageViewerVisibility(false)}
           />
 
           <FlatList
-            data={imageSrc}
+            data={mediaSrc}
             renderItem={({ item, index }) => {
               return (
                 <Pressable
@@ -93,7 +102,7 @@ export const Message = ({ message }: { message: Message }) => {
                     setimageViewerVisibility(true);
                   }}
                 >
-                  <Image style={styles.image} source={item} />
+                  <Image style={styles.image} source={{ uri: item.uri }} />
                 </Pressable>
               );
             }}

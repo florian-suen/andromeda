@@ -2,6 +2,85 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getMedia = /* GraphQL */ `
+  query GetMedia($id: ID!) {
+    getMedia(id: $id) {
+      id
+      storageKey
+      type
+      messageID
+      chatgroupID
+      duration
+      width
+      height
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listMedia = /* GraphQL */ `
+  query ListMedia(
+    $filter: ModelMediaFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listMedia(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        storageKey
+        type
+        messageID
+        chatgroupID
+        duration
+        width
+        height
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncMedia = /* GraphQL */ `
+  query SyncMedia(
+    $filter: ModelMediaFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncMedia(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        storageKey
+        type
+        messageID
+        chatgroupID
+        duration
+        width
+        height
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
 export const getAttachment = /* GraphQL */ `
   query GetAttachment($id: ID!) {
     getAttachment(id: $id) {
@@ -138,14 +217,13 @@ export const getChatGroup = /* GraphQL */ `
     getChatGroup(id: $id) {
       id
       name
-      image
+
       LastMessage {
         id
         createdAt
         message
         userID
         chatgroupID
-        images
         updatedAt
         _version
         _deleted
@@ -162,7 +240,6 @@ export const getChatGroup = /* GraphQL */ `
           _deleted
           userID
           user {
-            image
             status
             username
             id
@@ -171,6 +248,10 @@ export const getChatGroup = /* GraphQL */ `
       }
       leaderID
       Attachments {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }
@@ -193,7 +274,7 @@ export const listChatGroups = /* GraphQL */ `
       items {
         id
         name
-        image
+
         leaderID
         createdAt
         updatedAt
@@ -223,7 +304,7 @@ export const syncChatGroups = /* GraphQL */ `
       items {
         id
         name
-        image
+
         leaderID
         createdAt
         updatedAt
@@ -243,7 +324,7 @@ export const getUser = /* GraphQL */ `
       id
       username
       status
-      image
+
       Messages {
         nextToken
         startedAt
@@ -275,7 +356,7 @@ export const listUsers = /* GraphQL */ `
         id
         username
         status
-        image
+
         createdAt
         updatedAt
         _version
@@ -304,7 +385,7 @@ export const syncUsers = /* GraphQL */ `
         id
         username
         status
-        image
+
         createdAt
         updatedAt
         _version
@@ -326,7 +407,7 @@ export const getUserChatGroup = /* GraphQL */ `
       Chatgroup {
         id
         name
-        image
+
         leaderID
         createdAt
         updatedAt
@@ -339,7 +420,7 @@ export const getUserChatGroup = /* GraphQL */ `
         id
         username
         status
-        image
+
         createdAt
         updatedAt
         _version
@@ -475,8 +556,11 @@ export const getMessage = /* GraphQL */ `
       message
       userID
       chatgroupID
-      images
       Attachments {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }
@@ -500,7 +584,6 @@ export const listMessages = /* GraphQL */ `
         message
         userID
         chatgroupID
-        images
         updatedAt
         _version
         _deleted
@@ -530,7 +613,6 @@ export const syncMessages = /* GraphQL */ `
         message
         userID
         chatgroupID
-        images
         updatedAt
         _version
         _deleted
@@ -564,7 +646,6 @@ export const listMessagesByChatGroup = /* GraphQL */ `
         message
         userID
         chatgroupID
-        images
         updatedAt
         _version
         _deleted
