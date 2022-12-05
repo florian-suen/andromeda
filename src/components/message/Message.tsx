@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import { S3Image } from "aws-amplify-react-native";
 import ImageView from "react-native-image-viewing";
 import { Attachment } from "../../models";
+import { Video, ResizeMode } from "expo-av";
 dayjs.extend(relativeTime);
 
 type Message = {
@@ -74,7 +75,7 @@ export const Message = ({ message }: { message: Message }) => {
     };
     getMedia();
   }, [message.Media.items]);
-
+  const resize = "contain";
   return (
     <View
       key={message.id}
@@ -83,7 +84,22 @@ export const Message = ({ message }: { message: Message }) => {
         myMsg ? styles.containerme : styles.containerfriend,
       ]}
     >
-      {mediaSrc.length > 0 && (
+      {mediaSrc.length > 0 && mediaSrc[0].type === "VIDEO" && (
+        <Video
+          resizeMode={ResizeMode.CONTAIN}
+          useNativeControls
+          source={{
+            uri: mediaSrc[0].uri,
+          }}
+          shouldPlay={false}
+          style={{
+            width: 200,
+            height: 200,
+          }}
+        />
+      )}
+
+      {mediaSrc.length > 0 && mediaSrc[0].type === "IMAGE" && (
         <>
           <ImageView
             images={mediaSrc}
