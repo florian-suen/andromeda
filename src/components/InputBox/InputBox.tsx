@@ -6,6 +6,7 @@ import {
   Animated,
   Image,
   FlatList,
+  Alert,
 } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState, useEffect, useRef } from "react";
@@ -18,6 +19,7 @@ import {
 import { API, Auth, graphqlOperation, Storage } from "aws-amplify";
 import react from "react";
 import * as imagePicker from "expo-image-picker";
+import * as DocumentPicker from "expo-document-picker";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 
@@ -44,10 +46,8 @@ enum contentTypes {
 
 type file = {
   uri: string;
-  type: "image" | "video";
-  width: string;
-  height: string;
-  duration: string;
+  mimeType: string;
+  name: string;
 };
 
 export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
@@ -63,21 +63,34 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
   });
   // note to create alert for attachments and possible zip the file. download button while listing all files.
 
-  const pickImage = async (attachment: boolean) => {
+  const pickImage = async () => {
     let result = await imagePicker.launchImageLibraryAsync({
       mediaTypes: imagePicker.MediaTypeOptions.All,
       quality: 1,
       allowsMultipleSelection: true,
     });
 
-    if (!result.cancelled && !attachment) {
+    if (!result.cancelled) {
       ((result as any).uri && setImages([(result as any).uri])) ||
         (result.selected &&
           setImages(result.selected.map((images) => images.uri)));
-    } else if (!result.cancelled) {
-      result.selected
-        ? setAttachments(result.selected)
-        : setAttachments([result]);
+    }
+  };
+
+  const pickAttachment = async () => {
+    let result = await DocumentPicker.getDocumentAsync({
+      copyToCacheDirectory: false,
+      type: "*/*",
+    });
+
+    if (result.type === "success" && attachments.length < 5)
+      setAttachments((existing) => [...existing, result]);
+    else {
+      Alert.alert(
+        "Max attachment exceeded",
+        `Only a maximum of 5 files are allowed`,
+        [{ text: "OK", style: "cancel" }]
+      );
     }
   };
 
@@ -108,15 +121,15 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
     );
     const newMessageId =
       "data" in newMessage && newMessage.data.createMessage.id;
-    console.log(attachments);
 
-    attachments &&
-      (await Promise.all(
+    if (attachments) {
+      await Promise.all(
         attachments.map((file) =>
           addAttachment(file, newMessageId, chatGroup.id)
         )
-      ));
-
+      );
+      setAttachments([]);
+    }
     API.graphql(
       graphqlOperation(updateChatGroup, {
         input: {
@@ -157,6 +170,19 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
 
   return (
     <>
+      {attachments.length > 0 && (
+        <View>
+          <Text>You currently have {attachments.length} files</Text>
+          {attachments.map((val, i) => {
+            return (
+              <Text key={val.uri + i}>
+                File name:{val.name} Size:{val.size}
+              </Text>
+            );
+          })}
+        </View>
+      )}
+
       {images.length > 0 && (
         <View>
           <FlatList
@@ -196,7 +222,7 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
           onChangeText={setInputText}
         />
         <MaterialCommunityIcons
-          onPress={() => pickImage(true)}
+          onPress={() => pickAttachment()}
           style={styles.plusCircleIcon}
           name="plus-circle-outline"
           size={30}
@@ -230,12 +256,11 @@ const addAttachment = async (
   messageId: string,
   chatGroupId: string
 ) => {
+  const type = file.mimeType.split("/")[0] as "image";
   const newAttachment = {
-    storageKey: await uploadFile(file.uri, file.type),
-    type: FileType[file.type],
-    width: file.width,
-    height: file.height,
-    duration: file.duration,
+    storageKey: await uploadFile(file.uri, type),
+    type: FileType[type],
+    name: file.name,
     messageID: messageId,
     chatgroupID: chatGroupId,
   };

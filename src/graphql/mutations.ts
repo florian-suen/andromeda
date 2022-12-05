@@ -11,11 +11,9 @@ export const createAttachment = /* GraphQL */ `
       id
       storageKey
       type
-      width
-      height
-      duration
       messageID
       chatgroupID
+      name
       createdAt
       updatedAt
       _version
@@ -33,11 +31,9 @@ export const updateAttachment = /* GraphQL */ `
       id
       storageKey
       type
-      width
-      height
-      duration
       messageID
       chatgroupID
+      name
       createdAt
       updatedAt
       _version
@@ -55,11 +51,9 @@ export const deleteAttachment = /* GraphQL */ `
       id
       storageKey
       type
-      width
-      height
-      duration
       messageID
       chatgroupID
+      name
       createdAt
       updatedAt
       _version

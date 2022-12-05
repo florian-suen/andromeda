@@ -6,12 +6,10 @@ enum AttachmentType {
 type Attachment @model @auth(rules: [{allow: public}]) {
   id: ID!
   storageKey: String!
-  typ: AttachmentType!
-  width: Int
-  height: Int
-  duration: Int
+  type: AttachmentType!
   messageID: ID! @index(name: "byMessage")
   chatgroupID: ID! @index(name: "byChatGroup")
+  name: String!
 }
 
 type Friends @model @auth(rules: [{allow: public}]) {

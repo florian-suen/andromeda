@@ -13,6 +13,7 @@ import { Auth, Storage } from "aws-amplify";
 import { useState, useEffect } from "react";
 import { S3Image } from "aws-amplify-react-native";
 import ImageView from "react-native-image-viewing";
+import { Attachment } from "../../models";
 dayjs.extend(relativeTime);
 
 type Message = {
@@ -31,7 +32,7 @@ export const Message = ({ message }: { message: Message }) => {
   const [imageSrc, setImageSrc] = useState<any>([]);
   const [imageViewerVisibility, setimageViewerVisibility] = useState(false);
   let imgViewerIndex = useRef(0);
-
+  console.log(message.Attachments);
   useEffect(() => {
     (async () => {
       const currentUser = await Auth.currentAuthenticatedUser();
@@ -40,8 +41,9 @@ export const Message = ({ message }: { message: Message }) => {
   }, []);
 
   useEffect(() => {
+    console.log("run");
     const getAttachements = async () => {
-      if (message?.Attachments.items.length) {
+      if (message && message.Attachments && message.Attachments.items.length) {
         const uriAttachments = await Promise.all(
           message.Attachments.items.map((attachment: any) =>
             Storage.get(attachment.storageKey).then((uri) => ({
@@ -50,7 +52,6 @@ export const Message = ({ message }: { message: Message }) => {
             }))
           )
         );
-
         setAttachments(uriAttachments);
       }
     };
@@ -63,8 +64,8 @@ export const Message = ({ message }: { message: Message }) => {
       }
     };
     getImages();
-  }, [message.images]);
-
+    getAttachements();
+  }, [message.images, message.Attachments.items]);
   return (
     <View
       key={message.id}
@@ -98,6 +99,15 @@ export const Message = ({ message }: { message: Message }) => {
             }}
           />
         </>
+      )}
+
+      {attachments.length > 0 && (
+        <FlatList
+          data={attachments}
+          renderItem={({ item }) => {
+            return <Text>You have files {item.type}</Text>;
+          }}
+        />
       )}
       <Text style={styles.message}>{message.message}</Text>
       <Text style={styles.time}>{dayjs(message.createdAt).fromNow(true)}</Text>

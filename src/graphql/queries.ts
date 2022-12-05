@@ -1,4 +1,3 @@
-import { Attachment } from "./../API";
 /* tslint:disable */
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
@@ -9,11 +8,9 @@ export const getAttachment = /* GraphQL */ `
       id
       storageKey
       type
-      width
-      height
-      duration
       messageID
       chatgroupID
+      name
       createdAt
       updatedAt
       _version
@@ -33,11 +30,9 @@ export const listAttachments = /* GraphQL */ `
         id
         storageKey
         type
-        width
-        height
-        duration
         messageID
         chatgroupID
+        name
         createdAt
         updatedAt
         _version
@@ -66,11 +61,9 @@ export const syncAttachments = /* GraphQL */ `
         id
         storageKey
         type
-        width
-        height
-        duration
         messageID
         chatgroupID
+        name
         createdAt
         updatedAt
         _version
@@ -572,12 +565,6 @@ export const listMessagesByChatGroup = /* GraphQL */ `
         userID
         chatgroupID
         images
-        Attachments {
-          items{
-
-            
-          }
-        }
         updatedAt
         _version
         _deleted

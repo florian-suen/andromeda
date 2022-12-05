@@ -34,12 +34,10 @@ type UserMetaData = {
 type EagerAttachment = {
   readonly id: string;
   readonly storageKey: string;
-  readonly typ: AttachmentType | keyof typeof AttachmentType;
-  readonly width?: number | null;
-  readonly height?: number | null;
-  readonly duration?: number | null;
+  readonly type: AttachmentType | keyof typeof AttachmentType;
   readonly messageID: string;
   readonly chatgroupID: string;
+  readonly name: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -47,12 +45,10 @@ type EagerAttachment = {
 type LazyAttachment = {
   readonly id: string;
   readonly storageKey: string;
-  readonly typ: AttachmentType | keyof typeof AttachmentType;
-  readonly width?: number | null;
-  readonly height?: number | null;
-  readonly duration?: number | null;
+  readonly type: AttachmentType | keyof typeof AttachmentType;
   readonly messageID: string;
   readonly chatgroupID: string;
+  readonly name: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

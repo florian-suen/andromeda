@@ -18,10 +18,17 @@ import { Message } from "../Message/Message";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-import { getChatGroup } from "../../graphql/queries";
+import {
+  getChatGroup,
+  getAttachment,
+  listAttachments,
+} from "../../graphql/queries";
 import { listMessagesByChatGroup } from "./GroupChatCompoundQueries";
 import { deleteUserChatGroup } from "../../graphql/mutations";
-import { onCreateMessage } from "../../graphql/subscriptions";
+import {
+  onCreateMessage,
+  onCreateAttachment,
+} from "../../graphql/subscriptions";
 import { useState, useContext, createContext, PropsWithChildren } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
@@ -51,7 +58,7 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
     useNavigation<NativeStackNavigationProp<AddContactParam>>();
   const chatGroupId = route.params.chatGroupId;
   const [chatGroupData, setChatGroupData] = useState<any>();
-  const [messages, setMessages] = useState<any>([]);
+  const [messages, setMessages] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
   getChatGroupData(chatGroupId, setChatGroupData);
   setNavHeaderOptions(navigation, chatGroupData, modalVisible, setModalVisible);
@@ -227,7 +234,36 @@ function getandSubMessages(
       "subscribe" in onCreateMsg &&
       onCreateMsg.subscribe({
         next: ({ value }: any) => {
-          setMessages((msg: any) => [value.data.onCreateMessage, ...msg]);
+          setMessages((msg: any) => {
+            value.data.onCreateMessage.Attachments = { items: [] };
+            return [value.data.onCreateMessage, ...msg];
+          });
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+
+    const onCreateAttach = API.graphql(
+      graphqlOperation(onCreateAttachment, {
+        filter: { chatgroupID: { eq: chatGroupId } },
+      })
+    );
+
+    const attachSubscription =
+      "subscribe" in onCreateAttach &&
+      onCreateAttach.subscribe({
+        next: ({ value }: any) => {
+          setMessages((msg: any) => {
+            const message = msg;
+
+            message[0].Attachments.items = [
+              ...msg[0].Attachments.items,
+              value.data.onCreateAttachment,
+            ];
+
+            return [...message];
+          });
         },
         error: (err) => {
           console.log(err);
@@ -236,6 +272,7 @@ function getandSubMessages(
 
     return () => {
       msgSubscription && msgSubscription.unsubscribe();
+      attachSubscription && attachSubscription.unsubscribe();
     };
   }, [chatGroupId]);
 }

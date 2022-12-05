@@ -17,34 +17,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "typ": {
-                    "name": "typ",
+                "type": {
+                    "name": "type",
                     "isArray": false,
                     "type": {
                         "enum": "AttachmentType"
                     },
                     "isRequired": true,
-                    "attributes": []
-                },
-                "width": {
-                    "name": "width",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "height": {
-                    "name": "height",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "duration": {
-                    "name": "duration",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
                     "attributes": []
                 },
                 "messageID": {
@@ -58,6 +37,13 @@ export const schema = {
                     "name": "chatgroupID",
                     "isArray": false,
                     "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -658,5 +644,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "15be0e1c27aeea1399bc371c886d0963"
+    "version": "9bf07a6948a4fbd398fece7003142b93"
 };

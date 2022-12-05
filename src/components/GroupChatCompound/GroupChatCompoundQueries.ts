@@ -24,18 +24,17 @@ export const listMessagesByChatGroup = /* GraphQL */ `
         images
         Attachments {
           items {
-            storageKey
-            type
-            width
-            height
-            duration
-            messageID
             chatgroupID
             createdAt
+            id
+            messageID
             updatedAt
+            type
+            storageKey
+            name
             _version
-            _deleted
             _lastChangedAt
+            _deleted
           }
         }
         updatedAt
