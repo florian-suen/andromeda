@@ -175,10 +175,7 @@ export const onCreateChatGroup = /* GraphQL */ `
         nextToken
         startedAt
       }
-      users {
-        nextToken
-        startedAt
-      }
+
       leaderID
       Attachments {
         nextToken

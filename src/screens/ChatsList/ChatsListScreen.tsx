@@ -3,6 +3,8 @@ import { ChatGroup } from "../../components/ChatList/ChatList";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { GetUser } from "./queries";
 import { useEffect, useState, useRef } from "react";
+import { useOnCreateUserChatGroup } from "../../../utility/useUpdateUserChatGroup";
+import { useOnCreateChatGroup } from "../../../utility/useOnCreateChatGroup";
 
 export type ChatGroupType = {
   Chatgroup: {
@@ -46,6 +48,8 @@ export const ChatList = () => {
   useEffect(() => {
     fetchChatGroup(setChatGroup);
   }, []);
+
+  useOnCreateChatGroup(chatGroup, setChatGroup);
 
   return chatGroup?.length ? (
     <FlatList

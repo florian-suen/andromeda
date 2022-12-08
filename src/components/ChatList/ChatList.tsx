@@ -9,7 +9,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import { onUpdateChatGroup } from "../../graphql/subscriptions";
 import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
 import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
-import { useOnCreateChatGroup } from "../../../utility/useOnCreateUserChatGroup";
+import { useOnCreateChatGroup } from "../../../utility/useOnCreateChatGroup";
 dayjs.extend(relativeTime);
 
 type ChatGroupParam = {
