@@ -9,6 +9,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import { onUpdateChatGroup } from "../../graphql/subscriptions";
 import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
 import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
+import { useOnCreateChatGroup } from "../../../utility/useOnCreateUserChatGroup";
 dayjs.extend(relativeTime);
 
 type ChatGroupParam = {
@@ -24,15 +25,15 @@ export const ChatGroup = ({
 }) => {
   const navigation = useNavigation<NativeStackNavigationProp<ChatGroupParam>>();
   const styles = StyleSheet.create(useThemeColor(styleSheet));
-  const [chatGroupData, setChatGroupData] = useState(chat.Chatgroup);
 
+  const [chatGroup, setChatGroupData] = useState<any>(null);
+  const chatGroupData = chatGroup || chat.Chatgroup;
   useUpdateChatGroup(
     chatGroupData,
     setChatGroupData,
     chat.Chatgroup.id,
     setReOrder
   );
-
   return (
     <Pressable
       android_ripple={{ color: "#222b3d" }}
