@@ -3,6 +3,7 @@ import { ChatList } from "../screens/ChatsList/ChatsListScreen";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { setStatusBarBackgroundColor } from "expo-status-bar";
 import { Account } from "../screens/AccountScreen";
+import { ContactScreen } from "../screens/ContactScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -38,7 +39,7 @@ export const TabNavigator = () => {
       />
       <Tab.Screen
         name="Contacts"
-        component={ChatList}
+        component={ContactScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons color={color} size={size} name="people-outline" />

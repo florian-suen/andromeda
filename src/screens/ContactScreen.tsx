@@ -1,0 +1,138 @@
+import { useState, useEffect, useRef } from "react";
+import {
+  StyleSheet,
+  Animated,
+  ViewStyle,
+  ImageStyle,
+  TextStyle,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { ContactsComponent } from "../components/Contacts/Contacts";
+import { graphqlOperation, API, Auth } from "aws-amplify";
+import { listUsers } from "../graphql/queries";
+import { User } from "../models/index";
+import { useThemeColor } from "../../utility/useStyles";
+
+type RootStackParamList = {
+  GroupChat: { chatGroupId: string; username: string };
+};
+
+export const ContactScreen = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState<string[]>([]);
+  const [isSelectable, setIsSelectable] = useState(false);
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const createGroupOpacity = useRef(new Animated.Value(0)).current;
+  const styles = StyleSheet.create(useThemeColor(styleSheet));
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const contactSelectHandler = (id: string) => {
+    setSelectedUserId((userIds) => {
+      if (userIds.includes(id))
+        return [...userIds].filter((user) => user !== id);
+      return [...userIds, id];
+    });
+  };
+
+  useEffect(() => {
+    const api = API.graphql(graphqlOperation(listUsers));
+    if ("then" in api)
+      api.then((results) => {
+        return setUsers(results.data?.listUsers?.items);
+      });
+  }, []);
+
+  useEffect(() => {
+    const createGrpOpaTiming = Animated.timing(createGroupOpacity, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    });
+
+    const revertGrpOpaTiming = Animated.timing(createGroupOpacity, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    });
+
+    if (selectedUserId.length) createGrpOpaTiming.start();
+    if (!selectedUserId.length) revertGrpOpaTiming.start();
+  }, [selectedUserId]);
+
+  return (
+    <>
+      <Animated.FlatList
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        data={users}
+        renderItem={({ item, index }) => {
+          const isSelected = selectedUserId.includes(item.id);
+          const ITEM_SIZE = 80;
+          const scale = scrollY.interpolate({
+            inputRange: [
+              -1,
+              0,
+              ITEM_SIZE * (index + 0.9),
+              ITEM_SIZE * (index + 4),
+            ],
+            outputRange: [1, 1, 1, 0],
+          });
+
+          const opacity = scrollY.interpolate({
+            inputRange: [-1, 0, ITEM_SIZE * index, ITEM_SIZE * (index + 2)],
+            outputRange: [1, 1, 1, 0],
+          });
+
+          return (
+            <Animated.View
+              style={{
+                opacity,
+                transform: [{ scale }],
+              }}
+            >
+              <ContactsComponent
+                onSelectHandler={() => contactSelectHandler(item.id)}
+                user={item}
+                isSelectable={isSelectable}
+                isSelected={isSelected}
+              />
+            </Animated.View>
+          );
+        }}
+      ></Animated.FlatList>
+    </>
+  );
+};
+
+const styleSheet: StyleSheet.NamedStyles<{
+  [p: string]: ViewStyle | ImageStyle | TextStyle;
+}> = {
+  container: { alignItems: "center", justifyContent: "center" },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  groupIconContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "background",
+    padding: 10,
+  },
+  groupIcon: {
+    borderRadius: 15,
+    overflow: "hidden",
+    padding: 10,
+    marginLeft: 16,
+    marginRight: 20,
+  },
+  cancelIconContainer: { padding: 15 },
+
+  iconText: {
+    color: "primary",
+    fontWeight: "bold",
+  },
+};
