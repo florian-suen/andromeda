@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { API, graphqlOperation } from "aws-amplify";
+import { API, graphqlOperation, Auth } from "aws-amplify";
 import { onCreateUserChatGroup } from "../src/graphql/subscriptions";
 import { ChatGroupType } from "../src/screens/ChatsList/ChatsListScreen";
 
@@ -14,18 +14,27 @@ export const useOnCreateChatGroup = (
       graphqlOperation(onCreateUserChatGroup)
     );
 
+    let userAuth: any;
+    Auth.currentAuthenticatedUser({
+      bypassCache: true,
+    }).then((result) => (userAuth = result));
+
     const chatGrpSubscription =
       "subscribe" in onCreateChatGrp &&
       onCreateChatGrp.subscribe({
         next: ({ value }: any) => {
-          console.log(value.data.onCreateUserChatGroup.Chatgroup);
-
-          setChatGroupData((chatGroup: any) => {
-            return [
-              ...(chatGroup || {}),
-              value.data.onCreateChatGroup.Chatgroup,
-            ];
-          });
+          console.log(userAuth.attributes.sub);
+          if (
+            value.data.onCreateUserChatGroup.user.id !== userAuth.attributes.sub
+          ) {
+            value.data.onCreateUserChatGroup.Chatgroup.users = {
+              items: [{ user: value.data.onCreateUserChatGroup.user }],
+            };
+            setChatGroupData((chatGroup: any) => {
+              chatGroup.unshift(value.data.onCreateUserChatGroup);
+              return [...(chatGroup || {})];
+            });
+          }
         },
         error: (err) => console.log(err),
       });

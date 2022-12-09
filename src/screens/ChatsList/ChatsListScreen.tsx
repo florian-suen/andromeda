@@ -4,7 +4,7 @@ import { API, graphqlOperation, Auth } from "aws-amplify";
 import { GetUser } from "./queries";
 import { useEffect, useState, useRef } from "react";
 import { useOnCreateUserChatGroup } from "../../../utility/useUpdateUserChatGroup";
-import { useOnCreateChatGroup } from "../../../utility/useOnCreateChatGroup";
+import { useOnCreateChatGroup } from "../../../utility/useOnCreateUserChatGroup";
 
 export type ChatGroupType = {
   Chatgroup: {

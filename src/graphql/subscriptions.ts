@@ -382,6 +382,16 @@ export const onCreateUserChatGroup = /* GraphQL */ `
         _deleted
         _lastChangedAt
         chatGroupLastMessageId
+        users {
+          items {
+            user {
+              username
+              status
+              image
+              id
+            }
+          }
+        }
       }
       user {
         id
