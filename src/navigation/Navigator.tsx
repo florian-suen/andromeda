@@ -45,7 +45,7 @@ export const Navigator = () => {
 
         <Stack.Screen name="Select Contacts" component={ChatContacts} />
 
-        <Stack.Screen name="AddContact" component={AddContacts} />
+        <Stack.Screen name="Add Contacts" component={AddContacts} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -45,7 +45,7 @@ type ChatGroupParam = {
   chat: { chatGroupId: string; username: string };
 };
 type AddContactParam = {
-  AddContact: { chatGroupId: string; chatGroup: any };
+  "Add Contacts": { chatGroupId: string; chatGroup: any };
 };
 
 const UserContext = createContext<{
@@ -167,7 +167,7 @@ function Menu({ children }: PropsWithChildren) {
           accessibilityLabel="Adding Friends Button"
           onPress={() => {
             setModalVisible(false);
-            navigation!.navigate("AddContact", {
+            navigation!.navigate("Add Contacts", {
               chatGroupId: chatGroupData.id,
               chatGroup: chatGroupData,
             });

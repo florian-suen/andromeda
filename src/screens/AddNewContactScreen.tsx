@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import {
   Pressable,
   Text,
-  FlatList,
   StyleSheet,
   Animated,
   View,
@@ -11,10 +10,7 @@ import {
   TextStyle,
   Button,
 } from "react-native";
-import {
-  createUserChatGroup,
-  createChatGroup,
-} from "../../src/graphql/mutations";
+import { createUserChatGroup } from "../../src/graphql/mutations";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChatContactsComponent } from "../components/ChatContacts/ChatContacts";
@@ -23,7 +19,6 @@ import { listUsers } from "../graphql/queries";
 import { User } from "../models/index";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useThemeColor } from "../../utility/useStyles";
-import { ChatGroup } from "../models";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
@@ -143,16 +138,17 @@ export const AddContacts = () => {
                 {"Pick 1 or more Contacts to invite"}
               </Text>
             </Pressable>
-
-            <Pressable
-              style={styles.cancelIconContainer}
-              android_ripple={{ color: "#222b3d" }}
-              onPress={() => {
-                setTimeout(() => setSelectedUserId([]), 0);
-              }}
-            >
-              <MaterialIcons name="cancel" size={24} color="white" />
-            </Pressable>
+            {selectedUserId.length > 0 && (
+              <Pressable
+                style={styles.cancelIconContainer}
+                android_ripple={{ color: "#222b3d" }}
+                onPress={() => {
+                  setTimeout(() => setSelectedUserId([]), 0);
+                }}
+              >
+                <MaterialIcons name="cancel" size={24} color="white" />
+              </Pressable>
+            )}
           </View>
         }
       ></Animated.FlatList>
