@@ -9,7 +9,7 @@ import {
   TextStyle,
   ImageStyle,
 } from "react-native";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { User } from "../../models/index";
@@ -21,6 +21,7 @@ import { Auth, API, graphqlOperation } from "aws-amplify";
 import { useExistingChatGroups } from "../../../utility/useExistingChatGroups";
 import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
 import { useThemeColor } from "../../../utility/useStyles";
+import { userContext } from "../../../App";
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
 };
@@ -36,6 +37,7 @@ export const ChatContactsComponent = ({
   isSelectable: boolean;
   onSelectHandler: () => void;
 }) => {
+  const userAuth = useContext(userContext);
   const image = user.image ? user.image : undefined;
   const styles = useThemeColor(styleSheet);
   const translateX = useRef(new Animated.Value(0)).current;
@@ -82,7 +84,7 @@ export const ChatContactsComponent = ({
       <Pressable
         android_ripple={{ color: "#222b3d" }}
         onPress={() => {
-          if (!isSelectable) createChatGroupHandler(user, navigation);
+          if (!isSelectable) createChatGroupHandler(user, userAuth, navigation);
           if (isSelectable) onSelectHandler();
         }}
         style={({ pressed }) => [pressed ? styles.pressed : null]}
@@ -182,9 +184,10 @@ const styleSheet: StyleSheet.NamedStyles<{
 
 async function createChatGroupHandler(
   user: User,
+  userAuth: any,
   navigation: NativeStackNavigationProp<RootStackParamList>
 ) {
-  const existingChatGroup = await useExistingChatGroups(user.id);
+  const existingChatGroup = await useExistingChatGroups(user.id, userAuth);
 
   if (existingChatGroup) {
     navigation.navigate("GroupChat", {
@@ -209,8 +212,6 @@ async function createChatGroupHandler(
       input: { chatgroupID: newChatGroup.id, userID: user.id },
     })
   );
-
-  const userAuth = await Auth.currentAuthenticatedUser();
 
   await API.graphql(
     graphqlOperation(createUserChatGroup, {

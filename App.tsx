@@ -2,14 +2,16 @@ import { Index } from "./src";
 import { Amplify, Auth, API, graphqlOperation } from "aws-amplify";
 import { withAuthenticator } from "aws-amplify-react-native";
 import awsconfig from "./src/aws-exports";
-import { useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import { getUser } from "./src/graphql/queries";
 import { createUser } from "./src/graphql/mutations";
-import { CognitoUserPool } from "amazon-cognito-identity-js";
 
 Amplify.configure({ ...awsconfig, Analytics: { disabled: true } });
+export const userContext = createContext(null);
 
 function App() {
+  const [userAuth, setUserAuth] = useState(null);
+
   useEffect(() => {
     const userSync = async () => {
       let userAuth;
@@ -53,15 +55,16 @@ function App() {
         console.log(
           `created new user: ${createdUser.data?.createUser.username}`
         );
+      setUserAuth(userAuth);
     };
 
     userSync();
   }, []);
 
   return (
-    <>
+    <userContext.Provider value={userAuth}>
       <Index />
-    </>
+    </userContext.Provider>
   );
 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, createContext } from "react";
 import {
   Pressable,
   Text,
@@ -23,12 +23,14 @@ import { listUsers } from "../graphql/queries";
 import { User } from "../models/index";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useThemeColor } from "../../utility/useStyles";
+import { userContext } from "../../App";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
 };
 
 export const ChatContacts = () => {
+  const userAuth = createContext(userContext);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string[]>([]);
   const [isSelectable, setIsSelectable] = useState(false);
@@ -156,6 +158,7 @@ export const ChatContacts = () => {
             onPress={() =>
               createChatGroupHandler(
                 users,
+                userAuth,
                 navigation,
                 selectedUserId,
                 setSelectedUserId,
@@ -202,6 +205,7 @@ const styleSheet: StyleSheet.NamedStyles<{
 
 async function createChatGroupHandler(
   users: User[],
+  userAuth: any,
   navigation: NativeStackNavigationProp<RootStackParamList>,
   selectedUserId: string[],
   setSelectedUserId: React.Dispatch<React.SetStateAction<string[]>>,
@@ -214,8 +218,6 @@ async function createChatGroupHandler(
     }
   }
   for (const username of getNames()) userNames.push(username);
-
-  const userAuth = await Auth.currentAuthenticatedUser();
 
   const newChatGroupResp = await API.graphql(
     graphqlOperation(createChatGroup, {

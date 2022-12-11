@@ -6,6 +6,7 @@ import { ChatGroupType } from "../src/screens/ChatsList/ChatsListScreen";
 type ChatGroup = ChatGroupType["Chatgroup"];
 
 export const useOnCreateChatGroup = (
+  userAuth: any,
   chatGroupData: ChatGroup,
   setChatGroupData: React.Dispatch<React.SetStateAction<any>>
 ) => {
@@ -13,11 +14,6 @@ export const useOnCreateChatGroup = (
     const onCreateChatGrp = API.graphql(
       graphqlOperation(onCreateUserChatGroup)
     );
-
-    let userAuth: any;
-    Auth.currentAuthenticatedUser({
-      bypassCache: true,
-    }).then((result) => (userAuth = result));
 
     const chatGrpSubscription =
       "subscribe" in onCreateChatGrp &&

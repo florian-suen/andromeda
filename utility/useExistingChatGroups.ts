@@ -1,9 +1,9 @@
+import { createContext } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { Auth } from "aws-amplify";
 import { ChatGroupList } from "../src/screens/ChatsList/queries";
 
-export const useExistingChatGroups = async (userID: string) => {
-  const userAuth = await Auth.currentAuthenticatedUser();
+export const useExistingChatGroups = async (userID: string, userAuth: any) => {
   const existingChatGroups = await API.graphql(
     graphqlOperation(ChatGroupList, {
       id: userAuth.attributes.sub,
