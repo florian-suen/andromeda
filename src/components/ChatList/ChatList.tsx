@@ -34,6 +34,7 @@ export const ChatGroup = ({
     chat.Chatgroup.id,
     setReOrder
   );
+  console.log(chatGroupData.users.items[0]);
 
   return (
     chatGroupData.users.items && (

@@ -1,6 +1,6 @@
 import { Auth } from "aws-amplify";
 import { createContext } from "react";
-export const userContext = createContext(null);
+export const userContext = createContext<any>(null);
 
 export const getUserAuth = async () => {
   let userAuth: any;

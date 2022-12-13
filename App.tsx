@@ -10,12 +10,13 @@ import { getUserAuth, userContext } from "./utility/userAuth";
 Amplify.configure({ ...awsconfig, Analytics: { disabled: true } });
 
 function App() {
-  const [userAuth, setUserAuth] = useState(null);
-
+  const [userAuth, setUserAuth] = useState("null");
+  console.log(userAuth);
   useEffect(() => {
+    let userAuth: any;
     const userSync = async () => {
-      let userAuth = await getUserAuth();
-
+      userAuth = await getUserAuth();
+      setUserAuth(userAuth);
       const user = await API.graphql(
         graphqlOperation(getUser, { id: userAuth.attributes.sub })
       );
@@ -39,7 +40,6 @@ function App() {
         console.log(
           `created new user: ${createdUser.data?.createUser.username}`
         );
-      setUserAuth(userAuth);
     };
 
     userSync();
