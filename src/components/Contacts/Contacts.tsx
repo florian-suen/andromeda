@@ -18,7 +18,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import { useExistingChatGroups } from "../../../utility/useExistingChatGroups";
 import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
 import { useThemeColor } from "../../../utility/useStyles";
-import { userContext } from "../../../App";
+import { userContext } from "../../../utility/userAuth";
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
 };

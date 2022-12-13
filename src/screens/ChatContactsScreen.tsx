@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, createContext } from "react";
+import { useState, useEffect, useRef, useCallback, useContext } from "react";
 import {
   Pressable,
   Text,
@@ -23,14 +23,14 @@ import { listUsers } from "../graphql/queries";
 import { User } from "../models/index";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useThemeColor } from "../../utility/useStyles";
-import { userContext } from "../../App";
+import { userContext } from "../../utility/userAuth";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
 };
 
 export const ChatContacts = () => {
-  const userAuth = createContext(userContext);
+  const userAuth = useContext(userContext);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string[]>([]);
   const [isSelectable, setIsSelectable] = useState(false);

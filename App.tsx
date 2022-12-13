@@ -2,35 +2,19 @@ import { Index } from "./src";
 import { Amplify, Auth, API, graphqlOperation } from "aws-amplify";
 import { withAuthenticator } from "aws-amplify-react-native";
 import awsconfig from "./src/aws-exports";
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getUser } from "./src/graphql/queries";
 import { createUser } from "./src/graphql/mutations";
+import { getUserAuth, userContext } from "./utility/userAuth";
 
 Amplify.configure({ ...awsconfig, Analytics: { disabled: true } });
-export const userContext = createContext(null);
 
 function App() {
   const [userAuth, setUserAuth] = useState(null);
 
   useEffect(() => {
     const userSync = async () => {
-      let userAuth;
-
-      try {
-        userAuth = await Auth.currentAuthenticatedUser({
-          bypassCache: true,
-        });
-
-        const currentSession = userAuth.signInUserSession;
-        userAuth.refreshSession(
-          currentSession.refreshToken,
-          (err: any, session: any) => {
-            err && console.log("refresh token error", err);
-          }
-        );
-      } catch (e) {
-        console.log("unable to refresh token", e);
-      }
+      let userAuth = await getUserAuth();
 
       const user = await API.graphql(
         graphqlOperation(getUser, { id: userAuth.attributes.sub })
