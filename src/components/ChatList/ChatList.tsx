@@ -4,12 +4,9 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useThemeColor } from "../../../utility/useStyles";
-import { useState, useEffect } from "react";
-import { API, graphqlOperation } from "aws-amplify";
-import { onUpdateChatGroup } from "../../graphql/subscriptions";
+import { useState } from "react";
 import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
 import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
-import { useOnCreateChatGroup } from "../../../utility/useOnCreateUserChatGroup";
 dayjs.extend(relativeTime);
 
 type ChatGroupParam = {
@@ -26,17 +23,17 @@ export const ChatGroup = ({
   const navigation = useNavigation<NativeStackNavigationProp<ChatGroupParam>>();
   const styles = StyleSheet.create(useThemeColor(styleSheet));
 
-  const [chatGroup, setChatGroupData] = useState<any>(null);
+  const [chatGroup, setChatGroupData] = useState<any>();
   const chatGroupData = chatGroup || chat.Chatgroup;
   useUpdateChatGroup(
     chatGroupData,
     setChatGroupData,
-    chat.Chatgroup.id,
+    chatGroupData.id,
     setReOrder
   );
-  console.log(chatGroupData.users.items[0]);
 
   return (
+    chatGroupData &&
     chatGroupData.users.items && (
       <Pressable
         android_ripple={{ color: "#222b3d" }}

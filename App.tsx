@@ -1,17 +1,17 @@
 import { Index } from "./src";
-import { Amplify, Auth, API, graphqlOperation } from "aws-amplify";
+import { Amplify, API, graphqlOperation } from "aws-amplify";
 import { withAuthenticator } from "aws-amplify-react-native";
 import awsconfig from "./src/aws-exports";
 import { useEffect, useState } from "react";
 import { getUser } from "./src/graphql/queries";
 import { createUser } from "./src/graphql/mutations";
 import { getUserAuth, userContext } from "./utility/userAuth";
-
+import { ActivityIndicator } from "react-native";
 Amplify.configure({ ...awsconfig, Analytics: { disabled: true } });
 
 function App() {
   const [userAuth, setUserAuth] = useState("null");
-  console.log(userAuth);
+
   useEffect(() => {
     let userAuth: any;
     const userSync = async () => {
@@ -47,7 +47,7 @@ function App() {
 
   return (
     <userContext.Provider value={userAuth}>
-      <Index />
+      {userAuth ? <Index /> : <ActivityIndicator size="large" />}
     </userContext.Provider>
   );
 }

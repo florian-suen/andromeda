@@ -25,7 +25,9 @@ export const useUpdateChatGroup = (
         next: ({ value }: any) => {
           setReOrder && setReOrder(value.data.onUpdateChatGroup.id);
           setChatGroupData((chatGroup: any) => {
-            return { ...(chatGroup || {}), ...value.data.onUpdateChatGroup };
+            const newChatGroup = chatGroup || chatGroupData;
+
+            return { ...(newChatGroup || {}), ...value.data.onUpdateChatGroup };
           });
         },
         error: (err) => console.log(err),

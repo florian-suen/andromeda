@@ -5,7 +5,6 @@ import { useContext } from "react";
 import { getUserAuth, userContext } from "../utility/userAuth";
 
 export const Index = () => {
-  console.log("lol", useContext(userContext));
   return (
     <View style={styles.container}>
       <Navigator />

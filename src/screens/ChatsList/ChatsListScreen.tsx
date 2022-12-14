@@ -2,9 +2,9 @@ import { View, Text, FlatList, Animated, StyleSheet } from "react-native";
 import { ChatGroup } from "../../components/ChatList/ChatList";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { GetUser } from "./queries";
-import { useEffect, useState, useRef } from "react";
-import { useOnCreateUserChatGroup } from "../../../utility/useUpdateUserChatGroup";
-import { useOnCreateChatGroup } from "../../../utility/useOnCreateUserChatGroup";
+import { useEffect, useState, useContext } from "react";
+import { useOnCreateUserChatGroup } from "../../../utility/useOnCreateUserChatGroup";
+import { userContext } from "../../../utility/userAuth";
 
 export type ChatGroupType = {
   Chatgroup: {
@@ -33,7 +33,8 @@ export type ChatGroupType = {
 };
 
 export const ChatList = () => {
-  const [chatGroup, setChatGroup] = useState<any>();
+  const userAuth = useContext(userContext);
+  const [chatGroup, setChatGroup] = useState<any>(null);
   const reOrderHandler = (chatGroupId: string) => {
     const sortedChatGroup = chatGroup.sort(
       (a: ChatGroupType, b: ChatGroupType) => {
@@ -49,9 +50,9 @@ export const ChatList = () => {
     fetchChatGroup(setChatGroup);
   }, []);
 
-  useOnCreateChatGroup(chatGroup, setChatGroup);
+  useOnCreateUserChatGroup(userAuth, chatGroup, setChatGroup);
 
-  return chatGroup?.length ? (
+  return chatGroup && chatGroup?.length ? (
     <FlatList
       keyExtractor={(item) => {
         return item.Chatgroup.id;

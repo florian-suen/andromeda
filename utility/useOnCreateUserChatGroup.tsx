@@ -5,7 +5,7 @@ import { ChatGroupType } from "../src/screens/ChatsList/ChatsListScreen";
 
 type ChatGroup = ChatGroupType["Chatgroup"];
 
-export const useOnCreateChatGroup = (
+export const useOnCreateUserChatGroup = (
   userAuth: any,
   chatGroupData: ChatGroup,
   setChatGroupData: React.Dispatch<React.SetStateAction<any>>
@@ -19,7 +19,7 @@ export const useOnCreateChatGroup = (
       "subscribe" in onCreateChatGrp &&
       onCreateChatGrp.subscribe({
         next: ({ value }: any) => {
-          console.log(userAuth.attributes.sub);
+          console.log("HIHIHIH", userAuth.attributes.sub);
           if (
             value.data.onCreateUserChatGroup.user.id !== userAuth.attributes.sub
           ) {
