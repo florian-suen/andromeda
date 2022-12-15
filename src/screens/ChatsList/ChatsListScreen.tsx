@@ -79,7 +79,7 @@ const fetchChatGroup = async (setChatGroup: React.Dispatch<any>) => {
     "data" in chatGroupResp && chatGroupResp.data.getUser.ChatGroups
       ? chatGroupResp.data.getUser.ChatGroups.items
       : null;
-  if (chatgroupItems.length) {
+  if (chatgroupItems.Chatgroup) {
     const filteredChatGroup = chatgroupItems.filter(
       (value: any) => !value._deleted
     );

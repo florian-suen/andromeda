@@ -19,14 +19,17 @@ export const useOnCreateUserChatGroup = (
       "subscribe" in onCreateChatGrp &&
       onCreateChatGrp.subscribe({
         next: ({ value }: any) => {
-          console.log("HIHIHIH", userAuth.attributes.sub);
+          console.log(userAuth.attributes.sub);
+
           if (
-            value.data.onCreateUserChatGroup.user.id !== userAuth.attributes.sub
+            value.data.onCreateUserChatGroup.user.id !==
+            "5a9c4044-b837-47ff-b129-d2c1d85b2be3"
           ) {
             value.data.onCreateUserChatGroup.Chatgroup.users = {
               items: [{ user: value.data.onCreateUserChatGroup.user }],
             };
             setChatGroupData((chatGroup: any) => {
+              if (!chatGroup) return chatGroup;
               chatGroup.unshift(value.data.onCreateUserChatGroup);
               return [...(chatGroup || {})];
             });

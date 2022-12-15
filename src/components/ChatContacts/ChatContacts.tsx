@@ -198,7 +198,6 @@ async function createChatGroupHandler(
     });
     return;
   }
-
   const newChatGroupResp = await API.graphql(
     graphqlOperation(createChatGroup, { input: {} })
   );
@@ -214,7 +213,6 @@ async function createChatGroupHandler(
       input: { chatgroupID: newChatGroup.id, userID: user.id },
     })
   );
-
   await API.graphql(
     graphqlOperation(createUserChatGroup, {
       input: {
@@ -223,7 +221,6 @@ async function createChatGroupHandler(
       },
     })
   );
-
   navigation.navigate("GroupChat", {
     chatGroupId: newChatGroup.id,
     username: user.username,
