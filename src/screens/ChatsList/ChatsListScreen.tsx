@@ -46,9 +46,7 @@ export const ChatList = () => {
     setChatGroup([...sortedChatGroup]);
   };
 
-  useEffect(() => {
-    fetchChatGroup(setChatGroup);
-  }, []);
+  fetchChatGroup(setChatGroup, userAuth);
 
   useOnCreateUserChatGroup(userAuth, chatGroup, setChatGroup);
 
@@ -60,6 +58,7 @@ export const ChatList = () => {
       extraData={chatGroup.updatedAt}
       data={chatGroup ? chatGroup : []}
       renderItem={({ item, index }) => {
+        console.log("what", item);
         return <ChatGroup chat={item} setReOrder={reOrderHandler} />;
       }}
     ></FlatList>
@@ -70,28 +69,34 @@ export const ChatList = () => {
   );
 };
 
-const fetchChatGroup = async (setChatGroup: React.Dispatch<any>) => {
-  const currentUser = await Auth.currentAuthenticatedUser();
-  const chatGroupResp = await API.graphql(
-    graphqlOperation(GetUser, { id: currentUser.attributes.sub })
-  );
-  const chatgroupItems =
-    "data" in chatGroupResp && chatGroupResp.data.getUser.ChatGroups
-      ? chatGroupResp.data.getUser.ChatGroups.items
-      : null;
-  if (chatgroupItems.Chatgroup) {
-    const filteredChatGroup = chatgroupItems.filter(
-      (value: any) => !value._deleted
-    );
-    for (let x = 0; x < filteredChatGroup.length; x += 1) {
-      let filterUser;
-      if (filteredChatGroup[x].Chatgroup?.users) {
-        filterUser = filteredChatGroup[x].Chatgroup?.users?.items.filter(
-          (v: any) => v.user.id !== currentUser.attributes.sub
+const fetchChatGroup = (setChatGroup: React.Dispatch<any>, userAuth: any) => {
+  useEffect(() => {
+    (async () => {
+      const chatGroupResp = await API.graphql(
+        graphqlOperation(GetUser, { id: userAuth.attributes.sub })
+      );
+
+      const chatgroupItems =
+        "data" in chatGroupResp && chatGroupResp.data.getUser.ChatGroups
+          ? chatGroupResp.data.getUser.ChatGroups.items
+          : null;
+
+      if (chatgroupItems[0].Chatgroup) {
+        const filteredChatGroup = chatgroupItems.filter(
+          (value: any) => !value._deleted
         );
+        for (let x = 0; x < filteredChatGroup.length; x += 1) {
+          let filterUser;
+          if (filteredChatGroup[x].Chatgroup?.users) {
+            filterUser = filteredChatGroup[x].Chatgroup?.users?.items.filter(
+              (v: any) => v.user.id !== userAuth.attributes.sub
+            );
+          }
+          filteredChatGroup[x].Chatgroup.users.items = filterUser;
+        }
+
+        setChatGroup(filteredChatGroup);
       }
-      filteredChatGroup[x].Chatgroup.users.items = filterUser;
-    }
-    setChatGroup(filteredChatGroup);
-  }
+    })();
+  }, []);
 };

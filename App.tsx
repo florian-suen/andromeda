@@ -10,7 +10,7 @@ import { ActivityIndicator } from "react-native";
 Amplify.configure({ ...awsconfig, Analytics: { disabled: true } });
 
 function App() {
-  const [userAuth, setUserAuth] = useState("null");
+  const [userAuth, setUserAuth] = useState(null);
 
   useEffect(() => {
     let userAuth: any;

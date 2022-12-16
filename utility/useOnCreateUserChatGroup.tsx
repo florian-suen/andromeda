@@ -19,8 +19,6 @@ export const useOnCreateUserChatGroup = (
       "subscribe" in onCreateChatGrp &&
       onCreateChatGrp.subscribe({
         next: ({ value }: any) => {
-          console.log(userAuth.attributes.sub);
-
           if (
             value.data.onCreateUserChatGroup.user.id !==
             "5a9c4044-b837-47ff-b129-d2c1d85b2be3"

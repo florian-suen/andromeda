@@ -213,6 +213,7 @@ async function createChatGroupHandler(
       input: { chatgroupID: newChatGroup.id, userID: user.id },
     })
   );
+
   await API.graphql(
     graphqlOperation(createUserChatGroup, {
       input: {
