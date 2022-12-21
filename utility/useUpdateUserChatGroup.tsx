@@ -5,12 +5,17 @@ import {
   onCreateUserChatGroup,
 } from "../src/graphql/subscriptions";
 import { ChatGroupType } from "../src/screens/ChatsList/ChatsListScreen";
+import { AppDispatch } from "../src/redux/store";
+import {
+  addUserChatGroup,
+  removeUserChatGroup,
+} from "../src/redux/chatGroup/chatGroupSlice";
 
 type ChatGroup = ChatGroupType["Chatgroup"];
 
 export const useOnDeleteUserChatGroup = (
   chatGroupData: ChatGroup,
-  setChatGroupData: React.Dispatch<React.SetStateAction<ChatGroup>>
+  dispatch: AppDispatch
 ) => {
   const onDeleteUserChatGrp = API.graphql(
     graphqlOperation(onDeleteUserChatGroup, {
@@ -21,15 +26,12 @@ export const useOnDeleteUserChatGroup = (
     "subscribe" in onDeleteUserChatGrp &&
     onDeleteUserChatGrp.subscribe({
       next: ({ value }: any) => {
-        setChatGroupData((chatGroup: any) => {
-          const userFilter = chatGroup.users.items.filter((item: any) => {
-            return item.user.id !== value.data.onDeleteUserChatGroup.userID;
-          });
-          chatGroup.users.items = userFilter;
-          return {
-            ...(chatGroup || {}),
-          };
-        });
+        dispatch(
+          removeUserChatGroup({
+            chatGroupId: chatGroupData.id,
+            userId: value.data.onDeleteUserChatGroup.userID,
+          })
+        );
       },
       error: (err) => console.log(err),
     });
@@ -42,7 +44,7 @@ export const useOnDeleteUserChatGroup = (
 
 export const useOnCreateUserChatGroup = (
   chatGroupData: ChatGroup,
-  setChatGroupData: React.Dispatch<React.SetStateAction<ChatGroup>>
+  dispatch: AppDispatch
 ) => {
   const useOnCreateUserChatGroup = API.graphql(
     graphqlOperation(onCreateUserChatGroup, {
@@ -53,15 +55,12 @@ export const useOnCreateUserChatGroup = (
     "subscribe" in useOnCreateUserChatGroup &&
     useOnCreateUserChatGroup.subscribe({
       next: ({ value }: any) => {
-        setChatGroupData((chatGroup: any) => {
-          const concatedChatGroup = chatGroup.users.items.concat(
-            value.data.onCreateUserChatGroup
-          );
-          chatGroup.users.items = concatedChatGroup;
-          return {
-            ...(chatGroup || {}),
-          };
-        });
+        dispatch(
+          addUserChatGroup({
+            chatGroupId: chatGroupData.id,
+            chatGroup: value.data.onCreateUserChatGroup,
+          })
+        );
       },
       error: (err) => console.log(err),
     });

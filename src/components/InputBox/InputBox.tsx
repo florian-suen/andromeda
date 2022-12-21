@@ -77,9 +77,9 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
       allowsMultipleSelection: multiple,
     });
 
-    if (!result.cancelled && (result as any)?.selected) {
+    if (!result.canceled && (result as any)?.selected) {
       setMedia((result as any).selected);
-    } else if (!result.cancelled) setMedia([result]);
+    } else if (!result.canceled) setMedia([result]);
   };
 
   const pickAttachment = async () => {

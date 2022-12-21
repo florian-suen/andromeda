@@ -33,13 +33,13 @@ import {
 import { useState, useContext, createContext, PropsWithChildren } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
-import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
+import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
 import {
   useOnDeleteUserChatGroup,
   useOnCreateUserChatGroup,
 } from "../../../utility/useUpdateUserChatGroup";
-
-type ChatGroup = ChatGroupType["Chatgroup"];
+import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
+import { AppDispatch } from "../../redux/store";
 
 type ChatGroupParam = {
   chat: { chatGroupId: string; username: string };
@@ -58,14 +58,30 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<AddContactParam>>();
   const chatGroupId = route.params.chatGroupId;
-  const [chatGroupData, setChatGroupData] = useState<any>();
   const [messages, setMessages] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  getChatGroupData(chatGroupId, setChatGroupData);
-  setNavHeaderOptions(navigation, chatGroupData, modalVisible, setModalVisible);
-  getandSubMessages(chatGroupId, setMessages);
-  useUpdateChatGroup(chatGroupData, setChatGroupData, chatGroupId);
+  const dispatch = useAppDispatch();
+  const chatGroupData: ChatGroupType["Chatgroup"] | null = useAppSelector(
+    (state) => {
+      return (
+        state.chatGroup.chatGroup.find(
+          (item) => item.Chatgroup.id === chatGroupId
+        ) || { Chatgroup: null }
+      );
+    }
+  ).Chatgroup;
 
+  if (chatGroupData) {
+    userChatGroupSubscription(chatGroupId, chatGroupData, dispatch);
+    setNavHeaderOptions(
+      navigation,
+      chatGroupData,
+      modalVisible,
+      setModalVisible
+    );
+    getandSubMessages(chatGroupId, setMessages);
+    useUpdateChatGroup(chatGroupData, chatGroupId, dispatch);
+  }
   return (
     <UserContext.Provider
       value={{
@@ -74,7 +90,7 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
           users: chatGroupData ? chatGroupData?.users?.items : [],
           leaderId: chatGroupData ? chatGroupData.leaderID : null,
         },
-        chatGroup: { chatGroupData, setChatGroupData },
+        chatGroup: { chatGroupData },
         messages: { messages, setMessages },
         modal: { modalVisible, setModalVisible },
         delete: { removeUserHandler },
@@ -307,7 +323,7 @@ function getandSubMessages(
 
 function setNavHeaderOptions(
   navigation: NativeStackNavigationProp<AddContactParam>,
-  chatGroupData: ChatGroup,
+  chatGroupData: ChatGroupType["Chatgroup"],
   modalVisible: boolean,
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>
 ) {
@@ -342,29 +358,20 @@ function setNavHeaderOptions(
   );
 }
 
-function getChatGroupData(
+function userChatGroupSubscription(
   chatGroupId: string,
-  setChatGroupData: React.Dispatch<any>
+  chatGroupData: ChatGroupType["Chatgroup"],
+  dispatch: AppDispatch
 ) {
   useEffect(() => {
     let unsubDelUserChatGroup: () => void;
     let unsubCreateUserChatGroup: () => void;
-    const chatGroupResp = API.graphql(
-      graphqlOperation(getChatGroup, { id: chatGroupId })
-    );
-    "then" in chatGroupResp &&
-      chatGroupResp.then((results) => {
-        setChatGroupData(results.data.getChatGroup);
-        unsubDelUserChatGroup = useOnDeleteUserChatGroup(
-          results.data.getChatGroup,
-          setChatGroupData
-        );
+    unsubDelUserChatGroup = useOnDeleteUserChatGroup(chatGroupData, dispatch);
 
-        unsubCreateUserChatGroup = useOnCreateUserChatGroup(
-          results.data.getChatGroup,
-          setChatGroupData
-        );
-      });
+    unsubCreateUserChatGroup = useOnCreateUserChatGroup(
+      chatGroupData,
+      dispatch
+    );
 
     return () => {
       unsubDelUserChatGroup(), unsubCreateUserChatGroup();

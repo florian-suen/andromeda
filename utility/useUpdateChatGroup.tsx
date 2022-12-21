@@ -2,14 +2,16 @@ import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { onUpdateChatGroup } from "../src/graphql/subscriptions";
 import { ChatGroupType } from "../src/screens/ChatsList/ChatsListScreen";
+import { AppDispatch } from "../src/redux/store";
+import { reorderChatGroup } from "../src/redux/chatGroup/chatGroupSlice";
 
 type ChatGroup = ChatGroupType["Chatgroup"];
 
 export const useUpdateChatGroup = (
   chatGroupData: ChatGroup,
-  setChatGroupData: React.Dispatch<React.SetStateAction<ChatGroup>>,
   chatGroupId: string,
-  setReOrder?: (chatGroupId: string) => void
+  dispatch: AppDispatch,
+  reOrder?: boolean
 ) => {
   useEffect(() => {
     if (!chatGroupData) return;
@@ -23,12 +25,14 @@ export const useUpdateChatGroup = (
       "subscribe" in onUpdateChatGrp &&
       onUpdateChatGrp.subscribe({
         next: ({ value }: any) => {
-          setReOrder && setReOrder(value.data.onUpdateChatGroup.id);
-          setChatGroupData((chatGroup: any) => {
-            const newChatGroup = chatGroup || chatGroupData;
-
-            return { ...(newChatGroup || {}), ...value.data.onUpdateChatGroup };
-          });
+          if (reOrder)
+            return dispatch(
+              reorderChatGroup({
+                id: value.data.onUpdateChatGroup.id,
+                lastMessage: value.data.onUpdateChatGroup.LastMessage,
+              })
+            );
+          //dispatch(addChatGroup(value.data.onUpdateChatGroup));
         },
         error: (err) => console.log(err),
       });

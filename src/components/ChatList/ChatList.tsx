@@ -7,31 +7,26 @@ import { useThemeColor } from "../../../utility/useStyles";
 import { useState } from "react";
 import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
 import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
+import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
+import {
+  addChatGroup,
+  getChatGroup,
+} from "../../redux/chatGroup/chatGroupSlice";
+
 dayjs.extend(relativeTime);
 
 type ChatGroupParam = {
   GroupChat: { chatGroupId: string; username: string };
 };
 
-export const ChatGroup = ({
-  chat,
-  setReOrder,
-}: {
-  chat: ChatGroupType;
-  setReOrder: (chatGroupId: string) => void;
-}) => {
+export const ChatGroup = ({ chat }: { chat: ChatGroupType }) => {
   const navigation = useNavigation<NativeStackNavigationProp<ChatGroupParam>>();
   const styles = StyleSheet.create(useThemeColor(styleSheet));
+  const dispatch = useAppDispatch();
+  const chatGroupData = chat.Chatgroup;
 
-  const [chatGroup, setChatGroupData] = useState<any>();
-  const chatGroupData = chatGroup || chat.Chatgroup;
-  useUpdateChatGroup(
-    chatGroupData,
-    setChatGroupData,
-    chatGroupData.id,
-    setReOrder
-  );
-
+  useUpdateChatGroup(chatGroupData, chatGroupData.id, dispatch, true);
+  console.log(chatGroupData);
   return (
     chatGroupData &&
     chatGroupData.users.items && (

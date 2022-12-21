@@ -1,15 +1,52 @@
-import { RootState } from "./../store";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import type { RootState } from "./../store";
+import {
+  createSlice,
+  createAsyncThunk,
+  PayloadAction,
+  SerializedError,
+} from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
 import { GetUser } from "../../screens/ChatsList/queries";
 
-export const getChatGroup = createAsyncThunk(
-  "posts/getPosts",
+export interface ChatGroupType {
+  Chatgroup: {
+    LastMessage: { message: string; id: string; createdAt: string };
+    id: string;
+    name: string;
+    image: string;
+    leaderID: string;
+    users: {
+      items: {
+        user: { id: string; image: string | null; username: string };
+        Chatgroup: {
+          id: string;
+          image: string;
+          name: string;
+          LastMessage: { message: string; id: string; createdAt: string };
+        };
+      }[];
+    };
+  };
+  user: {
+    Chatgroup: {
+      LastMessage: { message: string; id: string; createdAt: string };
+    };
+    user: { id: string; image: string | null; username: string };
+  };
+}
 
-  async (
-    arg,
-    { dispatch, getState, extra, requestId, signal, rejectWithValue }
-  ) => {
+export interface AddChatgroupPayload {
+  data: true;
+}
+export interface ChatgroupState {
+  chatGroup: [ChatGroupType] | [];
+  status: "idle" | "fetching";
+  error: string | null | SerializedError;
+}
+
+export const getChatGroup = createAsyncThunk(
+  "chatGroup/fetchGroup",
+  async (userAuth: any, { rejectWithValue }) => {
     const chatGroupResp = await API.graphql(
       graphqlOperation(GetUser, { id: userAuth.attributes.sub })
     );
@@ -33,25 +70,102 @@ export const getChatGroup = createAsyncThunk(
         filteredChatGroup[x].Chatgroup.users.items = filterUser;
       }
 
-      setChatGroup(filteredChatGroup);
-    }
+      return filteredChatGroup;
+    } else if (chatgroupItems === null)
+      return rejectWithValue("fetch Chatgroup error");
   }
 );
 
-const initialState = {
-  chatGroup: null,
+const initialState: ChatgroupState = {
+  chatGroup: [],
+  status: "idle",
+  error: null,
 };
 
-const chatGroup = createSlice({
-  name: "chatgroup",
+export const chatGroupSlice = createSlice({
+  name: "chatGroup",
   initialState,
   reducers: {
-    addChatGroup: (state: RootState) => {},
-    removeChatGroup: (state: RootState) => {},
+    reorderChatGroup: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        lastMessage: { message: string; id: string; createdAt: string };
+      }>
+    ) => {
+      state.chatGroup.sort((a: ChatGroupType, b: ChatGroupType) => {
+        if (a.Chatgroup.id === action.payload.id) return -1;
+        return 0;
+      });
+      if (state.chatGroup.length)
+        state.chatGroup[0].Chatgroup.LastMessage = action.payload.lastMessage;
+      return state;
+    },
+    addUserChatGroup: (
+      state,
+      action: PayloadAction<{
+        chatGroupId: string;
+        chatGroup: ChatGroupType;
+      }>
+    ) => {
+      const stateIndex = state.chatGroup.findIndex(
+        (item) => item.Chatgroup.id === action.payload.chatGroupId
+      );
+      const concatedArray = (state.chatGroup[stateIndex].Chatgroup.users.items =
+        action.payload.chatGroup.Chatgroup.users.items);
+
+      return state;
+    },
+    removeUserChatGroup: (
+      state,
+      action: PayloadAction<{ chatGroupId: string; userId: string }>
+    ) => {
+      const stateIndex = state.chatGroup.findIndex(
+        (item) => item.Chatgroup.id === action.payload.chatGroupId
+      );
+      const filterUsers = state.chatGroup[
+        stateIndex
+      ].Chatgroup.users.items.filter(
+        (item: ChatGroupType["Chatgroup"]["users"]["items"][0]) => {
+          item.user.id !== action.payload.userId;
+        }
+      );
+      state.chatGroup[stateIndex].Chatgroup.users.items = filterUsers;
+      return state;
+    },
+    updateUserChatGroup: (state, action: PayloadAction<ChatGroupType>) => {
+      if (!state.chatGroup.length) return state;
+      state.chatGroup.unshift(action.payload);
+      return state;
+    },
   },
-  extraReducers: {
-    [getChatGroup.pending]: (state, action) => {},
-    [getChatGroup.fulfilled]: (state, { payload, meta }) => {},
-    [getChatGroup.rejected]: (state, action) => {},
+
+  extraReducers: (builder) => {
+    builder
+      .addCase(getChatGroup.fulfilled, (state, action) => {
+        return { chatGroup: action.payload, status: "idle", error: null };
+      })
+      .addCase(getChatGroup.rejected, (state, action) => {
+        if (action.payload === "string")
+          return { chatGroup: [], status: "idle", error: action.payload };
+        else return { chatGroup: [], status: "idle", error: action.error };
+      })
+      .addCase(getChatGroup.pending, (state, action) => {
+        return { chatGroup: [], status: "fetching", error: null };
+      })
+      .addDefaultCase((state, action) => {
+        return {
+          chatGroup: [],
+          status: "idle",
+          error: null,
+        };
+      });
   },
 });
+
+export const {
+  addUserChatGroup,
+  removeUserChatGroup,
+  reorderChatGroup,
+  updateUserChatGroup,
+} = chatGroupSlice.actions;
