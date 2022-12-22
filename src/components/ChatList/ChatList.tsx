@@ -8,10 +8,7 @@ import { useState } from "react";
 import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
 import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
-import {
-  addChatGroup,
-  getChatGroup,
-} from "../../redux/chatGroup/chatGroupSlice";
+import { getChatGroup } from "../../redux/chatGroup/chatGroupSlice";
 
 dayjs.extend(relativeTime);
 
@@ -26,7 +23,7 @@ export const ChatGroup = ({ chat }: { chat: ChatGroupType }) => {
   const chatGroupData = chat.Chatgroup;
 
   useUpdateChatGroup(chatGroupData, chatGroupData.id, dispatch, true);
-  console.log(chatGroupData);
+
   return (
     chatGroupData &&
     chatGroupData.users.items && (

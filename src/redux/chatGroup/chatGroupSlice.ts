@@ -99,6 +99,7 @@ export const chatGroupSlice = createSlice({
       });
       if (state.chatGroup.length)
         state.chatGroup[0].Chatgroup.LastMessage = action.payload.lastMessage;
+      console.log(action.payload.lastMessage);
       return state;
     },
     addUserChatGroup: (

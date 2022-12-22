@@ -42,13 +42,13 @@ export const ChatList = () => {
   }, []);
 
   useOnCreateUserChatGroup(userAuth, dispatch);
-  console.log(chatGroup[0]?.Chatgroup.LastMessage.createdAt);
+
   return chatGroup && chatGroup?.length ? (
     <FlatList
       keyExtractor={(item) => {
         return item.Chatgroup.id;
       }}
-      extraData={chatGroup[0]?.Chatgroup.LastMessage.createdAt}
+      extraData={chatGroup}
       data={chatGroup ? chatGroup : []}
       renderItem={({ item, index }) => {
         return <ChatGroup chat={item} />;

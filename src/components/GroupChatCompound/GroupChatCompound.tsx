@@ -63,25 +63,17 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   const dispatch = useAppDispatch();
   const chatGroupData: ChatGroupType["Chatgroup"] | null = useAppSelector(
     (state) => {
-      return (
-        state.chatGroup.chatGroup.find(
-          (item) => item.Chatgroup.id === chatGroupId
-        ) || { Chatgroup: null }
-      );
+      return state.chatGroup.chatGroup.find(
+        (item) => item.Chatgroup.id === chatGroupId
+      )!;
     }
   ).Chatgroup;
 
-  if (chatGroupData) {
-    userChatGroupSubscription(chatGroupId, chatGroupData, dispatch);
-    setNavHeaderOptions(
-      navigation,
-      chatGroupData,
-      modalVisible,
-      setModalVisible
-    );
-    getandSubMessages(chatGroupId, setMessages);
-    useUpdateChatGroup(chatGroupData, chatGroupId, dispatch);
-  }
+  userChatGroupSubscription(chatGroupId, chatGroupData, dispatch);
+  setNavHeaderOptions(navigation, chatGroupData, modalVisible, setModalVisible);
+  getandSubMessages(chatGroupId, setMessages);
+  useUpdateChatGroup(chatGroupData, chatGroupId, dispatch);
+
   return (
     <UserContext.Provider
       value={{
@@ -115,12 +107,13 @@ function Menu({ children }: PropsWithChildren) {
     modal: { modalVisible, setModalVisible },
   } = useContext(UserContext);
 
-  const sortedUsers = users.sort((user: any) => {
+  const newUsers = [].concat(users);
+  const sortedUsers = newUsers.sort((user: any) => {
     if (user.user.id === leaderId) return -1;
 
     return 0;
   });
-  const filteredUsers = sortedUsers.filter((user: any) => !user._deleted);
+  const filteredUsers: any = sortedUsers.filter((user: any) => !user._deleted);
 
   return (
     <Modal
