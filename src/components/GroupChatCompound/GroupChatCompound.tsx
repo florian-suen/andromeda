@@ -10,6 +10,7 @@ import {
   Pressable,
   Alert,
   Button,
+  ActivityIndicator,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -61,15 +62,15 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   const [messages, setMessages] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useAppDispatch();
-  const chatGroupData: ChatGroupType["Chatgroup"] | null = useAppSelector(
-    (state) => {
-      return state.chatGroup.chatGroup.find(
-        (item) => item.Chatgroup.id === chatGroupId
-      )!;
-    }
-  ).Chatgroup;
+  console.log(chatGroupId);
 
-  userChatGroupSubscription(chatGroupId, chatGroupData, dispatch);
+  const chatGroupData: ChatGroupType["Chatgroup"] = useAppSelector((state) => {
+    return state.chatGroup.chatGroup.find(
+      (item) => item.Chatgroup.id === chatGroupId
+    )!.Chatgroup;
+  });
+
+  userChatGroupSubscription(chatGroupId, chatGroupData, navigation, dispatch);
   setNavHeaderOptions(navigation, chatGroupData, modalVisible, setModalVisible);
   getandSubMessages(chatGroupId, setMessages);
   useUpdateChatGroup(chatGroupData, chatGroupId, dispatch);
@@ -212,7 +213,10 @@ function InputBox() {
 function removeUserHandler(userChatGroup: { _version: string; id: string }) {
   API.graphql(
     graphqlOperation(deleteUserChatGroup, {
-      input: { _version: userChatGroup._version, id: userChatGroup.id },
+      input: {
+        _version: userChatGroup._version,
+        id: userChatGroup.id,
+      },
     })
   );
 }
@@ -354,6 +358,7 @@ function setNavHeaderOptions(
 function userChatGroupSubscription(
   chatGroupId: string,
   chatGroupData: ChatGroupType["Chatgroup"],
+  navigation: NativeStackNavigationProp<AddContactParam>,
   dispatch: AppDispatch
 ) {
   useEffect(() => {
@@ -363,6 +368,7 @@ function userChatGroupSubscription(
 
     unsubCreateUserChatGroup = useOnCreateUserChatGroup(
       chatGroupData,
+      navigation,
       dispatch
     );
 

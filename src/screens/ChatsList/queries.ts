@@ -7,6 +7,8 @@ export const GetUser = /* GraphQL */ `
         items {
           _deleted
           Chatgroup {
+            leaderID
+            _version
             name
             image
             LastMessage {
@@ -17,12 +19,17 @@ export const GetUser = /* GraphQL */ `
             id
             users {
               items {
+                _version
+                id
                 user {
                   id
                   image
                   username
+                  _deleted
                 }
                 Chatgroup {
+                  _version
+                  id
                   LastMessage {
                     id
                     createdAt

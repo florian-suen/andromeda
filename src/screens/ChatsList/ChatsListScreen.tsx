@@ -5,6 +5,8 @@ import { useOnCreateUserChatGroup } from "../../../utility/useOnCreateUserChatGr
 import { userContext } from "../../../utility/userAuth";
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
 import { getChatGroup } from "../../redux/chatGroup/chatGroupSlice";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type ChatGroupType = {
   Chatgroup: {
@@ -31,17 +33,20 @@ export type ChatGroupType = {
     user: { id: string; image: string | null; username: string };
   };
 };
-
+type RootStackParamList = {
+  GroupChat: { chatGroupId: string; username: string };
+};
 export const ChatList = () => {
   const userAuth = useContext(userContext);
   const chatGroup = useAppSelector((state) => state.chatGroup).chatGroup;
   const dispatch = useAppDispatch();
-
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   useEffect(() => {
     dispatch(getChatGroup(userAuth));
   }, []);
 
-  useOnCreateUserChatGroup(userAuth, dispatch);
+  useOnCreateUserChatGroup(userAuth, navigation, dispatch);
 
   return chatGroup && chatGroup?.length ? (
     <FlatList
@@ -51,7 +56,7 @@ export const ChatList = () => {
       extraData={chatGroup}
       data={chatGroup ? chatGroup : []}
       renderItem={({ item, index }) => {
-        return <ChatGroup chat={item} />;
+        return <ChatGroup key={index} chat={item} />;
       }}
     ></FlatList>
   ) : (

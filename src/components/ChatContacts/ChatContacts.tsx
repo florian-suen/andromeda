@@ -222,8 +222,4 @@ async function createChatGroupHandler(
       },
     })
   );
-  navigation.navigate("GroupChat", {
-    chatGroupId: newChatGroup.id,
-    username: user.username,
-  });
 }

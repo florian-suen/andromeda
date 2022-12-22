@@ -253,11 +253,6 @@ async function createChatGroupHandler(
     })
   );
 
-  navigation.navigate("GroupChat", {
-    chatGroupId: newChatGroup.id,
-    username: userAuth.attributes.email,
-  });
-
   setIsSelectable(false);
   setSelectedUserId([]);
 }

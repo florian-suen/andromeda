@@ -44,6 +44,7 @@ export const useOnDeleteUserChatGroup = (
 
 export const useOnCreateUserChatGroup = (
   chatGroupData: ChatGroup,
+  navigation: any,
   dispatch: AppDispatch
 ) => {
   const useOnCreateUserChatGroup = API.graphql(

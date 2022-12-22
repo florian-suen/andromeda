@@ -376,11 +376,9 @@ export const onCreateUserChatGroup = /* GraphQL */ `
         name
         image
         leaderID
-        createdAt
         updatedAt
         _version
         _deleted
-        _lastChangedAt
         chatGroupLastMessageId
         users {
           items {
@@ -402,12 +400,9 @@ export const onCreateUserChatGroup = /* GraphQL */ `
         updatedAt
         _version
         _deleted
-        _lastChangedAt
       }
-      createdAt
       _version
       _deleted
-      _lastChangedAt
     }
   }
 `;

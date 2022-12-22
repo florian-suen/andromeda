@@ -99,7 +99,7 @@ export const chatGroupSlice = createSlice({
       });
       if (state.chatGroup.length)
         state.chatGroup[0].Chatgroup.LastMessage = action.payload.lastMessage;
-      console.log(action.payload.lastMessage);
+
       return state;
     },
     addUserChatGroup: (
@@ -109,11 +109,12 @@ export const chatGroupSlice = createSlice({
         chatGroup: ChatGroupType;
       }>
     ) => {
+      console.log(action.payload.chatGroup.Chatgroup);
       const stateIndex = state.chatGroup.findIndex(
         (item) => item.Chatgroup.id === action.payload.chatGroupId
       );
-      const concatedArray = (state.chatGroup[stateIndex].Chatgroup.users.items =
-        action.payload.chatGroup.Chatgroup.users.items);
+      state.chatGroup[stateIndex].Chatgroup.users.items =
+        action.payload.chatGroup.Chatgroup.users.items;
 
       return state;
     },
@@ -132,10 +133,13 @@ export const chatGroupSlice = createSlice({
         }
       );
       state.chatGroup[stateIndex].Chatgroup.users.items = filterUsers;
+
       return state;
     },
     updateUserChatGroup: (state, action: PayloadAction<ChatGroupType>) => {
       if (!state.chatGroup.length) return state;
+      if (state.chatGroup[0].Chatgroup.id === action.payload.Chatgroup.id)
+        return state;
       state.chatGroup.unshift(action.payload);
       return state;
     },
