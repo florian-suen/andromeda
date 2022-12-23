@@ -19,6 +19,7 @@ export const GetUser = /* GraphQL */ `
             id
             users {
               items {
+                userID
                 _version
                 id
                 _deleted

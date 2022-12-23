@@ -60,7 +60,7 @@ export const getChatGroup = createAsyncThunk(
       const filteredChatGroup = chatgroupItems.filter(
         (value: any) => !value._deleted
       );
-      for (let x = 0; x < filteredChatGroup.length; x += 1) {
+      /*      for (let x = 0; x < filteredChatGroup.length; x += 1) {
         let filterUser;
         if (filteredChatGroup[x].Chatgroup?.users) {
           filterUser = filteredChatGroup[x].Chatgroup?.users?.items.filter(
@@ -68,7 +68,7 @@ export const getChatGroup = createAsyncThunk(
           );
         }
         filteredChatGroup[x].Chatgroup.users.items = filterUser;
-      }
+      } */
 
       return filteredChatGroup;
     } else if (chatgroupItems === null)
@@ -128,7 +128,6 @@ export const chatGroupSlice = createSlice({
       const filterUsers = state.chatGroup[
         stateIndex
       ].Chatgroup.users.items.filter((item: any) => {
-        console.log(item.user.id, action.payload.userId);
         return item.user.id !== action.payload.userId;
       });
       state.chatGroup[stateIndex].Chatgroup.users.items = filterUsers;
@@ -136,8 +135,12 @@ export const chatGroupSlice = createSlice({
       return state;
     },
     updateUserChatGroup: (state, action: PayloadAction<ChatGroupType>) => {
-      if (!state.chatGroup.length) return state;
-      if (state.chatGroup[0].Chatgroup.id === action.payload.Chatgroup.id)
+      if (!state.chatGroup.length) {
+        state.chatGroup = [action.payload];
+        return state;
+      } else if (
+        state.chatGroup[0].Chatgroup.id === action.payload.Chatgroup.id
+      )
         return state;
       state.chatGroup.unshift(action.payload);
       return state;

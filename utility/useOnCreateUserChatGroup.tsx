@@ -14,6 +14,7 @@ export const useOnCreateUserChatGroup = (
     const onCreateChatGrp = API.graphql(
       graphqlOperation(onCreateUserChatGroup)
     );
+    console.log("somebody");
     let timeout: NodeJS.Timeout;
     const chatGrpSubscription =
       "subscribe" in onCreateChatGrp &&
@@ -25,7 +26,7 @@ export const useOnCreateUserChatGroup = (
             value.data.onCreateUserChatGroup.Chatgroup.users = {
               items: [{ user: value.data.onCreateUserChatGroup.user }],
             };
-            console.log("create");
+
             dispatch(updateUserChatGroup(value.data.onCreateUserChatGroup));
             timeout && clearTimeout(timeout);
             timeout = setTimeout(() => {

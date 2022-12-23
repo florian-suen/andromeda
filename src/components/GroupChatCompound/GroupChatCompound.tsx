@@ -46,7 +46,7 @@ type ChatGroupParam = {
   chat: { chatGroupId: string; username: string };
 };
 type AddContactParam = {
-  "Add Contacts": { chatGroupId: string; chatGroup: any };
+  AddNewContact: { chatGroupId: string; chatGroup: any };
 };
 
 const UserContext = createContext<{
@@ -62,7 +62,6 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   const [messages, setMessages] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useAppDispatch();
-  console.log(chatGroupId);
 
   const chatGroupData: ChatGroupType["Chatgroup"] = useAppSelector((state) => {
     return state.chatGroup.chatGroup.find(
@@ -111,6 +110,7 @@ function Menu({ children }: PropsWithChildren) {
   const newUsers = [].concat(users);
 
   const sortedUsers = newUsers.sort((user: any) => {
+    console.log(user.user.id);
     if (user.user.id === leaderId) return -1;
 
     return 0;
@@ -178,7 +178,7 @@ function Menu({ children }: PropsWithChildren) {
           accessibilityLabel="Adding Friends Button"
           onPress={() => {
             setModalVisible(false);
-            navigation!.navigate("Add Contacts", {
+            navigation!.navigate("AddNewContact", {
               chatGroupId: chatGroupData.id,
               chatGroup: chatGroupData,
             });
