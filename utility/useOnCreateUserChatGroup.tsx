@@ -25,6 +25,7 @@ export const useOnCreateUserChatGroup = (
             value.data.onCreateUserChatGroup.Chatgroup.users = {
               items: [{ user: value.data.onCreateUserChatGroup.user }],
             };
+            console.log("create");
             dispatch(updateUserChatGroup(value.data.onCreateUserChatGroup));
             timeout && clearTimeout(timeout);
             timeout = setTimeout(() => {

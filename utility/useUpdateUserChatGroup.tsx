@@ -56,12 +56,12 @@ export const useOnCreateUserChatGroup = (
     "subscribe" in useOnCreateUserChatGroup &&
     useOnCreateUserChatGroup.subscribe({
       next: ({ value }: any) => {
-        dispatch(
+        /*        dispatch(
           addUserChatGroup({
             chatGroupId: chatGroupData.id,
             chatGroup: value.data.onCreateUserChatGroup,
           })
-        );
+        ); */
       },
       error: (err) => console.log(err),
     });

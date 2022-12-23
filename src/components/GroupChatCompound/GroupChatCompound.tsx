@@ -109,6 +109,7 @@ function Menu({ children }: PropsWithChildren) {
   } = useContext(UserContext);
 
   const newUsers = [].concat(users);
+
   const sortedUsers = newUsers.sort((user: any) => {
     if (user.user.id === leaderId) return -1;
 

@@ -21,11 +21,11 @@ export const GetUser = /* GraphQL */ `
               items {
                 _version
                 id
+                _deleted
                 user {
                   id
                   image
                   username
-                  _deleted
                 }
                 Chatgroup {
                   _version

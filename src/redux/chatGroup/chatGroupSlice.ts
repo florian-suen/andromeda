@@ -127,11 +127,10 @@ export const chatGroupSlice = createSlice({
       );
       const filterUsers = state.chatGroup[
         stateIndex
-      ].Chatgroup.users.items.filter(
-        (item: ChatGroupType["Chatgroup"]["users"]["items"][0]) => {
-          item.user.id !== action.payload.userId;
-        }
-      );
+      ].Chatgroup.users.items.filter((item: any) => {
+        console.log(item.user.id, action.payload.userId);
+        return item.user.id !== action.payload.userId;
+      });
       state.chatGroup[stateIndex].Chatgroup.users.items = filterUsers;
 
       return state;

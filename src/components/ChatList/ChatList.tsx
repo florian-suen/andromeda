@@ -64,7 +64,7 @@ export const ChatGroup = ({ chat }: { chat: ChatGroupType }) => {
           <Text style={styles.subtext} numberOfLines={2}>
             {chatGroupData.LastMessage?.message
               ? chatGroupData.LastMessage.message
-              : null}
+              : "Newly created chat! Say Hi!"}
           </Text>
         </View>
       </Pressable>
