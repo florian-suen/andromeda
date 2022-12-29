@@ -1,3 +1,4 @@
+import { Index } from "./../../index";
 import type { RootState } from "./../store";
 import {
   createSlice,
@@ -28,6 +29,7 @@ export interface ChatGroupType {
     };
   };
   user: {
+    id: string;
     Chatgroup: {
       LastMessage: { message: string; id: string; createdAt: string };
     };
@@ -109,7 +111,6 @@ export const chatGroupSlice = createSlice({
         chatGroup: ChatGroupType;
       }>
     ) => {
-      console.log(action.payload.chatGroup.Chatgroup);
       const stateIndex = state.chatGroup.findIndex(
         (item) => item.Chatgroup.id === action.payload.chatGroupId
       );
@@ -135,13 +136,34 @@ export const chatGroupSlice = createSlice({
       return state;
     },
     updateUserChatGroup: (state, action: PayloadAction<ChatGroupType>) => {
+      let index: number = 0;
+      //note 1
+      const chatGroupExists = state.chatGroup.some((item, itemIndex) => {
+        if (item.Chatgroup.id === action.payload.Chatgroup.id) {
+          index = itemIndex;
+          return true;
+        }
+        return false;
+      });
+
+      const userExists = state.chatGroup[index].Chatgroup.users.items.some(
+        (item) => item.user.id === action.payload.user.id
+      );
+      console.log(chatGroupExists, userExists, index);
+
       if (!state.chatGroup.length) {
         state.chatGroup = [action.payload];
         return state;
-      } else if (
-        state.chatGroup[0].Chatgroup.id === action.payload.Chatgroup.id
-      )
+      } else if (chatGroupExists) {
+        if (!userExists) {
+          state.chatGroup[index].Chatgroup.users.items = state.chatGroup[
+            index
+          ].Chatgroup.users.items.concat(action.payload.Chatgroup.users.items);
+          console.log(state.chatGroup[index].Chatgroup.users.items);
+          console.log(action.payload.Chatgroup.users.items);
+        }
         return state;
+      }
       state.chatGroup.unshift(action.payload);
       return state;
     },

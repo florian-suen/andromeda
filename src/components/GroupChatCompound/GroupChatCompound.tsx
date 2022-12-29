@@ -110,7 +110,6 @@ function Menu({ children }: PropsWithChildren) {
   const newUsers = [].concat(users);
 
   const sortedUsers = newUsers.sort((user: any) => {
-    console.log(user.user.id);
     if (user.user.id === leaderId) return -1;
 
     return 0;

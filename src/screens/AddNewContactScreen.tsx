@@ -51,7 +51,6 @@ export const AddContacts = () => {
     const api = API.graphql(graphqlOperation(listUsers));
     if ("then" in api)
       api.then((results) => {
-        console.log(chatGroup.users.items);
         return setUsers(
           results.data?.listUsers?.items.filter(
             (item: any) =>
