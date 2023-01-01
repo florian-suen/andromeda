@@ -1,5 +1,3 @@
-import { Index } from "./../../index";
-import type { RootState } from "./../store";
 import {
   createSlice,
   createAsyncThunk,
@@ -29,11 +27,12 @@ export interface ChatGroupType {
     };
   };
   user: {
-    id: string;
     Chatgroup: {
       LastMessage: { message: string; id: string; createdAt: string };
     };
-    user: { id: string; image: string | null; username: string };
+    id: string;
+    image: string | null;
+    username: string;
   };
 }
 
@@ -62,15 +61,6 @@ export const getChatGroup = createAsyncThunk(
       const filteredChatGroup = chatgroupItems.filter(
         (value: any) => !value._deleted
       );
-      /*      for (let x = 0; x < filteredChatGroup.length; x += 1) {
-        let filterUser;
-        if (filteredChatGroup[x].Chatgroup?.users) {
-          filterUser = filteredChatGroup[x].Chatgroup?.users?.items.filter(
-            (v: any) => v.user.id !== userAuth.attributes.sub
-          );
-        }
-        filteredChatGroup[x].Chatgroup.users.items = filterUser;
-      } */
 
       return filteredChatGroup;
     } else if (chatgroupItems === null)
@@ -137,7 +127,7 @@ export const chatGroupSlice = createSlice({
     },
     updateUserChatGroup: (state, action: PayloadAction<ChatGroupType>) => {
       let index: number = 0;
-      //note 1
+      //note 1 why 24 when only 15 and also when creating new group the main user not there!
       const chatGroupExists = state.chatGroup.some((item, itemIndex) => {
         if (item.Chatgroup.id === action.payload.Chatgroup.id) {
           index = itemIndex;
@@ -147,10 +137,13 @@ export const chatGroupSlice = createSlice({
       });
 
       const userExists = state.chatGroup[index].Chatgroup.users.items.some(
-        (item) => item.user.id === action.payload.user.id
+        (item) => {
+          console.log(item.user.username, action.payload.user.username);
+          return item.user.id === action.payload.user.id;
+        }
       );
-      console.log(chatGroupExists, userExists, index);
 
+      console.log(state.chatGroup[index].Chatgroup.users.items.length);
       if (!state.chatGroup.length) {
         state.chatGroup = [action.payload];
         return state;

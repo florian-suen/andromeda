@@ -10,7 +10,6 @@ import {
   Pressable,
   Alert,
   Button,
-  ActivityIndicator,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -19,11 +18,7 @@ import { Message } from "../Message/Message";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-import {
-  getChatGroup,
-  getAttachment,
-  listAttachments,
-} from "../../graphql/queries";
+
 import { listMessagesByChatGroup } from "./GroupChatCompoundQueries";
 import { deleteUserChatGroup } from "../../graphql/mutations";
 import {
@@ -35,10 +30,7 @@ import { useState, useContext, createContext, PropsWithChildren } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
 import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
-import {
-  useOnDeleteUserChatGroup,
-  useOnCreateUserChatGroup,
-} from "../../../utility/useUpdateUserChatGroup";
+import { useOnDeleteUserChatGroup } from "../../../utility/useUpdateUserChatGroup";
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
 import { AppDispatch } from "../../redux/store";
 
@@ -365,12 +357,6 @@ function userChatGroupSubscription(
     let unsubDelUserChatGroup: () => void;
     let unsubCreateUserChatGroup: () => void;
     unsubDelUserChatGroup = useOnDeleteUserChatGroup(chatGroupData, dispatch);
-
-    unsubCreateUserChatGroup = useOnCreateUserChatGroup(
-      chatGroupData,
-      navigation,
-      dispatch
-    );
 
     return () => {
       unsubDelUserChatGroup(), unsubCreateUserChatGroup();
