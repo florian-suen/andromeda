@@ -16,6 +16,7 @@ export interface ChatGroupType {
     leaderID: string;
     users: {
       items: {
+        _deleted: boolean | null;
         user: { id: string; image: string | null; username: string };
         Chatgroup: {
           id: string;
@@ -138,12 +139,13 @@ export const chatGroupSlice = createSlice({
 
       const userExists = state.chatGroup[index].Chatgroup.users.items.some(
         (item) => {
-          console.log(item.user.username, action.payload.user.username);
-          return item.user.id === action.payload.user.id;
+          if (item.user.id === action.payload.user.id) {
+            return item._deleted === null;
+          }
+          return false;
         }
       );
 
-      console.log(state.chatGroup[index].Chatgroup.users.items.length);
       if (!state.chatGroup.length) {
         state.chatGroup = [action.payload];
         return state;
@@ -152,8 +154,6 @@ export const chatGroupSlice = createSlice({
           state.chatGroup[index].Chatgroup.users.items = state.chatGroup[
             index
           ].Chatgroup.users.items.concat(action.payload.Chatgroup.users.items);
-          console.log(state.chatGroup[index].Chatgroup.users.items);
-          console.log(action.payload.Chatgroup.users.items);
         }
         return state;
       }

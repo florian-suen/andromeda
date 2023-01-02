@@ -355,11 +355,11 @@ function userChatGroupSubscription(
 ) {
   useEffect(() => {
     let unsubDelUserChatGroup: () => void;
-    let unsubCreateUserChatGroup: () => void;
+
     unsubDelUserChatGroup = useOnDeleteUserChatGroup(chatGroupData, dispatch);
 
     return () => {
-      unsubDelUserChatGroup(), unsubCreateUserChatGroup();
+      unsubDelUserChatGroup();
     };
   }, [chatGroupId]);
 }
