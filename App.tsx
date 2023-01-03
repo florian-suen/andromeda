@@ -5,12 +5,12 @@ import awsconfig from "./src/aws-exports";
 import { useEffect, useState } from "react";
 import { getUser } from "./src/graphql/queries";
 import { createUser } from "./src/graphql/mutations";
-import { getUserAuth, userContext } from "./utility/userAuth";
+import { getUserAuth, UserAuth, userContext } from "./utility/userAuth";
 import { ActivityIndicator } from "react-native";
 Amplify.configure({ ...awsconfig, Analytics: { disabled: true } });
 
 function App() {
-  const [userAuth, setUserAuth] = useState(null);
+  const [userAuth, setUserAuth] = useState<null | UserAuth>(null);
 
   useEffect(() => {
     let userAuth: any;

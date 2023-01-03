@@ -19,11 +19,12 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChatContactsComponent } from "../components/ChatContacts/ChatContacts";
 import { graphqlOperation, API, Auth } from "aws-amplify";
-import { listUsers } from "../graphql/queries";
+
 import { User } from "../models/index";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useThemeColor } from "../../utility/useStyles";
 import { userContext } from "../../utility/userAuth";
+import { useAppSelector } from "../../utility/useReduxHooks";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
@@ -31,7 +32,7 @@ type RootStackParamList = {
 
 export const ChatContacts = () => {
   const userAuth = useContext(userContext);
-  const [users, setUsers] = useState<User[]>([]);
+
   const [selectedUserId, setSelectedUserId] = useState<string[]>([]);
   const [isSelectable, setIsSelectable] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -39,6 +40,15 @@ export const ChatContacts = () => {
   const styles = StyleSheet.create(useThemeColor(styleSheet));
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const getContactList = useAppSelector((state) => {
+    return state.contacts.contacts;
+  });
+
+  const contactList = getContactList.filter(
+    (item) => userAuth && item.id !== userAuth.attributes.sub
+  );
+
   const contactSelectHandler = (id: string) => {
     setSelectedUserId((userIds) => {
       if (userIds.includes(id))
@@ -46,14 +56,6 @@ export const ChatContacts = () => {
       return [...userIds, id];
     });
   };
-
-  useEffect(() => {
-    const api = API.graphql(graphqlOperation(listUsers));
-    if ("then" in api)
-      api.then((results) => {
-        return setUsers(results.data?.listUsers?.items);
-      });
-  }, []);
 
   useEffect(() => {
     const createGrpOpaTiming = Animated.timing(createGroupOpacity, {
@@ -79,7 +81,7 @@ export const ChatContacts = () => {
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: true }
         )}
-        data={users}
+        data={contactList}
         renderItem={({ item, index }) => {
           const isSelected = selectedUserId.includes(item.id);
           const ITEM_SIZE = 80;
@@ -157,7 +159,7 @@ export const ChatContacts = () => {
             color="royalblue"
             onPress={() =>
               createChatGroupHandler(
-                users,
+                contactList,
                 userAuth,
                 navigation,
                 selectedUserId,

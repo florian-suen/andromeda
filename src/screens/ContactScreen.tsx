@@ -9,22 +9,29 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ContactsComponent } from "../components/Contacts/Contacts";
-import { graphqlOperation, API, Auth } from "aws-amplify";
-import { listUsers } from "../graphql/queries";
-import { User } from "../models/index";
 import { useThemeColor } from "../../utility/useStyles";
-
+import { useAppSelector } from "../../utility/useReduxHooks";
+import { useContext } from "react";
+import { userContext } from "../../utility/userAuth";
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
 };
 
 export const ContactScreen = () => {
-  const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string[]>([]);
   const [isSelectable, setIsSelectable] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
   const createGroupOpacity = useRef(new Animated.Value(0)).current;
   const styles = StyleSheet.create(useThemeColor(styleSheet));
+  const userAuth = useContext(userContext);
+  const getContactList = useAppSelector((state) => {
+    return state.contacts.contacts;
+  });
+
+  const contactList = getContactList.filter(
+    (item) => userAuth && item.id !== userAuth.attributes.sub
+  );
+
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const contactSelectHandler = (id: string) => {
@@ -34,14 +41,6 @@ export const ContactScreen = () => {
       return [...userIds, id];
     });
   };
-
-  useEffect(() => {
-    const api = API.graphql(graphqlOperation(listUsers));
-    if ("then" in api)
-      api.then((results) => {
-        return setUsers(results.data?.listUsers?.items);
-      });
-  }, []);
 
   useEffect(() => {
     const createGrpOpaTiming = Animated.timing(createGroupOpacity, {
@@ -67,7 +66,7 @@ export const ContactScreen = () => {
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: true }
         )}
-        data={users}
+        data={contactList}
         renderItem={({ item, index }) => {
           const isSelected = selectedUserId.includes(item.id);
           const ITEM_SIZE = 80;

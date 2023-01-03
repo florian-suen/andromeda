@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
 import { getChatGroup } from "../../redux/chatGroup/chatGroupSlice";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { getContactList } from "../../redux/contactList/contactListSlice";
 
 export type ChatGroupType = {
   Chatgroup: {
@@ -38,12 +39,14 @@ type RootStackParamList = {
 };
 export const ChatList = () => {
   const userAuth = useContext(userContext);
-  const chatGroup = useAppSelector((state) => state.chatGroup).chatGroup;
   const dispatch = useAppDispatch();
+  const chatGroup = useAppSelector((state) => state.chatGroup.chatGroup);
+
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   useEffect(() => {
     dispatch(getChatGroup(userAuth));
+    dispatch(getContactList());
   }, []);
 
   useOnCreateUserChatGroup(userAuth, navigation, dispatch);

@@ -14,11 +14,12 @@ import { createUserChatGroup } from "../../src/graphql/mutations";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChatContactsComponent } from "../components/ChatContacts/ChatContacts";
-import { graphqlOperation, API, Auth } from "aws-amplify";
-import { listUsers } from "../graphql/queries";
+import { graphqlOperation, API } from "aws-amplify";
+
 import { User } from "../models/index";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useThemeColor } from "../../utility/useStyles";
+import { useAppSelector } from "../../utility/useReduxHooks";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
@@ -29,7 +30,6 @@ type RouteParam = {
 };
 
 export const AddContacts = () => {
-  const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string[]>([]);
   const isSelectable = true;
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -39,6 +39,18 @@ export const AddContacts = () => {
   const chatGroup = route.params.chatGroup;
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const getContactList = useAppSelector((state) => {
+    return state.contacts.contacts;
+  });
+
+  const contactList = getContactList.filter(
+    (item: any) =>
+      !chatGroup.users.items.some(
+        (chatGroupuser: any) =>
+          !chatGroupuser._deleted && item.id === chatGroupuser.userID
+      )
+  );
+
   const contactSelectHandler = (id: string) => {
     setSelectedUserId((userIds) => {
       if (userIds.includes(id))
@@ -46,22 +58,6 @@ export const AddContacts = () => {
       return [...userIds, id];
     });
   };
-
-  useEffect(() => {
-    const api = API.graphql(graphqlOperation(listUsers));
-    if ("then" in api)
-      api.then((results) => {
-        return setUsers(
-          results.data?.listUsers?.items.filter(
-            (item: any) =>
-              !chatGroup.users.items.some(
-                (chatGroupuser: any) =>
-                  !chatGroupuser._deleted && item.id === chatGroupuser.userID
-              )
-          )
-        );
-      });
-  }, []);
 
   useEffect(() => {
     const createGrpOpaTiming = Animated.timing(createGroupOpacity, {
@@ -87,7 +83,7 @@ export const AddContacts = () => {
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: true }
         )}
-        data={users}
+        data={contactList}
         renderItem={({ item, index }) => {
           const isSelected = selectedUserId.includes(item.id);
           const ITEM_SIZE = 80;
@@ -159,7 +155,7 @@ export const AddContacts = () => {
             color="royalblue"
             onPress={() =>
               addGroupHandler(
-                users,
+                contactList,
                 route,
                 navigation,
                 selectedUserId,
