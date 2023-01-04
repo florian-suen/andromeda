@@ -41,7 +41,7 @@ export interface AddChatgroupPayload {
   data: true;
 }
 export interface ChatgroupState {
-  chatGroup: [ChatGroupType] | [];
+  chatGroup: ChatGroupType[] | [ChatGroupType];
   status: "idle" | "fetching";
   error: string | null | SerializedError;
 }
@@ -126,7 +126,10 @@ export const chatGroupSlice = createSlice({
 
       return state;
     },
-    updateUserChatGroup: (state, action: PayloadAction<ChatGroupType>) => {
+    updateUserChatGroup: (
+      state: ChatgroupState,
+      action: PayloadAction<ChatGroupType>
+    ) => {
       let index: number = 0;
       //note 1 why 24 when only 15 and also when creating new group the main user not there!
       const chatGroupExists = state.chatGroup.some((item, itemIndex) => {

@@ -15,7 +15,7 @@ export interface ContactType {
 }
 
 export interface ContactState {
-  contacts: [ContactType] | [];
+  contacts: ContactType[] | [];
   status: "idle" | "fetching";
   error: string | null | SerializedError;
 }
