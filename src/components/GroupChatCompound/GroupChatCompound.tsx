@@ -33,6 +33,9 @@ import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
 import { useOnDeleteUserChatGroup } from "../../../utility/useUpdateUserChatGroup";
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
 import { AppDispatch } from "../../redux/store";
+import { getMessageList } from "../../redux/messages/messageSlice";
+
+type dispatch = ReturnType<typeof useAppDispatch>;
 
 type ChatGroupParam = {
   chat: { chatGroupId: string; username: string };
@@ -51,9 +54,15 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<AddContactParam>>();
   const chatGroupId = route.params.chatGroupId;
-  const [messages, setMessages] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useAppDispatch();
+  const messages = useAppSelector((state) => {
+    return state.messages.messages.find(
+      (item) => item.chatGroupId === chatGroupId
+    );
+  });
+
+  console.log(messages);
 
   const chatGroupData: ChatGroupType["Chatgroup"] = useAppSelector((state) => {
     return state.chatGroup.chatGroup.find(
@@ -63,7 +72,7 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
 
   userChatGroupSubscription(chatGroupId, chatGroupData, navigation, dispatch);
   setNavHeaderOptions(navigation, chatGroupData, modalVisible, setModalVisible);
-  getandSubMessages(chatGroupId, setMessages);
+  getandSubMessages(chatGroupId, dispatch);
   useUpdateChatGroup(chatGroupData, chatGroupId, dispatch);
 
   return (
@@ -75,7 +84,7 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
           leaderId: chatGroupData ? chatGroupData.leaderID : null,
         },
         chatGroup: { chatGroupData },
-        messages: { messages, setMessages },
+        messages: { messages: messages ? messages.message : [] },
         modal: { modalVisible, setModalVisible },
         delete: { removeUserHandler },
       }}
@@ -213,22 +222,9 @@ function removeUserHandler(userChatGroup: { _version: string; id: string }) {
   );
 }
 
-function getandSubMessages(
-  chatGroupId: string,
-  setMessages: React.Dispatch<any>
-) {
+function getandSubMessages(chatGroupId: string, dispatch: dispatch) {
   useEffect(() => {
-    const messageResp = API.graphql(
-      graphqlOperation(listMessagesByChatGroup, {
-        chatgroupID: chatGroupId,
-        sortDirection: "DESC",
-      })
-    );
-
-    "then" in messageResp &&
-      messageResp.then((results) => {
-        setMessages(results.data?.listMessagesByChatGroup?.items);
-      });
+    dispatch(getMessageList(chatGroupId));
 
     const onCreateMsg = API.graphql(
       graphqlOperation(onCreateMessage, {
@@ -240,11 +236,11 @@ function getandSubMessages(
       "subscribe" in onCreateMsg &&
       onCreateMsg.subscribe({
         next: ({ value }: any) => {
-          setMessages((msg: any) => {
+          /*    setMessages((msg: any) => {
             value.data.onCreateMessage.Attachments = { items: [] };
             value.data.onCreateMessage.Media = { items: [] };
             return [value.data.onCreateMessage, ...msg];
-          });
+          }); */
         },
         error: (err) => {
           console.log(err);
@@ -261,7 +257,7 @@ function getandSubMessages(
       "subscribe" in onCreateAttach &&
       onCreateAttach.subscribe({
         next: ({ value }: any) => {
-          setMessages((msg: any) => {
+          /*  setMessages((msg: any) => {
             const message = msg;
 
             message[0].Attachments.items = [
@@ -270,7 +266,7 @@ function getandSubMessages(
             ];
 
             return [...message];
-          });
+          }); */
         },
         error: (err) => {
           console.log(err);
@@ -287,6 +283,7 @@ function getandSubMessages(
       "subscribe" in onCreateMediaSub &&
       onCreateMediaSub.subscribe({
         next: ({ value }: any) => {
+          /* 
           setMessages((msg: any) => {
             const message = msg;
 
@@ -296,7 +293,7 @@ function getandSubMessages(
             ];
 
             return [...message];
-          });
+          }); */
         },
         error: (err) => {
           console.log(err);
@@ -350,7 +347,6 @@ function setNavHeaderOptions(
 function userChatGroupSubscription(
   chatGroupId: string,
   chatGroupData: ChatGroupType["Chatgroup"],
-  navigation: NativeStackNavigationProp<AddContactParam>,
   dispatch: AppDispatch
 ) {
   useEffect(() => {

@@ -5,7 +5,7 @@ import {
   SerializedError,
 } from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
-import { listMessagesByChatGroup } from "../../graphql/queries";
+import { listMessagesByChatGroup } from "../../components/GroupChatCompound/GroupChatCompoundQueries";
 
 export interface MessageType {
   id: string;
@@ -19,8 +19,12 @@ export interface MessageType {
   _lastChangedAt: string;
 }
 
+export interface Message {
+  message: MessageType[];
+  chatGroupId: string;
+}
 export interface MessageState {
-  messages: { message: MessageType[]; chatGroupId: string }[] | [];
+  messages: Message[] | [];
   status: "idle" | "fetching";
   error: string | null | SerializedError;
 }
@@ -33,7 +37,29 @@ const initialState: MessageState = {
 
 export const getMessageList = createAsyncThunk(
   "messageList/fetchMessage",
-  async (chatGroupId: string, { rejectWithValue }) => {
+  async (chatGroupId: string | string[], { rejectWithValue }) => {
+    if (Array.isArray(chatGroupId)) {
+      return await Promise.all(
+        chatGroupId.map(async (item) => {
+          const message = await API.graphql(
+            graphqlOperation(listMessagesByChatGroup, {
+              chatgroupID: item,
+              sortDirection: "DESC",
+            })
+          );
+
+          if ("data" in message && message.data)
+            return {
+              chatGroupId: item,
+              message: (message.data as any).listMessagesByChatGroup
+                .items as MessageType[],
+            };
+
+          return null;
+        })
+      );
+    }
+
     const fetchMessage = await API.graphql(
       graphqlOperation(listMessagesByChatGroup, {
         chatgroupID: chatGroupId,
@@ -45,7 +71,7 @@ export const getMessageList = createAsyncThunk(
       return fetchMessage.data
         ? {
             chatGroupId,
-            messages: (fetchMessage.data as any).listMessagesByChatGroup.items,
+            message: (fetchMessage.data as any).listMessagesByChatGroup.items,
           }
         : rejectWithValue("fetch Message error: ChatgroupID not found");
 
@@ -60,9 +86,20 @@ export const messageSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getMessageList.fulfilled, (state, action) => {
+        if (Array.isArray(action.payload)) {
+          const filterNulls: Message[] = action.payload.filter(
+            (item): item is Message => item !== null
+          );
+          console.log(filterNulls);
+          return {
+            ...state,
+            messages: [...state.messages, ...filterNulls],
+          };
+        }
+
         return {
           ...state,
-          messages: [...state.messages, { ...action.payload }],
+          messages: [...state.messages, action.payload],
         };
       })
       .addCase(getMessageList.rejected, (state, action) => {

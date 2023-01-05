@@ -1,6 +1,6 @@
 import { View, Text, FlatList } from "react-native";
 import { ChatGroup } from "../../components/ChatList/ChatList";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useRef } from "react";
 import { useOnCreateUserChatGroup } from "../../../utility/useOnCreateUserChatGroup";
 import { userContext } from "../../../utility/userAuth";
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
@@ -8,6 +8,7 @@ import { getChatGroup } from "../../redux/chatGroup/chatGroupSlice";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { getContactList } from "../../redux/contactList/contactListSlice";
+import { getMessageList } from "../../redux/messages/messageSlice";
 
 export type ChatGroupType = {
   Chatgroup: {
@@ -38,16 +39,24 @@ type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
 };
 export const ChatList = () => {
+  const messageLoaded = useRef(false);
   const userAuth = useContext(userContext);
   const dispatch = useAppDispatch();
   const chatGroup = useAppSelector((state) => state.chatGroup.chatGroup);
-
+  console.log(chatGroup);
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   useEffect(() => {
     dispatch(getChatGroup(userAuth));
     dispatch(getContactList());
   }, []);
+
+  useEffect(() => {
+    if (!messageLoaded.current && chatGroup.length) {
+      messageLoaded.current = true;
+      dispatch(getMessageList(chatGroup.map((item) => item.Chatgroup.id)));
+    }
+  }, [chatGroup]);
 
   useOnCreateUserChatGroup(userAuth, navigation, dispatch);
 

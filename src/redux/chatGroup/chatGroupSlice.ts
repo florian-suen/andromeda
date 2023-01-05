@@ -177,14 +177,15 @@ export const chatGroupSlice = createSlice({
       })
       .addCase(getChatGroup.pending, (state, action) => {
         return { chatGroup: [], status: "fetching", error: null };
-      })
-      .addDefaultCase((state, action) => {
+      });
+    /*      .addDefaultCase((state, action) => {
+        console.log("hi");
         return {
           chatGroup: [],
           status: "idle",
           error: null,
         };
-      });
+      }); */
   },
 });
 
