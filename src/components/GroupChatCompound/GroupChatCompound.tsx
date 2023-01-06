@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 
 import { listMessagesByChatGroup } from "./GroupChatCompoundQueries";
-import { deleteUserChatGroup } from "../../graphql/mutations";
+import { deleteUserChatGroup, updateAttachment } from "../../graphql/mutations";
 import {
   onCreateMessage,
   onCreateAttachment,
@@ -33,7 +33,12 @@ import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
 import { useOnDeleteUserChatGroup } from "../../../utility/useUpdateUserChatGroup";
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
 import { AppDispatch } from "../../redux/store";
-import { getMessageList } from "../../redux/messages/messageSlice";
+import {
+  addMessage,
+  getMessageList,
+  updateMessageAttachments,
+  updateMessageMedia,
+} from "../../redux/messages/messageSlice";
 
 type dispatch = ReturnType<typeof useAppDispatch>;
 
@@ -62,15 +67,13 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
     );
   });
 
-  console.log(messages);
-
   const chatGroupData: ChatGroupType["Chatgroup"] = useAppSelector((state) => {
     return state.chatGroup.chatGroup.find(
       (item) => item.Chatgroup.id === chatGroupId
     )!.Chatgroup;
   });
 
-  userChatGroupSubscription(chatGroupId, chatGroupData, navigation, dispatch);
+  userChatGroupSubscription(chatGroupId, chatGroupData, dispatch);
   setNavHeaderOptions(navigation, chatGroupData, modalVisible, setModalVisible);
   getandSubMessages(chatGroupId, dispatch);
   useUpdateChatGroup(chatGroupData, chatGroupId, dispatch);
@@ -236,11 +239,12 @@ function getandSubMessages(chatGroupId: string, dispatch: dispatch) {
       "subscribe" in onCreateMsg &&
       onCreateMsg.subscribe({
         next: ({ value }: any) => {
-          /*    setMessages((msg: any) => {
-            value.data.onCreateMessage.Attachments = { items: [] };
-            value.data.onCreateMessage.Media = { items: [] };
-            return [value.data.onCreateMessage, ...msg];
-          }); */
+          value.data.onCreateMessage.Attachments = { items: [] };
+          value.data.onCreateMessage.Media = { items: [] };
+
+          dispatch(
+            addMessage({ chatGroupId, newMessage: value.data.onCreateMessage })
+          );
         },
         error: (err) => {
           console.log(err);
@@ -257,16 +261,12 @@ function getandSubMessages(chatGroupId: string, dispatch: dispatch) {
       "subscribe" in onCreateAttach &&
       onCreateAttach.subscribe({
         next: ({ value }: any) => {
-          /*  setMessages((msg: any) => {
-            const message = msg;
-
-            message[0].Attachments.items = [
-              ...msg[0].Attachments.items,
-              value.data.onCreateAttachment,
-            ];
-
-            return [...message];
-          }); */
+          dispatch(
+            updateMessageAttachments({
+              chatGroupId,
+              newAttachment: value.data.onCreateAttachment,
+            })
+          );
         },
         error: (err) => {
           console.log(err);
@@ -283,17 +283,12 @@ function getandSubMessages(chatGroupId: string, dispatch: dispatch) {
       "subscribe" in onCreateMediaSub &&
       onCreateMediaSub.subscribe({
         next: ({ value }: any) => {
-          /* 
-          setMessages((msg: any) => {
-            const message = msg;
-
-            message[0].Media.items = [
-              ...msg[0].Media.items,
-              value.data.onCreateMedia,
-            ];
-
-            return [...message];
-          }); */
+          dispatch(
+            updateMessageMedia({
+              chatGroupId,
+              newMedia: value.data.onCreateMedia,
+            })
+          );
         },
         error: (err) => {
           console.log(err);

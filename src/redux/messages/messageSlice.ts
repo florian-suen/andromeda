@@ -1,3 +1,4 @@
+import { updateMedia } from "./../../graphql/mutations";
 import {
   createSlice,
   createAsyncThunk,
@@ -7,6 +8,30 @@ import {
 import { API, graphqlOperation } from "aws-amplify";
 import { listMessagesByChatGroup } from "../../components/GroupChatCompound/GroupChatCompoundQueries";
 
+type Media = {
+  id: string;
+  storageKey: string;
+  type: string;
+  messageID: string;
+  chatgroupID: string;
+  duration: string;
+  width: string;
+  height: string;
+};
+
+type Attachments = {
+  chatgroupID: string;
+  createdAt: string;
+  id: string;
+  messageID: string;
+  updatedAt: string;
+  type: string;
+  storageKey: string;
+  name: string;
+  _version: string;
+  _lastChangedAt: string;
+  _deleted: string;
+};
 export interface MessageType {
   id: string;
   createdAt: string;
@@ -17,6 +42,14 @@ export interface MessageType {
   _version: string;
   _deleted: string;
   _lastChangedAt: string;
+
+  Media: {
+    items: Media[];
+  };
+
+  Attachments: {
+    items: Attachments[];
+  };
 }
 
 export interface Message {
@@ -82,7 +115,56 @@ export const getMessageList = createAsyncThunk(
 export const messageSlice = createSlice({
   name: "message",
   initialState,
-  reducers: {},
+  reducers: {
+    updateMessageAttachments: (
+      state,
+      action: PayloadAction<{ chatGroupId: string; newAttachment: Attachments }>
+    ) => {
+      const stateMessageIndex = state.messages.findIndex((item) => {
+        return item.chatGroupId === action.payload.chatGroupId;
+      });
+
+      const currentAttachments =
+        state.messages[stateMessageIndex].message[0].Attachments.items;
+
+      state.messages[stateMessageIndex].message[0].Attachments.items = [
+        ...currentAttachments,
+        action.payload.newAttachment,
+      ];
+      return state;
+    },
+
+    updateMessageMedia: (
+      state,
+      action: PayloadAction<{ chatGroupId: string; newMedia: Media }>
+    ) => {
+      const stateMessageIndex = state.messages.findIndex((item) => {
+        return item.chatGroupId === action.payload.chatGroupId;
+      });
+
+      const currentMedia =
+        state.messages[stateMessageIndex].message[0].Media.items;
+
+      state.messages[stateMessageIndex].message[0].Media.items = [
+        ...currentMedia,
+        action.payload.newMedia,
+      ];
+      return state;
+    },
+
+    addMessage: (
+      state,
+      action: PayloadAction<{ chatGroupId: string; newMessage: MessageType }>
+    ) => {
+      const stateMessageIndex = state.messages.findIndex((item) => {
+        return item.chatGroupId === action.payload.chatGroupId;
+      });
+      state.messages[stateMessageIndex].message.unshift(
+        action.payload.newMessage
+      );
+      return state;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getMessageList.fulfilled, (state, action) => {
@@ -90,7 +172,7 @@ export const messageSlice = createSlice({
           const filterNulls: Message[] = action.payload.filter(
             (item): item is Message => item !== null
           );
-          console.log(filterNulls);
+
           return {
             ...state,
             messages: [...state.messages, ...filterNulls],
@@ -119,3 +201,6 @@ export const messageSlice = createSlice({
         }); */
   },
 });
+
+export const { addMessage, updateMessageAttachments, updateMessageMedia } =
+  messageSlice.actions;
