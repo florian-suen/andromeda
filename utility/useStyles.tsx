@@ -1,4 +1,3 @@
-import { ViewStyle, TextStyle, ImageStyle, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
 export function useThemeColor(options: { [t: string]: any }) {

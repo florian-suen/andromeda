@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef, useCallback, useContext } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import {
   Pressable,
   Text,
-  FlatList,
   StyleSheet,
   Animated,
   View,
@@ -18,7 +17,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChatContactsComponent } from "../components/ChatContacts/ChatContacts";
-import { graphqlOperation, API, Auth } from "aws-amplify";
+import { graphqlOperation, API } from "aws-amplify";
 
 import { User } from "../models/index";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";

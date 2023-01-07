@@ -32,7 +32,6 @@ export const useUpdateChatGroup = (
                 lastMessage: value.data.onUpdateChatGroup.LastMessage,
               })
             );
-          //dispatch(addChatGroup(value.data.onUpdateChatGroup));
         },
         error: (err) => console.log(err),
       });

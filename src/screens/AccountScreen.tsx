@@ -1,4 +1,4 @@
-import { Amplify, Auth } from "aws-amplify";
+import { Auth } from "aws-amplify";
 import { Button, View, StyleSheet } from "react-native";
 async function signOut() {
   try {
