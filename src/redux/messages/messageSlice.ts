@@ -145,10 +145,9 @@ export const messageSlice = createSlice({
       const currentMedia =
         state.messages[stateMessageIndex].message[0].Media.items;
 
-      state.messages[stateMessageIndex].message[0].Media.items = [
-        ...currentMedia,
-        action.payload.newMedia,
-      ];
+      currentMedia.push(action.payload.newMedia);
+
+      state.messages[stateMessageIndex].message[0].Media.items = currentMedia;
       return state;
     },
 

@@ -179,7 +179,7 @@ export const chatGroupSlice = createSlice({
         return { chatGroup: [], status: "fetching", error: null };
       });
     /*      .addDefaultCase((state, action) => {
-        console.log("hi");
+        
         return {
           chatGroup: [],
           status: "idle",

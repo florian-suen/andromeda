@@ -1,12 +1,12 @@
 import { API, graphqlOperation } from "aws-amplify";
-import { onDeleteUserChatGroup } from "../src/graphql/subscriptions";
-import { ChatGroupType } from "../src/screens/ChatsList/ChatsListScreen";
-import { AppDispatch } from "../src/redux/store";
-import { removeUserChatGroup } from "../src/redux/chatGroup/chatGroupSlice";
+import { onDeleteUserChatGroup } from "../graphql/subscriptions";
+import { ChatGroupType } from "../screens/ChatsList/ChatsListScreen";
+import { AppDispatch } from "../redux/store";
+import { removeUserChatGroup } from "../redux/chatGroup/chatGroupSlice";
 
 type ChatGroup = ChatGroupType["Chatgroup"];
 
-export const useOnDeleteUserChatGroup = (
+export const subOnDeleteUserChatGroup = (
   chatGroupData: ChatGroup,
   dispatch: AppDispatch
 ) => {

@@ -227,7 +227,7 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
           size={30}
           color={"white"}
         />
-        {true ? (
+        {inputText || media.length || attachments.length ? (
           <Animated.View
             style={{
               width: 22,
