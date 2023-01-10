@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { API, graphqlOperation, Auth } from "aws-amplify";
-import { onCreateUserChatGroup } from "../src/graphql/subscriptions";
-import { AppDispatch } from "../src/redux/store";
-import { updateUserChatGroup } from "../src/redux/chatGroup/chatGroupSlice";
-export const useOnCreateUserChatGroup = (
+import { onCreateUserChatGroup } from "../graphql/subscriptions";
+import { AppDispatch } from "../redux/store";
+import { updateUserChatGroup } from "../redux/chatGroup/chatGroupSlice";
+export const subOnCreateUserChatGroup = (
   userAuth: any,
   navigation: any,
   dispatch: AppDispatch

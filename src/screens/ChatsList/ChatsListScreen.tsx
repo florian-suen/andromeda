@@ -1,7 +1,7 @@
 import { View, Text, FlatList } from "react-native";
 import { ChatGroup } from "../../components/ChatList/ChatList";
 import { useEffect, useContext, useRef } from "react";
-import { useOnCreateUserChatGroup } from "../../../utility/useOnCreateUserChatGroup";
+import { subOnCreateUserChatGroup } from "../../subscription/subOnCreateUserChatGroup";
 import { userContext } from "../../../utility/userAuth";
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
 import { getChatGroup } from "../../redux/chatGroup/chatGroupSlice";
@@ -43,7 +43,7 @@ export const ChatList = () => {
   const userAuth = useContext(userContext);
   const dispatch = useAppDispatch();
   const chatGroup = useAppSelector((state) => state.chatGroup.chatGroup);
-  console.log(chatGroup);
+
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   useEffect(() => {
@@ -58,7 +58,7 @@ export const ChatList = () => {
     }
   }, [chatGroup]);
 
-  useOnCreateUserChatGroup(userAuth, navigation, dispatch);
+  subOnCreateUserChatGroup(userAuth, navigation, dispatch);
 
   return chatGroup && chatGroup?.length ? (
     <FlatList

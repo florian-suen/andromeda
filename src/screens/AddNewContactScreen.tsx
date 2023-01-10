@@ -46,7 +46,6 @@ export const AddContacts = () => {
   const contactList = getContactList.filter(
     (item) =>
       !chatGroup.users.items.some((chatGroupuser: any) => {
-        console.log(!chatGroupuser.userID && chatGroupuser);
         return item.id === chatGroupuser.userID;
       })
   );
