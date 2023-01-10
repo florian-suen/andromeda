@@ -23,9 +23,9 @@ dayjs.extend(relativeTime);
 export type Message = {
   chatgroupID: string;
   message: string;
-  createdAt: string;
-  userID: string;
-  id: string;
+  createdAt: string | null;
+  userID: string | null;
+  id: string | null;
   Media: { items: Media[] };
   Attachments: { items: Attachments[] };
 };

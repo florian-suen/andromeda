@@ -9,7 +9,7 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   createMessage,
@@ -22,11 +22,15 @@ import * as imagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
+import { addMessage } from "../../redux/messages/messageSlice";
+import { useDispatch } from "react-redux";
+import { userContext } from "../../../utility/userAuth";
 
 type messageInput = {
   chatgroupID: string;
   message: string;
   userID: string;
+  createdAt: Date;
 };
 
 enum FileType {
@@ -58,12 +62,15 @@ type mediaFile = {
 };
 
 export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
+  const userAuth = useContext(userContext);
   const [inputText, setInputText] = useState("");
   const [attachments, setAttachments] = useState<any[]>([]);
   const [media, setMedia] = useState<imagePicker.ImagePickerAsset[]>([]);
   const inputOpacity = new Animated.Value(0);
   const inputScale = new Animated.Value(0);
   const animateInput = useRef(true);
+
+  const dispatch = useDispatch();
   const interpo = inputScale.interpolate({
     inputRange: [0, 0.5, 1],
     outputRange: [0, 0.6, 1],
@@ -101,14 +108,23 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
 
   const sendHandler = async () => {
     console.log("sending message");
-    const currentUser = await Auth.currentAuthenticatedUser();
+    const createdAt = new Date();
+    dispatch(
+      addMessage({
+        chatGroupId: chatGroup.id,
+        newMessage: inputText,
+        createdAt,
+      })
+    );
 
     const newInput: messageInput = {
       chatgroupID: chatGroup.id,
       message: inputText,
-      userID: currentUser.attributes.sub,
+      userID: userAuth!.attributes.sub,
+      createdAt,
     };
 
+    setInputText("");
     const newMessage = await API.graphql(
       graphqlOperation(createMessage, { input: newInput })
     );
@@ -129,6 +145,7 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
       );
       setAttachments([]);
     }
+
     API.graphql(
       graphqlOperation(updateChatGroup, {
         input: {
@@ -138,8 +155,6 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
         },
       })
     );
-
-    setInputText("");
   };
 
   useEffect(() => {

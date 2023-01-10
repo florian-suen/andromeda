@@ -5,7 +5,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useThemeColor } from "../../../utility/useStyles";
 
-import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
+import { subUpdateChatGroup } from "../../subscription/subUpdateChatGroup";
 import { useAppDispatch } from "../../../utility/useReduxHooks";
 import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
 
@@ -20,7 +20,7 @@ export const ChatGroup = ({ chat }: { chat: ChatGroupType }) => {
   const styles = StyleSheet.create(useThemeColor(styleSheet));
   const dispatch = useAppDispatch();
   const chatGroupData = chat.Chatgroup;
-  useUpdateChatGroup(chatGroupData, chatGroupData.id, dispatch, true);
+  subUpdateChatGroup(chatGroupData, chatGroupData.id, dispatch, true);
 
   return (
     chatGroupData &&

@@ -33,15 +33,16 @@ export type Attachments = {
   _deleted: string;
 };
 export interface MessageType {
-  id: string;
-  createdAt: string;
+  status?: "sending" | "complete" | "error";
+  id: string | null;
+  createdAt: string | Date;
   message: string;
-  userID: string;
+  userID: string | null;
   chatgroupID: string;
-  updatedAt: string;
-  _version: string;
-  _deleted: string;
-  _lastChangedAt: string;
+  updatedAt: string | null;
+  _version: string | null;
+  _deleted: string | null;
+  _lastChangedAt: string | null;
 
   Media: {
     items: Media[];
@@ -153,11 +154,34 @@ export const messageSlice = createSlice({
 
     addMessage: (
       state,
-      action: PayloadAction<{ chatGroupId: string; newMessage: MessageType }>
+      action: PayloadAction<{
+        chatGroupId: string;
+        newMessage: MessageType | string;
+        createdAt?: Date;
+      }>
     ) => {
       const stateMessageIndex = state.messages.findIndex((item) => {
         return item.chatGroupId === action.payload.chatGroupId;
       });
+
+      if (typeof action.payload.newMessage === "string") {
+        state.messages[stateMessageIndex].message.unshift({
+          message: action.payload.newMessage,
+          status: "sending",
+          _deleted: null,
+          createdAt: action.payload.createdAt!,
+          id: null,
+          Media: { items: [] },
+          updatedAt: null,
+          userID: null,
+          _lastChangedAt: null,
+          _version: null,
+          Attachments: { items: [] },
+          chatgroupID: action.payload.chatGroupId,
+        });
+        return state;
+      }
+
       state.messages[stateMessageIndex].message.unshift(
         action.payload.newMessage
       );
