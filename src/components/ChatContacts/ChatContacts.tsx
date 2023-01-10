@@ -9,7 +9,7 @@ import {
   TextStyle,
   ImageStyle,
 } from "react-native";
-import { useState, useEffect, useRef, useContext } from "react";
+import { useEffect, useRef, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { User } from "../../models/index";
@@ -17,9 +17,8 @@ import {
   createUserChatGroup,
   createChatGroup,
 } from "../../../src/graphql/mutations";
-import { Auth, API, graphqlOperation } from "aws-amplify";
+import { API, graphqlOperation } from "aws-amplify";
 import { useExistingChatGroups } from "../../../utility/useExistingChatGroups";
-import { ChatGroupType } from "../../screens/ChatsList/ChatsListScreen";
 import { useThemeColor } from "../../../utility/useStyles";
 import { userContext } from "../../../utility/userAuth";
 

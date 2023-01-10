@@ -18,8 +18,6 @@ import { Message } from "../Message/Message";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-
-import { listMessagesByChatGroup } from "./GroupChatCompoundQueries";
 import { deleteUserChatGroup, updateAttachment } from "../../graphql/mutations";
 import {
   onCreateMessage,

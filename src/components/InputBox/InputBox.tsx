@@ -60,7 +60,7 @@ type mediaFile = {
 export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
   const [inputText, setInputText] = useState("");
   const [attachments, setAttachments] = useState<any[]>([]);
-  const [media, setMedia] = useState<any[]>([]);
+  const [media, setMedia] = useState<imagePicker.ImagePickerAsset[]>([]);
   const inputOpacity = new Animated.Value(0);
   const inputScale = new Animated.Value(0);
   const animateInput = useRef(true);
@@ -77,9 +77,9 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
       allowsMultipleSelection: multiple,
     });
 
-    if (!result.canceled && (result as any)?.selected) {
-      setMedia((result as any).selected);
-    } else if (!result.canceled) setMedia([result]);
+    if (!result.canceled && result.assets.length) {
+      setMedia(result.assets);
+    } else if (!result.canceled) setMedia(result.assets);
   };
 
   const pickAttachment = async () => {
@@ -267,13 +267,13 @@ const addAttachment = async (
 };
 
 const addMedia = async (
-  file: mediaFile,
+  file: imagePicker.ImagePickerAsset,
   messageId: string,
   chatGroupId: string
 ) => {
   const newMedia = {
-    storageKey: await uploadFile(file.uri, file.type),
-    type: FileType[file.type],
+    storageKey: await uploadFile(file.uri, file.type!),
+    type: FileType[file.type!],
     duration: file.duration,
     width: file.width,
     height: file.height,

@@ -6,14 +6,17 @@ import {
   Pressable,
   FlatList,
 } from "react-native";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Auth, Storage } from "aws-amplify";
 import { useState, useEffect } from "react";
 import ImageView from "react-native-image-viewing";
+import * as imagePicker from "expo-image-picker";
 import { Attachment } from "../../models";
 import { Video, ResizeMode } from "expo-av";
+import { ImageSource } from "react-native-image-viewing/dist/@types/index";
+import { userContext } from "../../../utility/userAuth";
 dayjs.extend(relativeTime);
 
 type Message = {
@@ -27,18 +30,15 @@ type Message = {
 };
 
 export const Message = ({ message }: { message: Message }) => {
-  const [myMsg, setMymsg] = useState(false);
+  const myMsg = useRef(false);
+  const userAuth = useContext(userContext);
   const [attachments, setAttachments] = useState<any>([]);
   const [mediaSrc, setMediaSrc] = useState<any>([]);
   const [imageViewerVisibility, setimageViewerVisibility] = useState(false);
   let imgViewerIndex = useRef(0);
 
-  useEffect(() => {
-    (async () => {
-      const currentUser = await Auth.currentAuthenticatedUser();
-      setMymsg(message.userID === currentUser.attributes.sub);
-    })();
-  }, []);
+  if (userAuth && message.userID === userAuth.attributes.sub)
+    myMsg.current = true;
 
   useEffect(() => {
     const getAttachements = async () => {
@@ -73,7 +73,7 @@ export const Message = ({ message }: { message: Message }) => {
       }
     };
     getMedia();
-  }, [message.Media.items]);
+  }, [message.Media.items.length]);
   const resize = "contain";
   return (
     <View
