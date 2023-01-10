@@ -22,7 +22,12 @@ export const useOnCreateUserChatGroup = (
             value.data.onCreateUserChatGroup.user.id !== userAuth.attributes.sub
           ) {
             value.data.onCreateUserChatGroup.Chatgroup.users = {
-              items: [{ user: value.data.onCreateUserChatGroup.user }],
+              items: [
+                {
+                  user: value.data.onCreateUserChatGroup.user,
+                  userID: value.data.onCreateUserChatGroup.userID,
+                },
+              ],
             };
             dispatch(updateUserChatGroup(value.data.onCreateUserChatGroup));
             timeout && clearTimeout(timeout);

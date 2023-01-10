@@ -8,7 +8,7 @@ import {
 import { API, graphqlOperation } from "aws-amplify";
 import { listMessagesByChatGroup } from "../../components/GroupChatCompound/GroupChatCompoundQueries";
 
-type Media = {
+export type Media = {
   id: string;
   storageKey: string;
   type: string;
@@ -19,7 +19,7 @@ type Media = {
   height: string;
 };
 
-type Attachments = {
+export type Attachments = {
   chatgroupID: string;
   createdAt: string;
   id: string;

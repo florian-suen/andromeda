@@ -13,20 +13,21 @@ import { Auth, Storage } from "aws-amplify";
 import { useState, useEffect } from "react";
 import ImageView from "react-native-image-viewing";
 import * as imagePicker from "expo-image-picker";
-import { Attachment } from "../../models";
+import { Attachment, MediaType } from "../../models";
 import { Video, ResizeMode } from "expo-av";
 import { ImageSource } from "react-native-image-viewing/dist/@types/index";
 import { userContext } from "../../../utility/userAuth";
+import { Attachments, Media } from "../../redux/messages/messageSlice";
 dayjs.extend(relativeTime);
 
-type Message = {
+export type Message = {
   chatgroupID: string;
   message: string;
   createdAt: string;
   userID: string;
   id: string;
-  Media: any;
-  Attachments: any;
+  Media: { items: Media[] };
+  Attachments: { items: Attachments[] };
 };
 
 export const Message = ({ message }: { message: Message }) => {
@@ -36,6 +37,8 @@ export const Message = ({ message }: { message: Message }) => {
   const [mediaSrc, setMediaSrc] = useState<any>([]);
   const [imageViewerVisibility, setimageViewerVisibility] = useState(false);
   let imgViewerIndex = useRef(0);
+
+  console.log(message.Media.items.length);
 
   if (userAuth && message.userID === userAuth.attributes.sub)
     myMsg.current = true;

@@ -15,7 +15,7 @@ export const useOnDeleteUserChatGroup = (
       filter: { chatgroupID: { eq: chatGroupData.id } },
     })
   );
-  const userChatGrpSubscription =
+  const onDeleteUserChatGrpSubscription =
     "subscribe" in onDeleteUserChatGrp &&
     onDeleteUserChatGrp.subscribe({
       next: ({ value }: any) => {
@@ -31,6 +31,7 @@ export const useOnDeleteUserChatGroup = (
 
   return () => {
     console.log("Unsubscribing deleteUserChatGroup");
-    userChatGrpSubscription && userChatGrpSubscription.unsubscribe;
+    onDeleteUserChatGrpSubscription &&
+      onDeleteUserChatGrpSubscription.unsubscribe;
   };
 };

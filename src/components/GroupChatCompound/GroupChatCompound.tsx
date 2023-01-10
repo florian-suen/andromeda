@@ -28,7 +28,7 @@ import { useState, useContext, createContext, PropsWithChildren } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
 import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
-import { useOnDeleteUserChatGroup } from "../../../utility/useUpdateUserChatGroup";
+import { useOnDeleteUserChatGroup } from "../../../utility/useUpdateDeleteUserChatGroup";
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
 import { AppDispatch } from "../../redux/store";
 import {
@@ -49,8 +49,9 @@ type AddContactParam = {
 
 const UserContext = createContext<{
   [p: string]: any;
+  messages: { messages: Message[] };
   navigation?: NativeStackNavigationProp<AddContactParam>;
-}>({});
+}>({ messages: { messages: [] } });
 
 export const GroupChat = ({ children }: PropsWithChildren) => {
   const route = useRoute<RouteProp<ChatGroupParam>>();

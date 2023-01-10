@@ -44,11 +44,11 @@ export const AddContacts = () => {
   });
 
   const contactList = getContactList.filter(
-    (item: any) =>
-      !chatGroup.users.items.some(
-        (chatGroupuser: any) =>
-          !chatGroupuser._deleted && item.id === chatGroupuser.userID
-      )
+    (item) =>
+      !chatGroup.users.items.some((chatGroupuser: any) => {
+        console.log(!chatGroupuser.userID && chatGroupuser);
+        return item.id === chatGroupuser.userID;
+      })
   );
 
   const contactSelectHandler = (id: string) => {
