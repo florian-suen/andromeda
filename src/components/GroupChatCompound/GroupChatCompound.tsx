@@ -18,27 +18,15 @@ import { Message } from "../Message/Message";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
-import { deleteUserChatGroup, updateAttachment } from "../../graphql/mutations";
-import {
-  onCreateMessage,
-  onCreateAttachment,
-  onCreateMedia,
-} from "../../graphql/subscriptions";
+import { deleteUserChatGroup } from "../../graphql/mutations";
 import { useState, useContext, createContext, PropsWithChildren } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
-import { useUpdateChatGroup } from "../../../utility/useUpdateChatGroup";
+import { subUpdateChatGroup } from "../../subscription/subUpdateChatGroup";
 import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
-import { useOnDeleteUserChatGroup } from "../../../utility/useUpdateDeleteUserChatGroup";
+import { subOnDeleteUserChatGroup } from "../../subscription/subUpdateDeleteUserChatGroup";
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
 import { AppDispatch } from "../../redux/store";
-import {
-  addMessage,
-  getMessageList,
-  updateMessageAttachments,
-  updateMessageMedia,
-} from "../../redux/messages/messageSlice";
-
-type dispatch = ReturnType<typeof useAppDispatch>;
+import { subCreateMessage } from "../../subscription/subOnCreateMessage";
 
 type ChatGroupParam = {
   chat: { chatGroupId: string; username: string };
@@ -74,8 +62,8 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
 
   userChatGroupSubscription(chatGroupId, chatGroupData, dispatch);
   setNavHeaderOptions(navigation, chatGroupData, modalVisible, setModalVisible);
-  getandSubMessages(chatGroupId, dispatch);
-  useUpdateChatGroup(chatGroupData, chatGroupId, dispatch);
+  subCreateMessage(chatGroupId, dispatch);
+  subUpdateChatGroup(chatGroupData, chatGroupId, dispatch);
 
   return (
     <UserContext.Provider
@@ -224,83 +212,6 @@ function removeUserHandler(userChatGroup: { _version: string; id: string }) {
   );
 }
 
-function getandSubMessages(chatGroupId: string, dispatch: dispatch) {
-  useEffect(() => {
-    dispatch(getMessageList(chatGroupId));
-
-    const onCreateMsg = API.graphql(
-      graphqlOperation(onCreateMessage, {
-        filter: { chatgroupID: { eq: chatGroupId } },
-      })
-    );
-
-    const msgSubscription =
-      "subscribe" in onCreateMsg &&
-      onCreateMsg.subscribe({
-        next: ({ value }: any) => {
-          value.data.onCreateMessage.Attachments = { items: [] };
-          value.data.onCreateMessage.Media = { items: [] };
-
-          dispatch(
-            addMessage({ chatGroupId, newMessage: value.data.onCreateMessage })
-          );
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
-
-    const onCreateAttach = API.graphql(
-      graphqlOperation(onCreateAttachment, {
-        filter: { chatgroupID: { eq: chatGroupId } },
-      })
-    );
-
-    const attachSubscription =
-      "subscribe" in onCreateAttach &&
-      onCreateAttach.subscribe({
-        next: ({ value }: any) => {
-          dispatch(
-            updateMessageAttachments({
-              chatGroupId,
-              newAttachment: value.data.onCreateAttachment,
-            })
-          );
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
-
-    const onCreateMediaSub = API.graphql(
-      graphqlOperation(onCreateMedia, {
-        filter: { chatgroupID: { eq: chatGroupId } },
-      })
-    );
-
-    const mediaSubscription =
-      "subscribe" in onCreateMediaSub &&
-      onCreateMediaSub.subscribe({
-        next: ({ value }: any) => {
-          dispatch(
-            updateMessageMedia({
-              chatGroupId,
-              newMedia: value.data.onCreateMedia,
-            })
-          );
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
-
-    return () => {
-      msgSubscription && msgSubscription.unsubscribe();
-      attachSubscription && attachSubscription.unsubscribe();
-    };
-  }, [chatGroupId]);
-}
-
 function setNavHeaderOptions(
   navigation: NativeStackNavigationProp<AddContactParam>,
   chatGroupData: ChatGroupType["Chatgroup"],
@@ -346,7 +257,7 @@ function userChatGroupSubscription(
   useEffect(() => {
     let unsubDelUserChatGroup: () => void;
 
-    unsubDelUserChatGroup = useOnDeleteUserChatGroup(chatGroupData, dispatch);
+    unsubDelUserChatGroup = subOnDeleteUserChatGroup(chatGroupData, dispatch);
 
     return () => {
       unsubDelUserChatGroup();

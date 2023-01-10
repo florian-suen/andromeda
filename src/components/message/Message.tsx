@@ -38,8 +38,6 @@ export const Message = ({ message }: { message: Message }) => {
   const [imageViewerVisibility, setimageViewerVisibility] = useState(false);
   let imgViewerIndex = useRef(0);
 
-  console.log(message.Media.items.length);
-
   if (userAuth && message.userID === userAuth.attributes.sub)
     myMsg.current = true;
 
