@@ -1,8 +1,8 @@
 import { API, graphqlOperation } from "aws-amplify";
 
-import { ChatGroupList } from "../src/screens/ChatsList/queries";
+import { ChatGroupList } from "../screens/ChatsList/queries";
 
-export const useExistingChatGroups = async (userID: string, userAuth: any) => {
+export const subExistingChatGroups = async (userID: string, userAuth: any) => {
   const existingChatGroups = await API.graphql(
     graphqlOperation(ChatGroupList, {
       id: userAuth.attributes.sub,
