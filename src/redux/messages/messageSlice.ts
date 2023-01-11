@@ -33,9 +33,9 @@ export type Attachments = {
   _deleted: string;
 };
 export interface MessageType {
-  status?: "sending" | "complete" | "error";
+  status: "sending" | "complete" | "error";
   id: string | null;
-  createdAt: string | Date;
+  createdAt: string;
   message: string;
   userID: string | null;
   chatgroupID: string;
@@ -157,7 +157,7 @@ export const messageSlice = createSlice({
       action: PayloadAction<{
         chatGroupId: string;
         newMessage: MessageType | string;
-        createdAt?: Date;
+        createdAt?: string;
       }>
     ) => {
       const stateMessageIndex = state.messages.findIndex((item) => {
@@ -182,9 +182,16 @@ export const messageSlice = createSlice({
         return state;
       }
 
-      state.messages[stateMessageIndex].message.unshift(
+      action.payload.newMessage.status = "complete";
+      Object.assign(
+        state.messages[stateMessageIndex].message.find(
+          (item) =>
+            item.createdAt ===
+            (action.payload.newMessage as MessageType).createdAt
+        ) as MessageType,
         action.payload.newMessage
       );
+
       return state;
     },
   },

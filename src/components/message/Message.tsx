@@ -9,13 +9,11 @@ import {
 import { useContext, useRef } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Auth, Storage } from "aws-amplify";
+import { Storage } from "aws-amplify";
 import { useState, useEffect } from "react";
 import ImageView from "react-native-image-viewing";
-import * as imagePicker from "expo-image-picker";
-import { Attachment, MediaType } from "../../models";
+
 import { Video, ResizeMode } from "expo-av";
-import { ImageSource } from "react-native-image-viewing/dist/@types/index";
 import { userContext } from "../../../utility/userAuth";
 import { Attachments, Media } from "../../redux/messages/messageSlice";
 dayjs.extend(relativeTime);
@@ -23,6 +21,7 @@ dayjs.extend(relativeTime);
 export type Message = {
   chatgroupID: string;
   message: string;
+  status: string;
   createdAt: string | null;
   userID: string | null;
   id: string | null;
@@ -134,6 +133,7 @@ export const Message = ({ message }: { message: Message }) => {
           }}
         />
       )}
+      <Text style={styles.message}>{message.status}</Text>
       <Text style={styles.message}>{message.message}</Text>
       <Text style={styles.time}>{dayjs(message.createdAt).fromNow(true)}</Text>
     </View>

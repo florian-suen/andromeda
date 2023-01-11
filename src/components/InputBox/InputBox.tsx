@@ -30,7 +30,7 @@ type messageInput = {
   chatgroupID: string;
   message: string;
   userID: string;
-  createdAt: Date;
+  createdAt: string;
 };
 
 enum FileType {
@@ -108,7 +108,7 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
 
   const sendHandler = async () => {
     console.log("sending message");
-    const createdAt = new Date();
+    const createdAt = new Date().toISOString();
     dispatch(
       addMessage({
         chatGroupId: chatGroup.id,
