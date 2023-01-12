@@ -26,6 +26,7 @@ import { UserAuth, userContext } from "../../utility/userAuth";
 import { useAppDispatch, useAppSelector } from "../../utility/useReduxHooks";
 import { useDispatch } from "react-redux";
 import { createNewChatGroup } from "../redux/chatGroup/chatGroupSlice";
+import { v4 as uuidv4 } from "uuid";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string };
@@ -59,6 +60,16 @@ export const ChatContacts = () => {
       return [...userIds, id];
     });
   };
+
+  const chatGroupHandler = createChatGroupHandler(
+    getContactList,
+    userAuth!,
+    navigation,
+    selectedUserId,
+    setSelectedUserId,
+    setIsSelectable,
+    dispatch
+  );
 
   useEffect(() => {
     const createGrpOpaTiming = Animated.timing(createGroupOpacity, {
@@ -115,6 +126,7 @@ export const ChatContacts = () => {
                 user={item}
                 isSelectable={isSelectable}
                 isSelected={isSelected}
+                chatGroupHandler={chatGroupHandler}
               />
             </Animated.View>
           );
@@ -160,17 +172,7 @@ export const ChatContacts = () => {
           <Button
             disabled={selectedUserId.length < 1}
             color="royalblue"
-            onPress={() =>
-              createChatGroupHandler(
-                getContactList,
-                userAuth!,
-                navigation,
-                selectedUserId,
-                setSelectedUserId,
-                setIsSelectable,
-                dispatch
-              )
-            }
+            onPress={() => chatGroupHandler()}
             title="Create Group"
           />
         </Animated.View>
@@ -209,7 +211,7 @@ const styleSheet: StyleSheet.NamedStyles<{
   },
 };
 
-async function createChatGroupHandler(
+function createChatGroupHandler(
   users: User[],
   userAuth: UserAuth,
   navigation: NativeStackNavigationProp<RootStackParamList>,
@@ -218,67 +220,77 @@ async function createChatGroupHandler(
   setIsSelectable: React.Dispatch<React.SetStateAction<boolean>>,
   dispatch: dispatch
 ) {
-  selectedUserId.push(userAuth.attributes.sub);
-  const userNames: string[] = [];
-  function* getNames() {
-    for (const id of selectedUserId) {
-      yield users.find((user) => user.id === id)?.username;
+  return async (user?: EagerUser) => {
+    const chatGroupId: string = uuidv4();
+    let userNames, usersArray;
+
+    if (user) {
+      const friendUser = user;
+      const mainUser = users.find(
+        (user) => user.id === userAuth.attributes.sub
+      );
+      selectedUserId = [friendUser.id, userAuth.attributes.sub];
+      userNames = [friendUser.username];
+      usersArray = [{ user: friendUser }, { user: mainUser }];
+    } else {
+      selectedUserId.push(userAuth.attributes.sub);
+
+      userNames = [];
+      function* getNames() {
+        for (const id of selectedUserId) {
+          yield users.find((user) => user.id === id)?.username;
+        }
+      }
+      for (const username of getNames()) userNames.push(username!);
+      usersArray = selectedUserId
+        .map((userId) => users.find((user) => user.id === userId))
+        .map((user) => {
+          return { user };
+        });
     }
-  }
-  for (const username of getNames()) userNames.push(username!);
-  const filteredUsers = selectedUserId
-    .map((userId) => users.find((user) => user.id === userId))
-    .map((user) => {
-      return { user };
+
+    dispatch(
+      createNewChatGroup({
+        chatGroupId,
+        userNames,
+        users: usersArray as { user: EagerUser }[],
+        leaderID: userAuth.attributes.sub,
+      })
+    );
+
+    navigation.navigate("GroupChat", {
+      chatGroupId,
     });
 
-  const newChatGroupResp = await API.graphql(
-    graphqlOperation(createChatGroup, {
-      input: {
-        leaderID: userAuth.attributes.sub,
-        name: `${userNames.join(" ")} Group Chat`,
-      },
-    })
-  );
+    const newChatGroupResp = await API.graphql(
+      graphqlOperation(createChatGroup, {
+        input: {
+          leaderID: user ? userAuth.attributes.sub : null,
+          name: `${userNames.join(" ")} ${!user ? "Group Chat" : ""} `,
+          id: chatGroupId,
+        },
+      })
+    );
 
-  if ("data" in newChatGroupResp && !newChatGroupResp.data?.createChatGroup)
-    console.log("Error creating chatgroup");
+    if ("data" in newChatGroupResp && !newChatGroupResp.data?.createChatGroup)
+      console.log("Error creating chatgroup");
 
-  const newChatGroup =
-    "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
+    const newChatGroup =
+      "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
 
-  dispatch(
-    createNewChatGroup({
-      chatGroupId: newChatGroup.id,
-      userNames,
-      users: filteredUsers as { user: EagerUser }[],
-      leaderID: userAuth.attributes.sub,
-    })
-  );
+    await Promise.all(
+      selectedUserId.map((userId) => {
+        API.graphql(
+          graphqlOperation(createUserChatGroup, {
+            input: { chatgroupID: chatGroupId, userID: userId },
+          })
+        );
+      })
+    );
 
-  navigation.navigate("GroupChat", {
-    chatGroupId: newChatGroup.id,
-  });
-
-  await Promise.all(
-    selectedUserId.map((userId) => {
-      API.graphql(
-        graphqlOperation(createUserChatGroup, {
-          input: { chatgroupID: newChatGroup.id, userID: userId },
-        })
-      );
-    })
-  );
-
-  await API.graphql(
-    graphqlOperation(createUserChatGroup, {
-      input: {
-        chatgroupID: newChatGroup.id,
-        userID: userAuth.attributes.sub,
-      },
-    })
-  );
-
-  setIsSelectable(false);
-  setSelectedUserId([]);
+    if (!user) {
+      setIsSelectable(false);
+      setSelectedUserId([]);
+    }
+  };
 }

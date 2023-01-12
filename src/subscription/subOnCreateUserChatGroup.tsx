@@ -18,7 +18,6 @@ export const subOnCreateUserChatGroup = (
       "subscribe" in onCreateChatGrp &&
       onCreateChatGrp.subscribe({
         next: ({ value }: any) => {
-          console.log(value.data.onCreateUserChatGroup);
           value.data.onCreateUserChatGroup.Chatgroup.users = {
             items: [
               {

@@ -12,7 +12,7 @@ import {
 import { useEffect, useRef, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { User } from "../../models/index";
+import { EagerUser, User } from "../../models/index";
 import {
   createUserChatGroup,
   createChatGroup,
@@ -31,11 +31,13 @@ export const ChatContactsComponent = ({
   isSelected = false,
   onSelectHandler,
   isSelectable,
+  chatGroupHandler,
 }: {
   user: User;
   isSelected: boolean;
   isSelectable: boolean;
   onSelectHandler: () => void;
+  chatGroupHandler: (user: EagerUser) => Promise<void>;
 }) => {
   const userAuth = useContext(userContext);
   const image = user.image ? user.image : undefined;
@@ -85,7 +87,7 @@ export const ChatContactsComponent = ({
       <Pressable
         android_ripple={{ color: "#222b3d" }}
         onPress={() => {
-          if (!isSelectable) createChatGroupHandler(user, userAuth, navigation);
+          if (!isSelectable) chatGroupHandler(user);
           if (isSelectable) onSelectHandler();
         }}
         style={({ pressed }) => [pressed ? styles.pressed : null]}
@@ -182,46 +184,3 @@ const styleSheet: StyleSheet.NamedStyles<{
     borderRadius: 5,
   },
 };
-
-async function createChatGroupHandler(
-  user: User,
-  userAuth: any,
-  navigation: NativeStackNavigationProp<RootStackParamList>
-) {
-  const existingChatGroup = await useExistingChatGroups(user.id, userAuth);
-
-  if (existingChatGroup) {
-    navigation.navigate("GroupChat", {
-      chatGroupId: existingChatGroup.Chatgroup.id,
-    });
-    return;
-  }
-  const newChatGroupResp = await API.graphql(
-    graphqlOperation(createChatGroup, { input: {} })
-  );
-
-  if ("data" in newChatGroupResp && !newChatGroupResp.data?.createChatGroup)
-    console.log("Error creating chatgroup");
-
-  const newChatGroup =
-    "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
-
-  /*  navigation.navigate("GroupChat", {
-    chatGroupId: newChatGroup.id,
-  }); */
-
-  await API.graphql(
-    graphqlOperation(createUserChatGroup, {
-      input: { chatgroupID: newChatGroup.id, userID: user.id },
-    })
-  );
-
-  await API.graphql(
-    graphqlOperation(createUserChatGroup, {
-      input: {
-        chatgroupID: newChatGroup.id,
-        userID: userAuth.attributes.sub,
-      },
-    })
-  );
-}
