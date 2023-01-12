@@ -59,6 +59,7 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
       (item) => item.Chatgroup.id === chatGroupId
     )!.Chatgroup;
   });
+  console.log(chatGroupData._version);
 
   userChatGroupSubscription(chatGroupId, chatGroupData, dispatch);
   setNavHeaderOptions(navigation, chatGroupData, modalVisible, setModalVisible);

@@ -14,6 +14,7 @@ export interface ChatGroupType {
     name: string;
     image: string;
     leaderID: string;
+    _version: string;
     users: {
       items: {
         _deleted: boolean | null;
@@ -84,15 +85,17 @@ export const chatGroupSlice = createSlice({
       action: PayloadAction<{
         id: string;
         lastMessage: { message: string; id: string; createdAt: string };
+        version: string;
       }>
     ) => {
       state.chatGroup.sort((a: ChatGroupType, b: ChatGroupType) => {
         if (a.Chatgroup.id === action.payload.id) return -1;
         return 0;
       });
-      if (state.chatGroup.length)
+      if (state.chatGroup.length) {
         state.chatGroup[0].Chatgroup.LastMessage = action.payload.lastMessage;
-
+        state.chatGroup[0].Chatgroup._version = action.payload.version;
+      }
       return state;
     },
     addUserChatGroup: (

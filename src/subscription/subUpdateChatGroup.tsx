@@ -30,6 +30,7 @@ export const subUpdateChatGroup = (
               reorderChatGroup({
                 id: value.data.onUpdateChatGroup.id,
                 lastMessage: value.data.onUpdateChatGroup.LastMessage,
+                version: value.data.onUpdateChatGroup._version,
               })
             );
         },
