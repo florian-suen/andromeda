@@ -23,7 +23,7 @@ import { useThemeColor } from "../../../utility/useStyles";
 import { userContext } from "../../../utility/userAuth";
 
 type RootStackParamList = {
-  GroupChat: { chatGroupId: string; username: string };
+  GroupChat: { chatGroupId: string };
 };
 
 export const ChatContactsComponent = ({
@@ -193,7 +193,6 @@ async function createChatGroupHandler(
   if (existingChatGroup) {
     navigation.navigate("GroupChat", {
       chatGroupId: existingChatGroup.Chatgroup.id,
-      username: user.username,
     });
     return;
   }
@@ -206,6 +205,10 @@ async function createChatGroupHandler(
 
   const newChatGroup =
     "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
+
+  /*  navigation.navigate("GroupChat", {
+    chatGroupId: newChatGroup.id,
+  }); */
 
   await API.graphql(
     graphqlOperation(createUserChatGroup, {

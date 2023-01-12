@@ -10,31 +10,6 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { getContactList } from "../../redux/contactList/contactListSlice";
 import { getMessageList } from "../../redux/messages/messageSlice";
 
-export type ChatGroupType = {
-  Chatgroup: {
-    LastMessage: { message: string; id: string; createdAt: string };
-    id: string;
-    name: string;
-    image: string;
-    users: {
-      items: {
-        user: { id: string; image: string | null; username: string };
-        Chatgroup: {
-          id: string;
-          image: string;
-          name: string;
-          LastMessage: { message: string; id: string; createdAt: string };
-        };
-      }[];
-    };
-  };
-  user: {
-    Chatgroup: {
-      LastMessage: { message: string; id: string; createdAt: string };
-    };
-    user: { id: string; image: string | null; username: string };
-  };
-};
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
 };

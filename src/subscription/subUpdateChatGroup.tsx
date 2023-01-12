@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { onUpdateChatGroup } from "../graphql/subscriptions";
-import { ChatGroupType } from "../screens/ChatsList/ChatsListScreen";
+import { ChatGroupType } from "../redux/chatGroup/chatGroupSlice";
 import { AppDispatch } from "../redux/store";
 import { reorderChatGroup } from "../redux/chatGroup/chatGroupSlice";
 

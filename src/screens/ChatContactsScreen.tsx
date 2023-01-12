@@ -19,19 +19,23 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChatContactsComponent } from "../components/ChatContacts/ChatContacts";
 import { graphqlOperation, API } from "aws-amplify";
 
-import { User } from "../models/index";
+import { EagerUser, User } from "../models/index";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useThemeColor } from "../../utility/useStyles";
-import { userContext } from "../../utility/userAuth";
-import { useAppSelector } from "../../utility/useReduxHooks";
+import { UserAuth, userContext } from "../../utility/userAuth";
+import { useAppDispatch, useAppSelector } from "../../utility/useReduxHooks";
+import { useDispatch } from "react-redux";
+import { createNewChatGroup } from "../redux/chatGroup/chatGroupSlice";
 
 type RootStackParamList = {
-  GroupChat: { chatGroupId: string; username: string };
+  GroupChat: { chatGroupId: string };
 };
+
+type dispatch = ReturnType<typeof useAppDispatch>;
 
 export const ChatContacts = () => {
   const userAuth = useContext(userContext);
-
+  const dispatch = useAppDispatch();
   const [selectedUserId, setSelectedUserId] = useState<string[]>([]);
   const [isSelectable, setIsSelectable] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -158,12 +162,13 @@ export const ChatContacts = () => {
             color="royalblue"
             onPress={() =>
               createChatGroupHandler(
-                contactList,
-                userAuth,
+                getContactList,
+                userAuth!,
                 navigation,
                 selectedUserId,
                 setSelectedUserId,
-                setIsSelectable
+                setIsSelectable,
+                dispatch
               )
             }
             title="Create Group"
@@ -206,19 +211,26 @@ const styleSheet: StyleSheet.NamedStyles<{
 
 async function createChatGroupHandler(
   users: User[],
-  userAuth: any,
+  userAuth: UserAuth,
   navigation: NativeStackNavigationProp<RootStackParamList>,
   selectedUserId: string[],
   setSelectedUserId: React.Dispatch<React.SetStateAction<string[]>>,
-  setIsSelectable: React.Dispatch<React.SetStateAction<boolean>>
+  setIsSelectable: React.Dispatch<React.SetStateAction<boolean>>,
+  dispatch: dispatch
 ) {
-  const userNames = [];
+  selectedUserId.push(userAuth.attributes.sub);
+  const userNames: string[] = [];
   function* getNames() {
     for (const id of selectedUserId) {
       yield users.find((user) => user.id === id)?.username;
     }
   }
-  for (const username of getNames()) userNames.push(username);
+  for (const username of getNames()) userNames.push(username!);
+  const filteredUsers = selectedUserId
+    .map((userId) => users.find((user) => user.id === userId))
+    .map((user) => {
+      return { user };
+    });
 
   const newChatGroupResp = await API.graphql(
     graphqlOperation(createChatGroup, {
@@ -234,6 +246,19 @@ async function createChatGroupHandler(
 
   const newChatGroup =
     "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
+
+  dispatch(
+    createNewChatGroup({
+      chatGroupId: newChatGroup.id,
+      userNames,
+      users: filteredUsers as { user: EagerUser }[],
+      leaderID: userAuth.attributes.sub,
+    })
+  );
+
+  navigation.navigate("GroupChat", {
+    chatGroupId: newChatGroup.id,
+  });
 
   await Promise.all(
     selectedUserId.map((userId) => {

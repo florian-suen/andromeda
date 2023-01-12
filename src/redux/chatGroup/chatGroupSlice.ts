@@ -5,21 +5,23 @@ import {
   SerializedError,
 } from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
+import { EagerUser } from "../../models";
 import { GetUser } from "../../screens/ChatsList/queries";
 
 export interface ChatGroupType {
   Chatgroup: {
     LastMessage: { message: string; id: string; createdAt: string };
     id: string;
+    _deleted: null | boolean;
     name: string;
-    image: string;
+    image: string | null;
     leaderID: string;
     _version: string;
     users: {
       items: {
         _deleted: boolean | null;
         user: { id: string; image: string | null; username: string };
-        Chatgroup: {
+        Chatgroup?: {
           id: string;
           image: string;
           name: string;
@@ -134,7 +136,7 @@ export const chatGroupSlice = createSlice({
       action: PayloadAction<ChatGroupType>
     ) => {
       let index: number = 0;
-      //note 1 why 24 when only 15 and also when creating new group the main user not there!
+
       const chatGroupExists = state.chatGroup.some((item, itemIndex) => {
         if (item.Chatgroup.id === action.payload.Chatgroup.id) {
           index = itemIndex;
@@ -148,6 +150,7 @@ export const chatGroupSlice = createSlice({
           if (item.user.id === action.payload.user.id) {
             return item._deleted === null;
           }
+
           return false;
         }
       );
@@ -156,14 +159,41 @@ export const chatGroupSlice = createSlice({
         state.chatGroup = [action.payload];
         return state;
       } else if (chatGroupExists) {
+        let newState;
         if (!userExists) {
-          state.chatGroup[index].Chatgroup.users.items = state.chatGroup[
+          newState = Object.assign(
+            state.chatGroup[index],
+            action.payload.Chatgroup
+          );
+          /*          state.chatGroup[index].Chatgroup.users.items = state.chatGroup[
             index
-          ].Chatgroup.users.items.concat(action.payload.Chatgroup.users.items);
+          ].Chatgroup.users.items.concat(action.payload.Chatgroup.users.items); */
         }
+        state.chatGroup[index] = newState as ChatGroupType;
         return state;
       }
       state.chatGroup.unshift(action.payload);
+      return state;
+    },
+    createNewChatGroup: (
+      state: ChatgroupState,
+      action: PayloadAction<{
+        userNames: string[];
+        chatGroupId: string;
+        users: { user: EagerUser }[];
+        leaderID: string;
+      }>
+    ) => {
+      const newChatgroup = {
+        Chatgroup: {
+          name: action.payload.userNames.join(" "),
+          users: { items: action.payload.users },
+          id: action.payload.chatGroupId,
+          leaderID: action.payload.leaderID,
+        },
+      } as unknown as ChatGroupType;
+
+      state.chatGroup.push(newChatgroup);
       return state;
     },
   },
@@ -197,4 +227,5 @@ export const {
   removeUserChatGroup,
   reorderChatGroup,
   updateUserChatGroup,
+  createNewChatGroup,
 } = chatGroupSlice.actions;

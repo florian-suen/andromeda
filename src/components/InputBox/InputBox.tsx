@@ -146,7 +146,6 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
       setAttachments([]);
     }
 
-    console.log(chatGroup._version);
     API.graphql(
       graphqlOperation(updateChatGroup, {
         input: {

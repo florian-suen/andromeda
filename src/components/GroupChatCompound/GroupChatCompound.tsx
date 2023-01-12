@@ -59,7 +59,6 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
       (item) => item.Chatgroup.id === chatGroupId
     )!.Chatgroup;
   });
-  console.log(chatGroupData._version);
 
   userChatGroupSubscription(chatGroupId, chatGroupData, dispatch);
   setNavHeaderOptions(navigation, chatGroupData, modalVisible, setModalVisible);
@@ -103,7 +102,6 @@ function Menu({ children }: PropsWithChildren) {
 
   const sortedUsers = newUsers.sort((user: any) => {
     if (user.user.id === leaderId) return -1;
-
     return 0;
   });
   const filteredUsers: any = sortedUsers.filter((user: any) => !user._deleted);
