@@ -3,7 +3,7 @@ enum MediaType {
   VIDEO
 }
 
-type Media @model @auth(rules: [{allow: public}]) {
+type Media @model @auth(rules: [{ allow: public }]) {
   id: ID!
   storageKey: String
   type: MediaType
@@ -19,7 +19,7 @@ enum AttachmentType {
   VIDEO
 }
 
-type Attachment @model @auth(rules: [{allow: public}]) {
+type Attachment @model @auth(rules: [{ allow: public }]) {
   id: ID!
   storageKey: String!
   type: AttachmentType!
@@ -28,11 +28,7 @@ type Attachment @model @auth(rules: [{allow: public}]) {
   name: String!
 }
 
-type Friends @model @auth(rules: [{allow: public}]) {
-  id: ID!
-}
-
-type ChatGroup @model @auth(rules: [{allow: public}]) {
+type ChatGroup @model @auth(rules: [{ allow: public }]) {
   id: ID!
   name: String
   image: String
@@ -44,32 +40,62 @@ type ChatGroup @model @auth(rules: [{allow: public}]) {
   Media: [Media] @hasMany(indexName: "byChatGroup", fields: ["id"])
 }
 
-type User @model @auth(rules: [{allow: public}]) {
+type User @model @auth(rules: [{ allow: public }]) {
   id: ID!
   username: String!
   status: String
   image: String
   Messages: [Message] @hasMany(indexName: "byUser", fields: ["id"])
-  ChatGroups: [UserChatGroup] @hasMany(indexName: "byUserChatGroup", fields: ["id"])
+  ChatGroups: [UserChatGroup]
+    @hasMany(indexName: "byUserChatGroup", fields: ["id"])
+
+  Users: [UserContact] @hasMany(indexName: "byUserContact", fields: ["id"])
   Leader: [ChatGroup] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
-type UserChatGroup @model @auth(rules: [{allow: public}]) {
+type UserContact @model @auth(rules: [{ allow: public }]) {
   id: ID!
-  userID: ID! @index(name: "byUserChatGroup", sortKeyFields: ["updatedAt"], queryField: "ListbyUserChatGroup")
-  chatgroupID: ID! @index(name: "byChatGroupUser", sortKeyFields: ["updatedAt"], queryField: "ListbyChatGroupUser")
+  userID: ID!
+    @index(
+      name: "byUserContact"
+      sortKeyFields: ["updatedAt"]
+      queryField: "ListbyUserContact"
+    )
+  updatedAt: AWSDateTime!
+  user: User @belongsTo(fields: ["userID"])
+}
+
+type UserChatGroup @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  userID: ID!
+    @index(
+      name: "byUserChatGroup"
+      sortKeyFields: ["updatedAt"]
+      queryField: "ListbyUserChatGroup"
+    )
+  chatgroupID: ID!
+    @index(
+      name: "byChatGroupUser"
+      sortKeyFields: ["updatedAt"]
+      queryField: "ListbyChatGroupUser"
+    )
   updatedAt: AWSDateTime!
   Chatgroup: ChatGroup @belongsTo(fields: ["chatgroupID"])
   user: User @belongsTo(fields: ["userID"])
 }
 
-type Message @model @auth(rules: [{allow: public}]) {
+type Message @model @auth(rules: [{ allow: public }]) {
   id: ID!
   createdAt: AWSDateTime
   message: String
   userID: ID! @index(name: "byUser")
-  chatgroupID: ID! @index(name: "byChatGroup", sortKeyFields: ["createdAt"], queryField: "listMessagesByChatGroup")
+  chatgroupID: ID!
+    @index(
+      name: "byChatGroup"
+      sortKeyFields: ["createdAt"]
+      queryField: "listMessagesByChatGroup"
+    )
   Attachments: [Attachment] @hasMany(indexName: "byMessage", fields: ["id"])
   Media: [Media] @hasMany(indexName: "byMessage", fields: ["id"])
 }
-  
+ 

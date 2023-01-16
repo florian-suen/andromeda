@@ -20,10 +20,6 @@ type AttachmentMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
-type FriendsMetaData = {
-  readOnlyFields: 'createdAt' | 'updatedAt';
-}
-
 type ChatGroupMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
@@ -98,24 +94,6 @@ export declare type Attachment = LazyLoading extends LazyLoadingDisabled ? Eager
 
 export declare const Attachment: (new (init: ModelInit<Attachment, AttachmentMetaData>) => Attachment) & {
   copyOf(source: Attachment, mutator: (draft: MutableModel<Attachment, AttachmentMetaData>) => MutableModel<Attachment, AttachmentMetaData> | void): Attachment;
-}
-
-type EagerFriends = {
-  readonly id: string;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyFriends = {
-  readonly id: string;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type Friends = LazyLoading extends LazyLoadingDisabled ? EagerFriends : LazyFriends
-
-export declare const Friends: (new (init: ModelInit<Friends, FriendsMetaData>) => Friends) & {
-  copyOf(source: Friends, mutator: (draft: MutableModel<Friends, FriendsMetaData>) => MutableModel<Friends, FriendsMetaData> | void): Friends;
 }
 
 type EagerChatGroup = {
