@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { ChatList } from "../screens/ChatsList/ChatsListScreen";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { setStatusBarBackgroundColor } from "expo-status-bar";
+
 import { Account } from "../screens/AccountScreen";
 import { ContactScreen } from "../screens/ContactScreen";
 

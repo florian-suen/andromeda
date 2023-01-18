@@ -7,6 +7,7 @@ import { getUser } from "./src/graphql/queries";
 import { createUser } from "./src/graphql/mutations";
 import { getUserAuth, UserAuth, userContext } from "./utility/userAuth";
 import { ActivityIndicator } from "react-native";
+import { v4 as uuidv4 } from "uuid";
 Amplify.configure({ ...awsconfig, Analytics: { disabled: true } });
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
         image:
           "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
         status: "Hey! I am new!",
+        inviteId: [uuidv4()],
       };
 
       const createdUser = await API.graphql(
