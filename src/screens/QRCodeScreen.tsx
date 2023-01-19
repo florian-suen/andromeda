@@ -1,17 +1,33 @@
-import { useContext } from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
+import { useContext, useRef } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ToastAndroid,
+  Button,
+} from "react-native";
+import * as FileSystem from "expo-file-system";
+
 import QRCode from "react-native-qrcode-svg";
 import { userContext } from "../../utility/userAuth";
 import { useAppSelector } from "../../utility/useReduxHooks";
 import { LinearGradient } from "expo-linear-gradient";
-import RNFS from "react-native-fs";
-import { current } from "@reduxjs/toolkit";
+import * as MediaLibrary from "expo-media-library";
+
 export interface QRCodeProps {
   inviteId: string;
   name: string;
 }
 
+interface QREncode {
+  toDataURL: (callback: (data: string) => void) => void;
+}
+
 export const QRCodeScreen = () => {
+  const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
+
+  let qrCode: QREncode | null = null;
   const userAuth = useContext(userContext);
   const payload: QRCodeProps = { inviteId: "Something", name: "New" };
   const currentUser = useAppSelector((state) =>
@@ -33,6 +49,9 @@ export const QRCodeScreen = () => {
             logo={{ uri: currentUser.image }}
             backgroundColor="transparent"
             value={JSON.stringify(payload)}
+            getRef={(qrCode64) => {
+              qrCode = qrCode64;
+            }}
           />
         </View>
         <View style={styles.info}>
@@ -40,6 +59,13 @@ export const QRCodeScreen = () => {
           <Image source={{ uri: currentUser.image }} />
           <Text>{currentUser.username}</Text>
         </View>
+        <Button
+          title="Save QR Code"
+          onPress={async () => {
+            const { status } = await MediaLibrary.requestPermissionsAsync();
+            status === "granted" && qrCode ? saveQrToDisk(qrCode) : null;
+          }}
+        />
       </LinearGradient>
     </View>
   );
@@ -53,3 +79,18 @@ const styles = StyleSheet.create({
   qrCode: { position: "absolute", top: 170 },
   info: { marginTop: 50, alignItems: "center" },
 });
+
+const saveQrToDisk = (qrCode: QREncode) => {
+  qrCode.toDataURL((data: string) => {
+    const filename = FileSystem.documentDirectory + "my-qr.png";
+    FileSystem.writeAsStringAsync(filename, data, {
+      encoding: FileSystem.EncodingType.Base64,
+    })
+      .then((success) => {
+        return MediaLibrary.saveToLibraryAsync(filename);
+      })
+      .then(() => {
+        ToastAndroid.show("Saved to Gallery", ToastAndroid.SHORT);
+      });
+  });
+};

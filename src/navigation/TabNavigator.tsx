@@ -31,6 +31,12 @@ export const TabNavigator = () => {
             ),
             headerRight: () => (
               <>
+                <Ionicons
+                  name="scan-outline"
+                  size={60}
+                  color="black"
+                  onPress={() => navigation.navigate("Scan")}
+                />
                 <AntDesign
                   name="qrcode"
                   size={50}

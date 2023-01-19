@@ -4,8 +4,9 @@ import { ChatContacts } from "../screens/ChatContactsScreen";
 import { TabNavigator } from "./TabNavigator";
 import { GroupChatScreen } from "../screens/GroupChatScreen";
 import { AddContacts } from "../screens/AddNewContactScreen";
-import { QRCodeScreen } from "../screens/QRCode";
+import { QRCodeScreen } from "../screens/QRCodeScreen";
 import { View } from "react-native";
+import { ScanScreen } from "../screens/ScanScreen";
 export const Navigator = () => {
   const Stack = createNativeStackNavigator();
 
@@ -54,6 +55,12 @@ export const Navigator = () => {
             options={{ headerTransparent: true, title: "" }}
             name="QRCode"
             component={QRCodeScreen}
+          />
+
+          <Stack.Screen
+            options={{ headerTransparent: true, title: "" }}
+            name="Scan"
+            component={ScanScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>
