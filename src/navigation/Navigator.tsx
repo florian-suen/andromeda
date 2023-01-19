@@ -4,6 +4,8 @@ import { ChatContacts } from "../screens/ChatContactsScreen";
 import { TabNavigator } from "./TabNavigator";
 import { GroupChatScreen } from "../screens/GroupChatScreen";
 import { AddContacts } from "../screens/AddNewContactScreen";
+import { QRCodeScreen } from "../screens/QRCode";
+import { View } from "react-native";
 export const Navigator = () => {
   const Stack = createNativeStackNavigator();
 
@@ -22,31 +24,39 @@ export const Navigator = () => {
   };
 
   return (
-    <NavigationContainer theme={myTheme}>
-      <Stack.Navigator
-        initialRouteName="Home"
-        screenOptions={{
-          headerTitleStyle: { color: myTheme.colors.primary },
-          headerTitleAlign: "center",
-        }}
-      >
-        <Stack.Screen
-          name="Home"
-          component={TabNavigator}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="GroupChat"
-          component={GroupChatScreen}
-          options={{
-            headerTitleAlign: "left",
+    <View style={{ flex: 1 }}>
+      <NavigationContainer theme={myTheme}>
+        <Stack.Navigator
+          initialRouteName="Home"
+          screenOptions={{
+            headerTitleStyle: { color: myTheme.colors.primary },
+            headerTitleAlign: "center",
           }}
-        />
+        >
+          <Stack.Screen
+            name="Home"
+            component={TabNavigator}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="GroupChat"
+            component={GroupChatScreen}
+            options={{
+              headerTitleAlign: "left",
+            }}
+          />
 
-        <Stack.Screen name="Select Contacts" component={ChatContacts} />
+          <Stack.Screen name="Select Contacts" component={ChatContacts} />
 
-        <Stack.Screen name="AddNewContact" component={AddContacts} />
-      </Stack.Navigator>
-    </NavigationContainer>
+          <Stack.Screen name="AddNewContact" component={AddContacts} />
+
+          <Stack.Screen
+            options={{ headerTransparent: true, title: "" }}
+            name="QRCode"
+            component={QRCodeScreen}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </View>
   );
 };

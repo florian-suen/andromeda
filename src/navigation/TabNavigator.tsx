@@ -1,6 +1,10 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { ChatList } from "../screens/ChatsList/ChatsListScreen";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  AntDesign,
+} from "@expo/vector-icons";
 
 import { Account } from "../screens/AccountScreen";
 import { ContactScreen } from "../screens/ContactScreen";
@@ -26,13 +30,21 @@ export const TabNavigator = () => {
               <MaterialCommunityIcons color={color} size={size} name="chat" />
             ),
             headerRight: () => (
-              <MaterialCommunityIcons
-                name="chat-plus-outline"
-                onPress={() => navigation.navigate("Select Contacts")}
-                size={20}
-                color=" teal"
-                style={{ marginRight: 12 }}
-              />
+              <>
+                <AntDesign
+                  name="qrcode"
+                  size={50}
+                  color="black"
+                  onPress={() => navigation.navigate("QRCode")}
+                />
+                <MaterialCommunityIcons
+                  name="chat-plus-outline"
+                  onPress={() => navigation.navigate("Select Contacts")}
+                  size={20}
+                  color=" teal"
+                  style={{ marginRight: 12 }}
+                />
+              </>
             ),
           };
         }}

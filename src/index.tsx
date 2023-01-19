@@ -16,7 +16,7 @@ export const Index = () => {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "#1c222e",
     flex: 1,
-    backgroundColor: "black",
   },
 });

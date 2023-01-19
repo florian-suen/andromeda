@@ -42,7 +42,7 @@ const ScanScreen = () => {
     return (
       <>
         <View style={styles.container}>
-          <Text>{scanData.name}</Text>
+          <Text>{scanData.inviteId}</Text>
         </View>
 
         <Button
@@ -66,13 +66,17 @@ const ScanScreen = () => {
             let _data = JSON.parse(data);
             setScanData(_data);
           } catch (e) {
-            console.log(e0);
+            console.log(e);
           }
         }}
       ></BarCodeScanner>
     );
 
-  return <View style={styles.container}></View>;
+  return (
+    <View style={styles.container}>
+      <Text>Awaiting...</Text>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
