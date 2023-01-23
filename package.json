@@ -41,7 +41,8 @@
     "react-native-swipe-gestures": "^1.0.5",
     "react-native-web": "~0.18.7",
     "react-redux": "^8.0.5",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "react-native-view-shot": "3.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
