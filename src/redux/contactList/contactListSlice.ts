@@ -8,6 +8,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import { listUsers } from "../../graphql/queries";
 
 export interface ContactType {
+  inviteId: string;
   image: string;
   username: string;
   id: string;

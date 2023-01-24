@@ -356,7 +356,8 @@ export const listUsers = /* GraphQL */ `
         id
         username
         status
-
+        image
+        inviteId
         createdAt
         updatedAt
         _version

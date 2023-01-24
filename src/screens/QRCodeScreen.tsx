@@ -1,4 +1,4 @@
-import { PropsWithChildren, useContext, useRef, useState } from "react";
+import { useContext, useRef } from "react";
 import {
   StyleSheet,
   View,
@@ -7,7 +7,6 @@ import {
   ToastAndroid,
   Button,
 } from "react-native";
-import * as FileSystem from "expo-file-system";
 import ViewShot, { captureScreen } from "react-native-view-shot";
 import QRCode from "react-native-qrcode-svg";
 import { userContext } from "../../utility/userAuth";
@@ -18,24 +17,23 @@ import * as MediaLibrary from "expo-media-library";
 export interface QRCodeProps {
   inviteId: string;
   name: string;
+  status: string;
   image: string;
-}
-
-interface QREncode {
-  toDataURL: (callback: (data: string) => void) => void;
 }
 
 export const QRCodeScreen = () => {
   const ref: any = useRef();
   const userAuth = useContext(userContext);
-  const payload: QRCodeProps = {
-    inviteId: "Something",
-    name: "New",
-    image: "string",
-  };
   const currentUser = useAppSelector((state) =>
     state.contacts.contacts.find((item) => item.id === userAuth?.attributes.sub)
   )!;
+
+  const payload: QRCodeProps = {
+    inviteId: currentUser.inviteId[0],
+    name: currentUser.username,
+    status: currentUser.status,
+    image: currentUser.image,
+  };
 
   const saveImageHandler = async () => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
@@ -61,7 +59,7 @@ export const QRCodeScreen = () => {
                 <QRCode
                   size={240}
                   color="white"
-                  logo={{ uri: currentUser.image }}
+                  /*    logo={{ uri: }} */
                   backgroundColor="transparent"
                   value={JSON.stringify(payload)}
                 />
@@ -69,8 +67,12 @@ export const QRCodeScreen = () => {
             </View>
             <View style={styles.textInfo}>
               <Text>Scan QR code to form a contract</Text>
-              <Image source={{ uri: currentUser.image }} />
+              <Image
+                style={styles.imageInfo}
+                source={{ uri: currentUser.image }}
+              />
               <Text>{currentUser.username}</Text>
+              <Text>{currentUser.status}</Text>
             </View>
           </LinearGradient>
         ) : (
@@ -80,7 +82,7 @@ export const QRCodeScreen = () => {
                 <QRCode
                   size={240}
                   color="white"
-                  logo={{ uri: currentUser.image }}
+                  /*    logo={{ uri: }} */
                   backgroundColor="transparent"
                   value={JSON.stringify(payload)}
                 />
@@ -88,8 +90,12 @@ export const QRCodeScreen = () => {
             </View>
             <View style={styles.textInfo}>
               <Text>Scan QR code to form a contract</Text>
-              <Image source={{ uri: currentUser.image }} />
+              <Image
+                style={styles.imageInfo}
+                source={{ uri: currentUser.image }}
+              />
               <Text>{currentUser.username}</Text>
+              <Text>{currentUser.status}</Text>
             </View>
             <Button
               title="Save QR Code"
@@ -131,4 +137,5 @@ const styles = StyleSheet.create({
   qrCode: { paddingVertical: 30, paddingHorizontal: 50 },
   linearGradient: { flex: 1, alignItems: "center", justifyContent: "center" },
   textInfo: { alignItems: "center" },
+  imageInfo: { width: 50, height: 50 },
 });
