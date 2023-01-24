@@ -18,6 +18,7 @@ import * as MediaLibrary from "expo-media-library";
 export interface QRCodeProps {
   inviteId: string;
   name: string;
+  image: string;
 }
 
 interface QREncode {
@@ -27,7 +28,11 @@ interface QREncode {
 export const QRCodeScreen = () => {
   const ref: any = useRef();
   const userAuth = useContext(userContext);
-  const payload: QRCodeProps = { inviteId: "Something", name: "New" };
+  const payload: QRCodeProps = {
+    inviteId: "Something",
+    name: "New",
+    image: "string",
+  };
   const currentUser = useAppSelector((state) =>
     state.contacts.contacts.find((item) => item.id === userAuth?.attributes.sub)
   )!;
