@@ -45,11 +45,13 @@ type User @model @auth(rules: [{ allow: public }]) {
   username: String!
   status: String
   image: String
+  inviteId: [String]
   Messages: [Message] @hasMany(indexName: "byUser", fields: ["id"])
   ChatGroups: [UserChatGroup]
     @hasMany(indexName: "byUserChatGroup", fields: ["id"])
 
-  Users: [UserContact] @hasMany(indexName: "byUserContact", fields: ["id"])
+  Users: [UserContact]
+    @hasMany(indexName: "byUserContactFriend", fields: ["id"])
   Leader: [ChatGroup] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
@@ -57,12 +59,15 @@ type UserContact @model @auth(rules: [{ allow: public }]) {
   id: ID!
   userID: ID!
     @index(
-      name: "byUserContact"
-      sortKeyFields: ["updatedAt"]
-      queryField: "ListbyUserContact"
+      name: "byUserContactFriend"
+      sortKeyFields: ["friendID"]
+      queryField: "ListbyUserContactFriend"
     )
+  friendID: ID!
   updatedAt: AWSDateTime!
+  status: String
   user: User @belongsTo(fields: ["userID"])
+  friend: User @belongsTo(fields: ["friendID"])
 }
 
 type UserChatGroup @model @auth(rules: [{ allow: public }]) {
