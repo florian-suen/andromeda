@@ -31,6 +31,9 @@ export const ContactScreen = () => {
   const contactList = getContactList.filter(
     (item) => userAuth && item.id !== userAuth.attributes.sub
   );
+  const currentUser = getContactList.find(
+    (item) => userAuth && item.id === userAuth.attributes.sub
+  );
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -97,6 +100,7 @@ export const ContactScreen = () => {
                 user={item}
                 isSelectable={isSelectable}
                 isSelected={isSelected}
+                currentUser={currentUser!}
               />
             </Animated.View>
           );

@@ -15,7 +15,7 @@ export interface ChatGroupType {
     _deleted: null | boolean;
     name: string;
     image: string | null;
-    leaderID: string;
+    leaderID: string | null;
     _version: string;
     users: {
       items: {
@@ -181,7 +181,7 @@ export const chatGroupSlice = createSlice({
         userNames: string[];
         chatGroupId: string;
         users: { user: EagerUser }[];
-        leaderID: string;
+        leaderID: string | null;
       }>
     ) => {
       const newChatgroup = {

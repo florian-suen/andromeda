@@ -18,13 +18,11 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChatContactsComponent } from "../components/ChatContacts/ChatContacts";
 import { graphqlOperation, API } from "aws-amplify";
-
-import { EagerUser, User } from "../models/index";
+import { User } from "../models/index";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useThemeColor } from "../../utility/useStyles";
 import { UserAuth, userContext } from "../../utility/userAuth";
 import { useAppDispatch, useAppSelector } from "../../utility/useReduxHooks";
-import { useDispatch } from "react-redux";
 import { createNewChatGroup } from "../redux/chatGroup/chatGroupSlice";
 import { v4 as uuidv4 } from "uuid";
 
@@ -220,7 +218,7 @@ function createChatGroupHandler(
   setIsSelectable: React.Dispatch<React.SetStateAction<boolean>>,
   dispatch: dispatch
 ) {
-  return async (user?: EagerUser) => {
+  return async (user?: User) => {
     const chatGroupId: string = uuidv4();
     let userNames, usersArray;
 
@@ -253,7 +251,7 @@ function createChatGroupHandler(
       createNewChatGroup({
         chatGroupId,
         userNames,
-        users: usersArray as { user: EagerUser }[],
+        users: usersArray as { user: User }[],
         leaderID: userAuth.attributes.sub,
       })
     );
@@ -274,9 +272,6 @@ function createChatGroupHandler(
 
     if ("data" in newChatGroupResp && !newChatGroupResp.data?.createChatGroup)
       console.log("Error creating chatgroup");
-
-    const newChatGroup =
-      "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
 
     await Promise.all(
       selectedUserId.map((userId) => {

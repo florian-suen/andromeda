@@ -2,10 +2,13 @@ import { API, graphqlOperation } from "aws-amplify";
 
 import { ChatGroupList } from "../src/screens/ChatsList/queries";
 
-export const useExistingChatGroups = async (userID: string, userAuth: any) => {
+export const useExistingChatGroups = async (
+  friendID: string,
+  currentUserID: string
+) => {
   const existingChatGroups = await API.graphql(
     graphqlOperation(ChatGroupList, {
-      id: userAuth.attributes.sub,
+      id: currentUserID,
     })
   );
 
@@ -16,7 +19,7 @@ export const useExistingChatGroups = async (userID: string, userAuth: any) => {
 
   const chatGroups = chatGroupItems.find((v: any) => {
     if (!v.Chatgroup) return false;
-    return v.Chatgroup.users.items.some((u: any) => u.user.id === userID);
+    return v.Chatgroup.users.items.some((u: any) => u.user.id === friendID);
   });
 
   return chatGroups;

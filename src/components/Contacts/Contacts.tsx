@@ -17,23 +17,29 @@ import { createUserChatGroup, createChatGroup } from "../../graphql/mutations";
 import { API, graphqlOperation } from "aws-amplify";
 import { useExistingChatGroups } from "../../../utility/useExistingChatGroups";
 import { useThemeColor } from "../../../utility/useStyles";
-import { userContext } from "../../../utility/userAuth";
+import { v4 as uuidv4 } from "uuid";
+import { createNewChatGroup } from "../../redux/chatGroup/chatGroupSlice";
+import { useAppDispatch } from "../../../utility/useReduxHooks";
 type RootStackParamList = {
-  GroupChat: { chatGroupId: string; username: string };
+  GroupChat: { chatGroupId: string };
 };
+
+type dispatch = ReturnType<typeof useAppDispatch>;
 
 export const ContactsComponent = ({
   user,
   isSelected = false,
   onSelectHandler,
   isSelectable,
+  currentUser,
 }: {
   user: User;
   isSelected: boolean;
   isSelectable: boolean;
   onSelectHandler: () => void;
+  currentUser: User;
 }) => {
-  const userAuth = useContext(userContext);
+  const dispatch = useAppDispatch();
   const image = user.image ? user.image : undefined;
   const styles = useThemeColor(styleSheet);
   const translateX = useRef(new Animated.Value(0)).current;
@@ -80,7 +86,8 @@ export const ContactsComponent = ({
       <Pressable
         android_ripple={{ color: "#222b3d" }}
         onPress={() => {
-          if (!isSelectable) createChatGroupHandler(user, userAuth, navigation);
+          if (!isSelectable)
+            createChatGroupHandler(user, currentUser, navigation, dispatch);
           if (isSelectable) onSelectHandler();
         }}
         style={({ pressed }) => [pressed ? styles.pressed : null]}
@@ -179,47 +186,63 @@ const styleSheet: StyleSheet.NamedStyles<{
 };
 
 async function createChatGroupHandler(
-  user: User,
-  userAuth: any,
-  navigation: NativeStackNavigationProp<RootStackParamList>
+  friend: User,
+  currentUser: User,
+  navigation: NativeStackNavigationProp<RootStackParamList>,
+  dispatch: dispatch
 ) {
-  const existingChatGroup = await useExistingChatGroups(user.id, userAuth);
+  const existingChatGroup = await useExistingChatGroups(
+    friend.id,
+    currentUser.id
+  );
 
   if (existingChatGroup) {
     navigation.navigate("GroupChat", {
       chatGroupId: existingChatGroup.Chatgroup.id,
-      username: user.username,
     });
     return;
   }
+  const chatGroupId: string = uuidv4();
+  const friendUser = friend;
+  const mainUser = currentUser;
+  const userNames = [friendUser.username];
+  const usersArray = [{ user: friendUser }, { user: mainUser }];
+
+  dispatch(
+    createNewChatGroup({
+      chatGroupId,
+      userNames,
+      users: usersArray as { user: User }[],
+      leaderID: null,
+    })
+  );
+
+  navigation.navigate("GroupChat", {
+    chatGroupId: chatGroupId,
+  });
 
   const newChatGroupResp = await API.graphql(
-    graphqlOperation(createChatGroup, { input: {} })
+    graphqlOperation(createChatGroup, {
+      input: { id: chatGroupId },
+      name: `${userNames.join(" ")} `,
+    })
   );
 
   if ("data" in newChatGroupResp && !newChatGroupResp.data?.createChatGroup)
     console.log("Error creating chatgroup");
 
-  const newChatGroup =
-    "data" in newChatGroupResp && newChatGroupResp.data?.createChatGroup;
-
   await API.graphql(
     graphqlOperation(createUserChatGroup, {
-      input: { chatgroupID: newChatGroup.id, userID: user.id },
+      input: { chatgroupID: chatGroupId, userID: friend.id },
     })
   );
 
   await API.graphql(
     graphqlOperation(createUserChatGroup, {
       input: {
-        chatgroupID: newChatGroup.id,
-        userID: userAuth.attributes.sub,
+        chatgroupID: chatGroupId,
+        userID: currentUser.id,
       },
     })
   );
-
-  navigation.navigate("GroupChat", {
-    chatGroupId: newChatGroup.id,
-    username: user.username,
-  });
 }

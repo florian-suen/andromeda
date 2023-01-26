@@ -9,18 +9,12 @@ import {
   TextStyle,
   ImageStyle,
 } from "react-native";
-import { useEffect, useRef, useContext } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { EagerUser, User } from "../../models/index";
-import {
-  createUserChatGroup,
-  createChatGroup,
-} from "../../../src/graphql/mutations";
-import { API, graphqlOperation } from "aws-amplify";
-import { useExistingChatGroups } from "../../../utility/useExistingChatGroups";
+
 import { useThemeColor } from "../../../utility/useStyles";
-import { userContext } from "../../../utility/userAuth";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string };
@@ -39,7 +33,6 @@ export const ChatContactsComponent = ({
   onSelectHandler: () => void;
   chatGroupHandler: (user: EagerUser) => Promise<void>;
 }) => {
-  const userAuth = useContext(userContext);
   const image = user.image ? user.image : undefined;
   const styles = useThemeColor(styleSheet);
   const translateX = useRef(new Animated.Value(0)).current;
