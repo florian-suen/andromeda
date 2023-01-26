@@ -44,7 +44,7 @@ export const ScanScreen = () => {
         setPermission(false);
       }
     } catch (e) {
-      console.log(e);
+      console.log(`Camera Permission Error: ${e}`);
       setPermission(false);
     } finally {
       setLoading(false);
@@ -147,7 +147,7 @@ export const ScanScreen = () => {
                   setScanData(_data);
                 }
               } catch (e) {
-                console.log(e);
+                console.log(`Scan error:${e}`);
                 setScanData((e as Error).message);
               }
             }

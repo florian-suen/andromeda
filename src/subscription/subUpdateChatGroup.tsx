@@ -34,7 +34,8 @@ export const subUpdateChatGroup = (
               })
             );
         },
-        error: (err) => console.log(err),
+        error: (err) =>
+          console.log(`onUpdateChatGroup subscription error ${err}`),
       });
 
     return () => {

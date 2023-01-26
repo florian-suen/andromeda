@@ -7,8 +7,9 @@ import {
 import { API, graphqlOperation } from "aws-amplify";
 import { listUsers } from "../../graphql/queries";
 
+//Change inviteID post production
 export interface ContactType {
-  inviteId: string;
+  inviteId: string | undefined;
   image: string;
   username: string;
   id: string;

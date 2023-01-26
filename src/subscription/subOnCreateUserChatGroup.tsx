@@ -34,7 +34,7 @@ export const subOnCreateUserChatGroup = (
             });
           }, 0);
         },
-        error: (err) => console.log(err),
+        error: (err) => console.log(`onCreateUserChatGroup error: ${err}`),
       });
 
     return () => {

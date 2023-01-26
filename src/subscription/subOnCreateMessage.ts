@@ -37,7 +37,7 @@ export const subCreateMessage = (chatGroupId: string, dispatch: dispatch) => {
           );
         },
         error: (err) => {
-          console.log(err);
+          console.log(`onCreateMessage subscription error:${err}`);
         },
       });
 
@@ -59,7 +59,7 @@ export const subCreateMessage = (chatGroupId: string, dispatch: dispatch) => {
           );
         },
         error: (err) => {
-          console.log(err);
+          console.log(`onCreateAttachment subscription error:${err}`);
         },
       });
 
@@ -81,7 +81,7 @@ export const subCreateMessage = (chatGroupId: string, dispatch: dispatch) => {
           );
         },
         error: (err) => {
-          console.log(err);
+          console.log(`onCreateMedia subscription error:${err}`);
         },
       });
 

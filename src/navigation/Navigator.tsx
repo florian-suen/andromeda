@@ -7,6 +7,7 @@ import { AddContacts } from "../screens/AddNewContactScreen";
 import { QRCodeScreen } from "../screens/QRCodeScreen";
 import { View } from "react-native";
 import { ScanScreen } from "../screens/ScanScreen";
+import { AddFriendScreen } from "../screens/ChatsList/AddFriendScreen";
 export const Navigator = () => {
   const Stack = createNativeStackNavigator();
 
@@ -47,7 +48,7 @@ export const Navigator = () => {
             }}
           />
 
-          <Stack.Screen name="Select Contacts" component={ChatContacts} />
+          <Stack.Screen name="SelectContacts" component={ChatContacts} />
 
           <Stack.Screen name="AddNewContact" component={AddContacts} />
 
@@ -62,6 +63,8 @@ export const Navigator = () => {
             name="Scan"
             component={ScanScreen}
           />
+
+          <Stack.Screen name="AddFriend" component={AddFriendScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>

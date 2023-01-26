@@ -1,6 +1,6 @@
 import { API, graphqlOperation } from "aws-amplify";
 import { onDeleteUserChatGroup } from "../graphql/subscriptions";
-import { ChatGroupType } from "../screens/ChatsList/ChatsListScreen";
+import { ChatGroupType } from "../redux/chatGroup/chatGroupSlice";
 import { AppDispatch } from "../redux/store";
 import { removeUserChatGroup } from "../redux/chatGroup/chatGroupSlice";
 
@@ -26,7 +26,7 @@ export const subOnDeleteUserChatGroup = (
           })
         );
       },
-      error: (err) => console.log(err),
+      error: (err) => console.log(`onDeleteUserChatGroup Error ${err}`),
     });
 
   return () => {

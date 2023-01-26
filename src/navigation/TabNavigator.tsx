@@ -45,7 +45,7 @@ export const TabNavigator = () => {
                 />
                 <MaterialCommunityIcons
                   name="chat-plus-outline"
-                  onPress={() => navigation.navigate("Select Contacts")}
+                  onPress={() => navigation.navigate("SelectContacts")}
                   size={20}
                   color=" teal"
                   style={{ marginRight: 12 }}
