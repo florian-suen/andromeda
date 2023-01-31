@@ -1,7 +1,6 @@
 import {
   createSlice,
   createAsyncThunk,
-  PayloadAction,
   SerializedError,
 } from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
@@ -9,7 +8,7 @@ import { listUsers } from "../../graphql/queries";
 
 //Change inviteID post production
 export interface ContactType {
-  inviteId: string | undefined;
+  inviteId: string;
   image: string;
   username: string;
   id: string;

@@ -38,8 +38,6 @@ export const ChatContactsComponent = ({
   const translateX = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   useEffect(() => {
     const translateXTiming = Animated.timing(translateX, {
       toValue: 50,

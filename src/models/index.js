@@ -12,7 +12,7 @@ const AttachmentType = {
   "VIDEO": "VIDEO"
 };
 
-const { Media, Attachment, ChatGroup, Message, UserChatGroup, User } = initSchema(schema);
+const { Media, Attachment, ChatGroup, Message, UserChatGroup, User, UserContact } = initSchema(schema);
 
 export {
   Media,
@@ -21,6 +21,7 @@ export {
   Message,
   UserChatGroup,
   User,
+  UserContact,
   MediaType,
   AttachmentType
 };

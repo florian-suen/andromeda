@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   Animated,
@@ -6,6 +6,7 @@ import {
   ImageStyle,
   TextStyle,
 } from "react-native";
+import { Octicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ContactsComponent } from "../components/Contacts/Contacts";
@@ -13,8 +14,10 @@ import { useThemeColor } from "../../utility/useStyles";
 import { useAppSelector } from "../../utility/useReduxHooks";
 import { useContext } from "react";
 import { userContext } from "../../utility/userAuth";
+import { ContactType } from "../redux/contactList/contactListSlice";
+
 type RootStackParamList = {
-  GroupChat: { chatGroupId: string; username: string };
+  AddFriend: { currentUser: ContactType };
 };
 
 export const ContactScreen = () => {
@@ -33,7 +36,7 @@ export const ContactScreen = () => {
   );
   const currentUser = getContactList.find(
     (item) => userAuth && item.id === userAuth.attributes.sub
-  );
+  )!;
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -95,12 +98,20 @@ export const ContactScreen = () => {
                 transform: [{ scale }],
               }}
             >
+              <Octicons
+                name="person-add"
+                size={24}
+                color="black"
+                onPress={() =>
+                  navigation.navigate("AddFriend", { currentUser })
+                }
+              />
               <ContactsComponent
                 onSelectHandler={() => contactSelectHandler(item.id)}
                 user={item}
                 isSelectable={isSelectable}
                 isSelected={isSelected}
-                currentUser={currentUser!}
+                currentUser={currentUser}
               />
             </Animated.View>
           );

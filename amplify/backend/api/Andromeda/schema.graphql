@@ -35,7 +35,7 @@ type ChatGroup @model @auth(rules: [{ allow: public }]) {
   LastMessage: Message @hasOne
   Messages: [Message] @hasMany(indexName: "byChatGroup", fields: ["id"])
   users: [UserChatGroup] @hasMany(indexName: "byChatGroupUser", fields: ["id"])
-  leaderID: ID @index(name: "byUser")
+  leaderID: ID @index(name: "byUserLeader")
   Attachments: [Attachment] @hasMany(indexName: "byChatGroup", fields: ["id"])
   Media: [Media] @hasMany(indexName: "byChatGroup", fields: ["id"])
 }
@@ -45,14 +45,19 @@ type User @model @auth(rules: [{ allow: public }]) {
   username: String!
   status: String
   image: String
-  inviteId: [String]
+  inviteId: String!
+    @index(
+      name: "userByInviteId"
+      sortKeyFields: ["id"]
+      queryField: "userByInviteId"
+    )
   Messages: [Message] @hasMany(indexName: "byUser", fields: ["id"])
   ChatGroups: [UserChatGroup]
     @hasMany(indexName: "byUserChatGroup", fields: ["id"])
 
-  Users: [UserContact]
+  Friends: [UserContact]
     @hasMany(indexName: "byUserContactFriend", fields: ["id"])
-  Leader: [ChatGroup] @hasMany(indexName: "byUser", fields: ["id"])
+  Leader: [ChatGroup] @hasMany(indexName: "byUserLeader", fields: ["id"])
 }
 
 type UserContact @model @auth(rules: [{ allow: public }]) {

@@ -36,6 +36,10 @@ type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
+type UserContactMetaData = {
+  readOnlyFields: 'createdAt';
+}
+
 type EagerMedia = {
   readonly id: string;
   readonly storageKey?: string | null;
@@ -187,8 +191,10 @@ type EagerUser = {
   readonly username: string;
   readonly status?: string | null;
   readonly image?: string | null;
+  readonly inviteId: string;
   readonly Messages?: (Message | null)[] | null;
   readonly ChatGroups?: (UserChatGroup | null)[] | null;
+  readonly Users?: (UserContact | null)[] | null;
   readonly Leader?: (ChatGroup | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -199,8 +205,10 @@ type LazyUser = {
   readonly username: string;
   readonly status?: string | null;
   readonly image?: string | null;
+  readonly inviteId: string;
   readonly Messages: AsyncCollection<Message>;
   readonly ChatGroups: AsyncCollection<UserChatGroup>;
+  readonly Users: AsyncCollection<UserContact>;
   readonly Leader: AsyncCollection<ChatGroup>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -210,4 +218,28 @@ export declare type User = LazyLoading extends LazyLoadingDisabled ? EagerUser :
 
 export declare const User: (new (init: ModelInit<User, UserMetaData>) => User) & {
   copyOf(source: User, mutator: (draft: MutableModel<User, UserMetaData>) => MutableModel<User, UserMetaData> | void): User;
+}
+
+type EagerUserContact = {
+  readonly id: string;
+  readonly updatedAt: string;
+  readonly status?: string | null;
+  readonly user?: User | null;
+  readonly friend?: User | null;
+  readonly createdAt?: string | null;
+}
+
+type LazyUserContact = {
+  readonly id: string;
+  readonly updatedAt: string;
+  readonly status?: string | null;
+  readonly user: AsyncItem<User | undefined>;
+  readonly friend: AsyncItem<User | undefined>;
+  readonly createdAt?: string | null;
+}
+
+export declare type UserContact = LazyLoading extends LazyLoadingDisabled ? EagerUserContact : LazyUserContact
+
+export declare const UserContact: (new (init: ModelInit<UserContact, UserContactMetaData>) => UserContact) & {
+  copyOf(source: UserContact, mutator: (draft: MutableModel<UserContact, UserContactMetaData>) => MutableModel<UserContact, UserContactMetaData> | void): UserContact;
 }

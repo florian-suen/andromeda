@@ -7,7 +7,7 @@ import { AddContacts } from "../screens/AddNewContactScreen";
 import { QRCodeScreen } from "../screens/QRCodeScreen";
 import { View } from "react-native";
 import { ScanScreen } from "../screens/ScanScreen";
-import { AddFriendScreen } from "../screens/ChatsList/AddFriendScreen";
+import { AddFriendScreen } from "../screens/AddFriend/AddFriendScreen";
 export const Navigator = () => {
   const Stack = createNativeStackNavigator();
 
