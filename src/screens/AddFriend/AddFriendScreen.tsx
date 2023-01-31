@@ -1,4 +1,4 @@
-import { View, StyleSheet, TextInput, Text, Button } from "react-native";
+import { View, StyleSheet, TextInput, Text, Button, Image } from "react-native";
 import { createUserContact, getUserByInviteId } from "./queries";
 import { API, graphqlOperation } from "aws-amplify";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -27,15 +27,15 @@ type inviteUser = {
 
 export const AddFriendScreen = () => {
   const { inputText, setInputText, searchResults } = useInviteCodeSearch();
+
   const route = useRoute<RouteProp<RouteParam>>();
 
-  console.log(searchResults.currentPromise?.then(console.log));
   const addFriendHandler = () => {
     API.graphql(
       graphqlOperation(createUserContact, {
         input: {
           userID: route.params.currentUser,
-          friendID: searchResults,
+          friendID: searchResults.result.id,
         },
       })
     );
@@ -45,11 +45,22 @@ export const AddFriendScreen = () => {
       <Text>Please input an Invite Code to Add a new friend</Text>
       <TextInput
         value={inputText}
-        onChangeText={(text) => text && setInputText(text)}
+        onChangeText={setInputText}
         style={styles.inputText}
         placeholder="Add Friend"
       />
-      <Button title="Add Friend" onPress={addFriendHandler} />
+      {!Array.isArray(searchResults.result) && searchResults.result && (
+        <View>
+          <Text>{`Invite ID: ${searchResults.result.inviteId}`}</Text>
+          <Image
+            style={{ height: 200, width: 200 }}
+            source={{ uri: searchResults.result.image }}
+          />
+          <Text>{`Username: ${searchResults.result.username}`}</Text>
+          <Text>{`Status: ${searchResults.result.status}`}</Text>
+          <Button title="Add Friend" onPress={addFriendHandler} />
+        </View>
+      )}
     </View>
   );
 };
@@ -66,9 +77,9 @@ const styles = StyleSheet.create({
 
 const inviteCodeValid: (
   inviteID: string
-) => Promise<inviteUser | null> = async (inviteID) => {
+) => Promise<inviteUser | null> = async (inviteId) => {
   const fetchUser = await API.graphql(
-    graphqlOperation(getUserByInviteId, { input: { inviteId: inviteID } })
+    graphqlOperation(getUserByInviteId, { inviteId })
   );
   const fetchedUser: GraphQLResult<userByInviteId> | null =
     "data" in fetchUser ? fetchUser : null;

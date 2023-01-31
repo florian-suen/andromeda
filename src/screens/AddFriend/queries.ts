@@ -5,9 +5,10 @@ export const createUserContact = /* GraphQL */ `
 `;
 
 export const getUserByInviteId = /* GraphQL */ `
-  query userByInviteId($id: String!) {
-    userByInviteId(inviteId: $id) {
+  query userByInviteId($inviteId: String!) {
+    userByInviteId(inviteId: $inviteId) {
       items {
+        id
         username
         status
         image
