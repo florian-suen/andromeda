@@ -29,7 +29,7 @@ export const ContactScreen = () => {
   const userAuth = useContext(userContext);
   const contactList = useAppSelector((state) => {
     return state.contacts.contacts;
-  });
+  }).filter((item) => item.requestStatus === "ACCEPTED");
 
   const currentUser = useAppSelector((state) => {
     return state.currentUser.currentUser;
@@ -64,6 +64,16 @@ export const ContactScreen = () => {
 
   return (
     <>
+      <Octicons
+        name="person-add"
+        size={24}
+        color="black"
+        onPress={() =>
+          navigation.navigate("AddFriend", {
+            currentUser: currentUser!,
+          })
+        }
+      />
       <Animated.FlatList
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -95,16 +105,6 @@ export const ContactScreen = () => {
                 transform: [{ scale }],
               }}
             >
-              <Octicons
-                name="person-add"
-                size={24}
-                color="black"
-                onPress={() =>
-                  navigation.navigate("AddFriend", {
-                    currentUser: currentUser!,
-                  })
-                }
-              />
               <ContactsComponent
                 onSelectHandler={() => contactSelectHandler(item.friend.id)}
                 user={item.friend}

@@ -5,6 +5,10 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import { ContactType } from "../../redux/contactList/contactListSlice";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { useDebouncedSearch } from "../../../utility/useDebouncedSearch";
+import { useAppSelector } from "../../../utility/useReduxHooks";
+import { useContext } from "react";
+import { userContext } from "../../../utility/userAuth";
+import { UseAsyncReturn } from "react-async-hook";
 
 type RouteParam = {
   AddFriend: {
@@ -27,10 +31,11 @@ type inviteUser = {
 
 export const AddFriendScreen = () => {
   const { inputText, setInputText, searchResults } = useInviteCodeSearch();
-
+  const contacts = useAppSelector((state) => state.contacts.contacts);
+  const currentUser = useContext(userContext);
   const route = useRoute<RouteProp<RouteParam>>();
 
-  const addFriendHandler = () => {
+  const addFriendHandler = (directAdd?: boolean) => {
     API.graphql(
       graphqlOperation(createUserContact, {
         input: {
@@ -40,6 +45,7 @@ export const AddFriendScreen = () => {
       })
     );
   };
+
   return (
     <View style={styles.container}>
       <Text>Please input an Invite Code to Add a new friend</Text>
@@ -58,9 +64,15 @@ export const AddFriendScreen = () => {
           />
           <Text>{`Username: ${searchResults.result.username}`}</Text>
           <Text>{`Status: ${searchResults.result.status}`}</Text>
-          <Button title="Add Friend" onPress={addFriendHandler} />
+          <AddButton
+            contacts={contacts}
+            searchResults={searchResults}
+            currentUserId={currentUser?.attributes.sub!}
+            addFriendHandler={addFriendHandler}
+          />
         </View>
       )}
+      {searchResults.result === null && <Text>No results found</Text>}
     </View>
   );
 };
@@ -90,3 +102,41 @@ const inviteCodeValid: (
 
 const useInviteCodeSearch = () =>
   useDebouncedSearch((text) => inviteCodeValid(text));
+
+const AddButton = ({
+  currentUserId,
+  contacts,
+  searchResults,
+  addFriendHandler,
+}: {
+  currentUserId: string;
+  contacts: ContactType[] | [];
+  searchResults: UseAsyncReturn<any, (string | ((...args: any[]) => any))[]>;
+  addFriendHandler: (directAdd?: boolean) => void;
+}) => {
+  const contactIdArray = contacts.map((item) => item.friend.id);
+
+  if (searchResults.status === "success" && searchResults.result) {
+    if (searchResults.result.id === currentUserId)
+      return <Button title="Unable to add yourself" disabled />;
+
+    if (contactIdArray.some((id) => searchResults.result.id === id)) {
+      const friend = contacts.find(
+        (item) => searchResults.result.id === item.friend.id
+      );
+
+      if (friend?.requestStatus === "WAITING")
+        return friend.sender ? (
+          <Button title="Requested" disabled />
+        ) : (
+          <Button title="Add Friend" onPress={() => addFriendHandler(true)} />
+        );
+      if (friend?.requestStatus === "BLOCKED")
+        return <Button title="Blocked" disabled />;
+
+      return <Button title="Already Added" disabled />;
+    }
+  }
+
+  return <Button title="Add Friend" onPress={() => addFriendHandler(false)} />;
+};
