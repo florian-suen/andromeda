@@ -20,6 +20,7 @@ import { User } from "../models/index";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useThemeColor } from "../../utility/useStyles";
 import { useAppSelector } from "../../utility/useReduxHooks";
+import { ContactType } from "../redux/contactList/contactListSlice";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
@@ -46,7 +47,7 @@ export const AddContacts = () => {
   const contactList = getContactList.filter(
     (item) =>
       !chatGroup.users.items.some((chatGroupuser: any) => {
-        return item.id === chatGroupuser.userID;
+        return item.friend.id === chatGroupuser.userID;
       })
   );
 
@@ -84,7 +85,7 @@ export const AddContacts = () => {
         )}
         data={contactList}
         renderItem={({ item, index }) => {
-          const isSelected = selectedUserId.includes(item.id);
+          const isSelected = selectedUserId.includes(item.friend.id);
           const ITEM_SIZE = 80;
           const scale = scrollY.interpolate({
             inputRange: [
@@ -109,10 +110,11 @@ export const AddContacts = () => {
               }}
             >
               <ChatContactsComponent
-                onSelectHandler={() => contactSelectHandler(item.id)}
-                user={item}
+                onSelectHandler={() => contactSelectHandler(item.friend.id)}
+                user={item.friend}
                 isSelectable={isSelectable}
                 isSelected={isSelected}
+                chatGroupHandler={addGroupHandler}
               />
             </Animated.View>
           );
@@ -200,7 +202,7 @@ const styleSheet: StyleSheet.NamedStyles<{
 };
 
 async function addGroupHandler(
-  users: User[],
+  users: ContactType[],
   route: RouteProp<RouteParam, "GroupChat">,
   navigation: NativeStackNavigationProp<RootStackParamList>,
   selectedUserId: string[],
@@ -210,7 +212,7 @@ async function addGroupHandler(
   const userNames = [];
   function* getNames() {
     for (const id of selectedUserId) {
-      yield users.find((user) => user.id === id)?.username;
+      yield users.find((user) => user.friend.id === id)?.friend.username;
     }
   }
   for (const username of getNames()) userNames.push(username);

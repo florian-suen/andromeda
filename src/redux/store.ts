@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { chatGroupSlice } from "./chatGroup/chatGroupSlice";
 import { contactSlice } from "./contactList/contactListSlice";
+import { currentUserSlice } from "./currentUser/currentUserSlice";
 import { messageSlice } from "./messages/messageSlice";
 
 export const store = configureStore({
@@ -8,6 +9,7 @@ export const store = configureStore({
     chatGroup: chatGroupSlice.reducer,
     contacts: contactSlice.reducer,
     messages: messageSlice.reducer,
+    currentUser: currentUserSlice.reducer,
   },
 });
 

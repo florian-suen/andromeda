@@ -9,13 +9,14 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { getContactList } from "../../redux/contactList/contactListSlice";
 import { getMessageList } from "../../redux/messages/messageSlice";
+import { getCurrentUser } from "../../redux/currentUser/currentUserSlice";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
 };
 export const ChatList = () => {
   const messageLoaded = useRef(false);
-  const userAuth = useContext(userContext);
+  const userAuth = useContext(userContext)!;
   const dispatch = useAppDispatch();
   const chatGroup = useAppSelector((state) => state.chatGroup.chatGroup);
 
@@ -23,7 +24,8 @@ export const ChatList = () => {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   useEffect(() => {
     dispatch(getChatGroup(userAuth));
-    dispatch(getContactList());
+    dispatch(getContactList(userAuth.attributes.sub));
+    dispatch(getCurrentUser(userAuth.attributes.sub));
   }, []);
 
   useEffect(() => {

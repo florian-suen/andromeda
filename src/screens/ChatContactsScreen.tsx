@@ -25,6 +25,7 @@ import { UserAuth, userContext } from "../../utility/userAuth";
 import { useAppDispatch, useAppSelector } from "../../utility/useReduxHooks";
 import { createNewChatGroup } from "../redux/chatGroup/chatGroupSlice";
 import { v4 as uuidv4 } from "uuid";
+import { ContactType } from "../redux/contactList/contactListSlice";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string };
@@ -48,7 +49,7 @@ export const ChatContacts = () => {
   });
 
   const contactList = getContactList.filter(
-    (item) => userAuth && item.id !== userAuth.attributes.sub
+    (item) => userAuth && item.friend.id !== userAuth.attributes.sub
   );
 
   const contactSelectHandler = (id: string) => {
@@ -95,7 +96,7 @@ export const ChatContacts = () => {
         )}
         data={contactList}
         renderItem={({ item, index }) => {
-          const isSelected = selectedUserId.includes(item.id);
+          const isSelected = selectedUserId.includes(item.friend.id);
           const ITEM_SIZE = 80;
           const scale = scrollY.interpolate({
             inputRange: [
@@ -120,8 +121,8 @@ export const ChatContacts = () => {
               }}
             >
               <ChatContactsComponent
-                onSelectHandler={() => contactSelectHandler(item.id)}
-                user={item}
+                onSelectHandler={() => contactSelectHandler(item.friend.id)}
+                user={item.friend}
                 isSelectable={isSelectable}
                 isSelected={isSelected}
                 chatGroupHandler={chatGroupHandler}
@@ -210,7 +211,7 @@ const styleSheet: StyleSheet.NamedStyles<{
 };
 
 function createChatGroupHandler(
-  users: User[],
+  users: ContactType[],
   userAuth: UserAuth,
   navigation: NativeStackNavigationProp<RootStackParamList>,
   selectedUserId: string[],
@@ -225,7 +226,7 @@ function createChatGroupHandler(
     if (user) {
       const friendUser = user;
       const mainUser = users.find(
-        (user) => user.id === userAuth.attributes.sub
+        (user) => user.friend.id === userAuth.attributes.sub
       );
       selectedUserId = [friendUser.id, userAuth.attributes.sub];
       userNames = [friendUser.username];
@@ -236,12 +237,12 @@ function createChatGroupHandler(
       userNames = [];
       function* getNames() {
         for (const id of selectedUserId) {
-          yield users.find((user) => user.id === id)?.username;
+          yield users.find((user) => user.friend.id === id)?.friend.username;
         }
       }
       for (const username of getNames()) userNames.push(username!);
       usersArray = selectedUserId
-        .map((userId) => users.find((user) => user.id === userId))
+        .map((userId) => users.find((user) => user.friend.id === userId))
         .map((user) => {
           return { user };
         });

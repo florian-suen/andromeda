@@ -4,15 +4,22 @@ import {
   SerializedError,
 } from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
-import { listUsers } from "../../graphql/queries";
+
+import { listbyUserContactFriend } from "./queries";
 
 //Change inviteID post production
 export interface ContactType {
-  inviteId: string;
-  image: string;
-  username: string;
-  id: string;
-  status: string;
+  sender: boolean;
+  requestStatus: string;
+  _deleted: string;
+  friend: {
+    inviteId: string;
+    image: string;
+    username: string;
+    id: string;
+    status: string;
+    _deleted: string;
+  };
 }
 
 export interface ContactState {
@@ -29,14 +36,18 @@ const initialState: ContactState = {
 
 export const getContactList = createAsyncThunk(
   "contactList/fetchContact",
-  async (_, { rejectWithValue }) => {
-    const fetchContacts = await API.graphql(graphqlOperation(listUsers));
+  async (userId: string, { rejectWithValue }) => {
+    const fetchContacts = await API.graphql(
+      graphqlOperation(listbyUserContactFriend, {
+        userID: userId,
+      })
+    );
 
-    if ("data" in fetchContacts)
+    if ("data" in fetchContacts) {
       return fetchContacts.data
-        ? (fetchContacts.data as any).listUsers.items
+        ? (fetchContacts.data as any).ListbyUserContactFriend.items
         : [];
-
+    }
     return rejectWithValue("fetch Contact error");
   }
 );

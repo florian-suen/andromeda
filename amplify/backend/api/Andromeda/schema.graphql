@@ -19,6 +19,13 @@ enum AttachmentType {
   VIDEO
 }
 
+enum requestStatusType {
+  WAITING
+  ACCEPTED
+  DECLINED
+  BLOCKED
+}
+
 type Attachment @model @auth(rules: [{ allow: public }]) {
   id: ID!
   storageKey: String!
@@ -70,7 +77,8 @@ type UserContact @model @auth(rules: [{ allow: public }]) {
     )
   friendID: ID!
   updatedAt: AWSDateTime!
-  status: String
+  sender: Boolean!
+  requestStatus: requestStatusType!
   user: User @belongsTo(fields: ["userID"])
   friend: User @belongsTo(fields: ["friendID"])
 }

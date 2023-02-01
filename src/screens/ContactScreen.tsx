@@ -17,7 +17,7 @@ import { userContext } from "../../utility/userAuth";
 import { ContactType } from "../redux/contactList/contactListSlice";
 
 type RootStackParamList = {
-  AddFriend: { currentUser: ContactType };
+  AddFriend: { currentUser: ContactType["friend"] };
 };
 
 export const ContactScreen = () => {
@@ -27,16 +27,13 @@ export const ContactScreen = () => {
   const createGroupOpacity = useRef(new Animated.Value(0)).current;
   const styles = StyleSheet.create(useThemeColor(styleSheet));
   const userAuth = useContext(userContext);
-  const getContactList = useAppSelector((state) => {
+  const contactList = useAppSelector((state) => {
     return state.contacts.contacts;
   });
 
-  const contactList = getContactList.filter(
-    (item) => userAuth && item.id !== userAuth.attributes.sub
-  );
-  const currentUser = getContactList.find(
-    (item) => userAuth && item.id === userAuth.attributes.sub
-  )!;
+  const currentUser = useAppSelector((state) => {
+    return state.currentUser.currentUser;
+  });
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -74,7 +71,7 @@ export const ContactScreen = () => {
         )}
         data={contactList}
         renderItem={({ item, index }) => {
-          const isSelected = selectedUserId.includes(item.id);
+          const isSelected = selectedUserId.includes(item.friend.id);
           const ITEM_SIZE = 80;
           const scale = scrollY.interpolate({
             inputRange: [
@@ -103,15 +100,17 @@ export const ContactScreen = () => {
                 size={24}
                 color="black"
                 onPress={() =>
-                  navigation.navigate("AddFriend", { currentUser })
+                  navigation.navigate("AddFriend", {
+                    currentUser: currentUser!,
+                  })
                 }
               />
               <ContactsComponent
-                onSelectHandler={() => contactSelectHandler(item.id)}
-                user={item}
+                onSelectHandler={() => contactSelectHandler(item.friend.id)}
+                user={item.friend}
                 isSelectable={isSelectable}
                 isSelected={isSelected}
-                currentUser={currentUser}
+                currentUser={currentUser!}
               />
             </Animated.View>
           );
