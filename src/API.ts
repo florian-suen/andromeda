@@ -190,37 +190,6 @@ export type DeleteAttachmentInput = {
   _version?: number | null,
 };
 
-export type CreateFriendsInput = {
-  id?: string | null,
-  _version?: number | null,
-};
-
-export type ModelFriendsConditionInput = {
-  and?: Array< ModelFriendsConditionInput | null > | null,
-  or?: Array< ModelFriendsConditionInput | null > | null,
-  not?: ModelFriendsConditionInput | null,
-};
-
-export type Friends = {
-  __typename: "Friends",
-  id: string,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
-
-export type UpdateFriendsInput = {
-  id: string,
-  _version?: number | null,
-};
-
-export type DeleteFriendsInput = {
-  id: string,
-  _version?: number | null,
-};
-
 export type CreateChatGroupInput = {
   id?: string | null,
   name?: string | null,
@@ -322,8 +291,10 @@ export type User = {
   username: string,
   status?: string | null,
   image?: string | null,
+  inviteId: string,
   Messages?: ModelMessageConnection | null,
   ChatGroups?: ModelUserChatGroupConnection | null,
+  Friends?: ModelUserContactConnection | null,
   Leader?: ModelChatGroupConnection | null,
   createdAt: string,
   updatedAt: string,
@@ -331,6 +302,39 @@ export type User = {
   _deleted?: boolean | null,
   _lastChangedAt: number,
 };
+
+export type ModelUserContactConnection = {
+  __typename: "ModelUserContactConnection",
+  items:  Array<UserContact | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type UserContact = {
+  __typename: "UserContact",
+  id: string,
+  userID: string,
+  friendID: string,
+  updatedAt: string,
+  sender: boolean,
+  requestStatus: requestStatusType,
+  user?: User | null,
+  friend?: User | null,
+  userContact?: UserContact | null,
+  createdAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+  userContactUserContactId?: string | null,
+};
+
+export enum requestStatusType {
+  REQUESTED = "REQUESTED",
+  ACCEPTED = "ACCEPTED",
+  DECLINED = "DECLINED",
+  BLOCKED = "BLOCKED",
+}
+
 
 export type ModelChatGroupConnection = {
   __typename: "ModelChatGroupConnection",
@@ -358,6 +362,7 @@ export type CreateUserInput = {
   username: string,
   status?: string | null,
   image?: string | null,
+  inviteId: string,
   _version?: number | null,
 };
 
@@ -365,6 +370,7 @@ export type ModelUserConditionInput = {
   username?: ModelStringInput | null,
   status?: ModelStringInput | null,
   image?: ModelStringInput | null,
+  inviteId?: ModelStringInput | null,
   and?: Array< ModelUserConditionInput | null > | null,
   or?: Array< ModelUserConditionInput | null > | null,
   not?: ModelUserConditionInput | null,
@@ -375,10 +381,62 @@ export type UpdateUserInput = {
   username?: string | null,
   status?: string | null,
   image?: string | null,
+  inviteId?: string | null,
   _version?: number | null,
 };
 
 export type DeleteUserInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateUserContactInput = {
+  id?: string | null,
+  userID: string,
+  friendID: string,
+  updatedAt?: string | null,
+  sender: boolean,
+  requestStatus: requestStatusType,
+  _version?: number | null,
+  userContactUserContactId?: string | null,
+};
+
+export type ModelUserContactConditionInput = {
+  userID?: ModelIDInput | null,
+  friendID?: ModelIDInput | null,
+  updatedAt?: ModelStringInput | null,
+  sender?: ModelBooleanInput | null,
+  requestStatus?: ModelrequestStatusTypeInput | null,
+  and?: Array< ModelUserContactConditionInput | null > | null,
+  or?: Array< ModelUserContactConditionInput | null > | null,
+  not?: ModelUserContactConditionInput | null,
+  userContactUserContactId?: ModelIDInput | null,
+};
+
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type ModelrequestStatusTypeInput = {
+  eq?: requestStatusType | null,
+  ne?: requestStatusType | null,
+};
+
+export type UpdateUserContactInput = {
+  id: string,
+  userID?: string | null,
+  friendID?: string | null,
+  updatedAt?: string | null,
+  sender?: boolean | null,
+  requestStatus?: requestStatusType | null,
+  _version?: number | null,
+  userContactUserContactId?: string | null,
+};
+
+export type DeleteUserContactInput = {
   id: string,
   _version?: number | null,
 };
@@ -472,20 +530,6 @@ export type ModelAttachmentFilterInput = {
   not?: ModelAttachmentFilterInput | null,
 };
 
-export type ModelFriendsFilterInput = {
-  id?: ModelIDInput | null,
-  and?: Array< ModelFriendsFilterInput | null > | null,
-  or?: Array< ModelFriendsFilterInput | null > | null,
-  not?: ModelFriendsFilterInput | null,
-};
-
-export type ModelFriendsConnection = {
-  __typename: "ModelFriendsConnection",
-  items:  Array<Friends | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
-};
-
 export type ModelChatGroupFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
@@ -502,6 +546,7 @@ export type ModelUserFilterInput = {
   username?: ModelStringInput | null,
   status?: ModelStringInput | null,
   image?: ModelStringInput | null,
+  inviteId?: ModelStringInput | null,
   and?: Array< ModelUserFilterInput | null > | null,
   or?: Array< ModelUserFilterInput | null > | null,
   not?: ModelUserFilterInput | null,
@@ -512,6 +557,35 @@ export type ModelUserConnection = {
   items:  Array<User | null >,
   nextToken?: string | null,
   startedAt?: number | null,
+};
+
+export type ModelIDKeyConditionInput = {
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+};
+
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+
+export type ModelUserContactFilterInput = {
+  id?: ModelIDInput | null,
+  userID?: ModelIDInput | null,
+  friendID?: ModelIDInput | null,
+  updatedAt?: ModelStringInput | null,
+  sender?: ModelBooleanInput | null,
+  requestStatus?: ModelrequestStatusTypeInput | null,
+  and?: Array< ModelUserContactFilterInput | null > | null,
+  or?: Array< ModelUserContactFilterInput | null > | null,
+  not?: ModelUserContactFilterInput | null,
+  userContactUserContactId?: ModelIDInput | null,
 };
 
 export type ModelUserChatGroupFilterInput = {
@@ -533,12 +607,6 @@ export type ModelStringKeyConditionInput = {
   between?: Array< string | null > | null,
   beginsWith?: string | null,
 };
-
-export enum ModelSortDirection {
-  ASC = "ASC",
-  DESC = "DESC",
-}
-
 
 export type ModelMessageFilterInput = {
   id?: ModelIDInput | null,
@@ -605,12 +673,6 @@ export type ModelSubscriptionAttachmentFilterInput = {
   or?: Array< ModelSubscriptionAttachmentFilterInput | null > | null,
 };
 
-export type ModelSubscriptionFriendsFilterInput = {
-  id?: ModelSubscriptionIDInput | null,
-  and?: Array< ModelSubscriptionFriendsFilterInput | null > | null,
-  or?: Array< ModelSubscriptionFriendsFilterInput | null > | null,
-};
-
 export type ModelSubscriptionChatGroupFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   name?: ModelSubscriptionStringInput | null,
@@ -625,8 +687,25 @@ export type ModelSubscriptionUserFilterInput = {
   username?: ModelSubscriptionStringInput | null,
   status?: ModelSubscriptionStringInput | null,
   image?: ModelSubscriptionStringInput | null,
+  inviteId?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionUserFilterInput | null > | null,
   or?: Array< ModelSubscriptionUserFilterInput | null > | null,
+};
+
+export type ModelSubscriptionUserContactFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  userID?: ModelSubscriptionIDInput | null,
+  friendID?: ModelSubscriptionIDInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  sender?: ModelSubscriptionBooleanInput | null,
+  requestStatus?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionUserContactFilterInput | null > | null,
+  or?: Array< ModelSubscriptionUserContactFilterInput | null > | null,
+};
+
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
 };
 
 export type ModelSubscriptionUserChatGroupFilterInput = {
@@ -778,57 +857,6 @@ export type DeleteAttachmentMutation = {
     messageID: string,
     chatgroupID: string,
     name: string,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type CreateFriendsMutationVariables = {
-  input: CreateFriendsInput,
-  condition?: ModelFriendsConditionInput | null,
-};
-
-export type CreateFriendsMutation = {
-  createFriends?:  {
-    __typename: "Friends",
-    id: string,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type UpdateFriendsMutationVariables = {
-  input: UpdateFriendsInput,
-  condition?: ModelFriendsConditionInput | null,
-};
-
-export type UpdateFriendsMutation = {
-  updateFriends?:  {
-    __typename: "Friends",
-    id: string,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type DeleteFriendsMutationVariables = {
-  input: DeleteFriendsInput,
-  condition?: ModelFriendsConditionInput | null,
-};
-
-export type DeleteFriendsMutation = {
-  deleteFriends?:  {
-    __typename: "Friends",
-    id: string,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1008,6 +1036,7 @@ export type CreateUserMutation = {
     username: string,
     status?: string | null,
     image?: string | null,
+    inviteId: string,
     Messages?:  {
       __typename: "ModelMessageConnection",
       nextToken?: string | null,
@@ -1015,6 +1044,11 @@ export type CreateUserMutation = {
     } | null,
     ChatGroups?:  {
       __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Friends?:  {
+      __typename: "ModelUserContactConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1043,6 +1077,7 @@ export type UpdateUserMutation = {
     username: string,
     status?: string | null,
     image?: string | null,
+    inviteId: string,
     Messages?:  {
       __typename: "ModelMessageConnection",
       nextToken?: string | null,
@@ -1050,6 +1085,11 @@ export type UpdateUserMutation = {
     } | null,
     ChatGroups?:  {
       __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Friends?:  {
+      __typename: "ModelUserContactConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1078,6 +1118,7 @@ export type DeleteUserMutation = {
     username: string,
     status?: string | null,
     image?: string | null,
+    inviteId: string,
     Messages?:  {
       __typename: "ModelMessageConnection",
       nextToken?: string | null,
@@ -1085,6 +1126,11 @@ export type DeleteUserMutation = {
     } | null,
     ChatGroups?:  {
       __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Friends?:  {
+      __typename: "ModelUserContactConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1098,6 +1144,192 @@ export type DeleteUserMutation = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateUserContactMutationVariables = {
+  input: CreateUserContactInput,
+  condition?: ModelUserContactConditionInput | null,
+};
+
+export type CreateUserContactMutation = {
+  createUserContact?:  {
+    __typename: "UserContact",
+    id: string,
+    userID: string,
+    friendID: string,
+    updatedAt: string,
+    sender: boolean,
+    requestStatus: requestStatusType,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    friend?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    userContact?:  {
+      __typename: "UserContact",
+      id: string,
+      userID: string,
+      friendID: string,
+      updatedAt: string,
+      sender: boolean,
+      requestStatus: requestStatusType,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userContactUserContactId?: string | null,
+    } | null,
+    createdAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userContactUserContactId?: string | null,
+  } | null,
+};
+
+export type UpdateUserContactMutationVariables = {
+  input: UpdateUserContactInput,
+  condition?: ModelUserContactConditionInput | null,
+};
+
+export type UpdateUserContactMutation = {
+  updateUserContact?:  {
+    __typename: "UserContact",
+    id: string,
+    userID: string,
+    friendID: string,
+    updatedAt: string,
+    sender: boolean,
+    requestStatus: requestStatusType,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    friend?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    userContact?:  {
+      __typename: "UserContact",
+      id: string,
+      userID: string,
+      friendID: string,
+      updatedAt: string,
+      sender: boolean,
+      requestStatus: requestStatusType,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userContactUserContactId?: string | null,
+    } | null,
+    createdAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userContactUserContactId?: string | null,
+  } | null,
+};
+
+export type DeleteUserContactMutationVariables = {
+  input: DeleteUserContactInput,
+  condition?: ModelUserContactConditionInput | null,
+};
+
+export type DeleteUserContactMutation = {
+  deleteUserContact?:  {
+    __typename: "UserContact",
+    id: string,
+    userID: string,
+    friendID: string,
+    updatedAt: string,
+    sender: boolean,
+    requestStatus: requestStatusType,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    friend?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    userContact?:  {
+      __typename: "UserContact",
+      id: string,
+      userID: string,
+      friendID: string,
+      updatedAt: string,
+      sender: boolean,
+      requestStatus: requestStatusType,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userContactUserContactId?: string | null,
+    } | null,
+    createdAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userContactUserContactId?: string | null,
   } | null,
 };
 
@@ -1132,6 +1364,7 @@ export type CreateUserChatGroupMutation = {
       username: string,
       status?: string | null,
       image?: string | null,
+      inviteId: string,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -1176,6 +1409,7 @@ export type UpdateUserChatGroupMutation = {
       username: string,
       status?: string | null,
       image?: string | null,
+      inviteId: string,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -1220,6 +1454,7 @@ export type DeleteUserChatGroupMutation = {
       username: string,
       status?: string | null,
       image?: string | null,
+      inviteId: string,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -1485,69 +1720,6 @@ export type SyncAttachmentsQuery = {
   } | null,
 };
 
-export type GetFriendsQueryVariables = {
-  id: string,
-};
-
-export type GetFriendsQuery = {
-  getFriends?:  {
-    __typename: "Friends",
-    id: string,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type ListFriendsQueryVariables = {
-  filter?: ModelFriendsFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type ListFriendsQuery = {
-  listFriends?:  {
-    __typename: "ModelFriendsConnection",
-    items:  Array< {
-      __typename: "Friends",
-      id: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
-export type SyncFriendsQueryVariables = {
-  filter?: ModelFriendsFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-  lastSync?: number | null,
-};
-
-export type SyncFriendsQuery = {
-  syncFriends?:  {
-    __typename: "ModelFriendsConnection",
-    items:  Array< {
-      __typename: "Friends",
-      id: string,
-      createdAt: string,
-      updatedAt: string,
-      _version: number,
-      _deleted?: boolean | null,
-      _lastChangedAt: number,
-    } | null >,
-    nextToken?: string | null,
-    startedAt?: number | null,
-  } | null,
-};
-
 export type GetChatGroupQueryVariables = {
   id: string,
 };
@@ -1666,6 +1838,7 @@ export type GetUserQuery = {
     username: string,
     status?: string | null,
     image?: string | null,
+    inviteId: string,
     Messages?:  {
       __typename: "ModelMessageConnection",
       nextToken?: string | null,
@@ -1673,6 +1846,11 @@ export type GetUserQuery = {
     } | null,
     ChatGroups?:  {
       __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Friends?:  {
+      __typename: "ModelUserContactConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1704,6 +1882,7 @@ export type ListUsersQuery = {
       username: string,
       status?: string | null,
       image?: string | null,
+      inviteId: string,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -1731,11 +1910,191 @@ export type SyncUsersQuery = {
       username: string,
       status?: string | null,
       image?: string | null,
+      inviteId: string,
       createdAt: string,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
       _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type UserByInviteIdQueryVariables = {
+  inviteId: string,
+  id?: ModelIDKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelUserFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type UserByInviteIdQuery = {
+  userByInviteId?:  {
+    __typename: "ModelUserConnection",
+    items:  Array< {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetUserContactQueryVariables = {
+  id: string,
+};
+
+export type GetUserContactQuery = {
+  getUserContact?:  {
+    __typename: "UserContact",
+    id: string,
+    userID: string,
+    friendID: string,
+    updatedAt: string,
+    sender: boolean,
+    requestStatus: requestStatusType,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    friend?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    userContact?:  {
+      __typename: "UserContact",
+      id: string,
+      userID: string,
+      friendID: string,
+      updatedAt: string,
+      sender: boolean,
+      requestStatus: requestStatusType,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userContactUserContactId?: string | null,
+    } | null,
+    createdAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userContactUserContactId?: string | null,
+  } | null,
+};
+
+export type ListUserContactsQueryVariables = {
+  filter?: ModelUserContactFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListUserContactsQuery = {
+  listUserContacts?:  {
+    __typename: "ModelUserContactConnection",
+    items:  Array< {
+      __typename: "UserContact",
+      id: string,
+      userID: string,
+      friendID: string,
+      updatedAt: string,
+      sender: boolean,
+      requestStatus: requestStatusType,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userContactUserContactId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncUserContactsQueryVariables = {
+  filter?: ModelUserContactFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncUserContactsQuery = {
+  syncUserContacts?:  {
+    __typename: "ModelUserContactConnection",
+    items:  Array< {
+      __typename: "UserContact",
+      id: string,
+      userID: string,
+      friendID: string,
+      updatedAt: string,
+      sender: boolean,
+      requestStatus: requestStatusType,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userContactUserContactId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ListbyUserContactFriendQueryVariables = {
+  userID: string,
+  friendID?: ModelIDKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelUserContactFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListbyUserContactFriendQuery = {
+  ListbyUserContactFriend?:  {
+    __typename: "ModelUserContactConnection",
+    items:  Array< {
+      __typename: "UserContact",
+      id: string,
+      userID: string,
+      friendID: string,
+      updatedAt: string,
+      sender: boolean,
+      requestStatus: requestStatusType,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userContactUserContactId?: string | null,
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
@@ -1772,6 +2131,7 @@ export type GetUserChatGroupQuery = {
       username: string,
       status?: string | null,
       image?: string | null,
+      inviteId: string,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2135,54 +2495,6 @@ export type OnDeleteAttachmentSubscription = {
   } | null,
 };
 
-export type OnCreateFriendsSubscriptionVariables = {
-  filter?: ModelSubscriptionFriendsFilterInput | null,
-};
-
-export type OnCreateFriendsSubscription = {
-  onCreateFriends?:  {
-    __typename: "Friends",
-    id: string,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnUpdateFriendsSubscriptionVariables = {
-  filter?: ModelSubscriptionFriendsFilterInput | null,
-};
-
-export type OnUpdateFriendsSubscription = {
-  onUpdateFriends?:  {
-    __typename: "Friends",
-    id: string,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
-export type OnDeleteFriendsSubscriptionVariables = {
-  filter?: ModelSubscriptionFriendsFilterInput | null,
-};
-
-export type OnDeleteFriendsSubscription = {
-  onDeleteFriends?:  {
-    __typename: "Friends",
-    id: string,
-    createdAt: string,
-    updatedAt: string,
-    _version: number,
-    _deleted?: boolean | null,
-    _lastChangedAt: number,
-  } | null,
-};
-
 export type OnCreateChatGroupSubscriptionVariables = {
   filter?: ModelSubscriptionChatGroupFilterInput | null,
 };
@@ -2350,6 +2662,7 @@ export type OnCreateUserSubscription = {
     username: string,
     status?: string | null,
     image?: string | null,
+    inviteId: string,
     Messages?:  {
       __typename: "ModelMessageConnection",
       nextToken?: string | null,
@@ -2357,6 +2670,11 @@ export type OnCreateUserSubscription = {
     } | null,
     ChatGroups?:  {
       __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Friends?:  {
+      __typename: "ModelUserContactConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -2384,6 +2702,7 @@ export type OnUpdateUserSubscription = {
     username: string,
     status?: string | null,
     image?: string | null,
+    inviteId: string,
     Messages?:  {
       __typename: "ModelMessageConnection",
       nextToken?: string | null,
@@ -2391,6 +2710,11 @@ export type OnUpdateUserSubscription = {
     } | null,
     ChatGroups?:  {
       __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Friends?:  {
+      __typename: "ModelUserContactConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -2418,6 +2742,7 @@ export type OnDeleteUserSubscription = {
     username: string,
     status?: string | null,
     image?: string | null,
+    inviteId: string,
     Messages?:  {
       __typename: "ModelMessageConnection",
       nextToken?: string | null,
@@ -2425,6 +2750,11 @@ export type OnDeleteUserSubscription = {
     } | null,
     ChatGroups?:  {
       __typename: "ModelUserChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Friends?:  {
+      __typename: "ModelUserContactConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -2438,6 +2768,189 @@ export type OnDeleteUserSubscription = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateUserContactSubscriptionVariables = {
+  filter?: ModelSubscriptionUserContactFilterInput | null,
+};
+
+export type OnCreateUserContactSubscription = {
+  onCreateUserContact?:  {
+    __typename: "UserContact",
+    id: string,
+    userID: string,
+    friendID: string,
+    updatedAt: string,
+    sender: boolean,
+    requestStatus: requestStatusType,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    friend?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    userContact?:  {
+      __typename: "UserContact",
+      id: string,
+      userID: string,
+      friendID: string,
+      updatedAt: string,
+      sender: boolean,
+      requestStatus: requestStatusType,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userContactUserContactId?: string | null,
+    } | null,
+    createdAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userContactUserContactId?: string | null,
+  } | null,
+};
+
+export type OnUpdateUserContactSubscriptionVariables = {
+  filter?: ModelSubscriptionUserContactFilterInput | null,
+};
+
+export type OnUpdateUserContactSubscription = {
+  onUpdateUserContact?:  {
+    __typename: "UserContact",
+    id: string,
+    userID: string,
+    friendID: string,
+    updatedAt: string,
+    sender: boolean,
+    requestStatus: requestStatusType,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    friend?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    userContact?:  {
+      __typename: "UserContact",
+      id: string,
+      userID: string,
+      friendID: string,
+      updatedAt: string,
+      sender: boolean,
+      requestStatus: requestStatusType,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userContactUserContactId?: string | null,
+    } | null,
+    createdAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userContactUserContactId?: string | null,
+  } | null,
+};
+
+export type OnDeleteUserContactSubscriptionVariables = {
+  filter?: ModelSubscriptionUserContactFilterInput | null,
+};
+
+export type OnDeleteUserContactSubscription = {
+  onDeleteUserContact?:  {
+    __typename: "UserContact",
+    id: string,
+    userID: string,
+    friendID: string,
+    updatedAt: string,
+    sender: boolean,
+    requestStatus: requestStatusType,
+    user?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    friend?:  {
+      __typename: "User",
+      id: string,
+      username: string,
+      status?: string | null,
+      image?: string | null,
+      inviteId: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null,
+    userContact?:  {
+      __typename: "UserContact",
+      id: string,
+      userID: string,
+      friendID: string,
+      updatedAt: string,
+      sender: boolean,
+      requestStatus: requestStatusType,
+      createdAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      userContactUserContactId?: string | null,
+    } | null,
+    createdAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+    userContactUserContactId?: string | null,
   } | null,
 };
 
@@ -2471,6 +2984,7 @@ export type OnCreateUserChatGroupSubscription = {
       username: string,
       status?: string | null,
       image?: string | null,
+      inviteId: string,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2514,6 +3028,7 @@ export type OnUpdateUserChatGroupSubscription = {
       username: string,
       status?: string | null,
       image?: string | null,
+      inviteId: string,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2557,6 +3072,7 @@ export type OnDeleteUserChatGroupSubscription = {
       username: string,
       status?: string | null,
       image?: string | null,
+      inviteId: string,
       createdAt: string,
       updatedAt: string,
       _version: number,

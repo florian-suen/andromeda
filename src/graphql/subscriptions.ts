@@ -116,42 +116,6 @@ export const onDeleteAttachment = /* GraphQL */ `
     }
   }
 `;
-export const onCreateFriends = /* GraphQL */ `
-  subscription OnCreateFriends($filter: ModelSubscriptionFriendsFilterInput) {
-    onCreateFriends(filter: $filter) {
-      id
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const onUpdateFriends = /* GraphQL */ `
-  subscription OnUpdateFriends($filter: ModelSubscriptionFriendsFilterInput) {
-    onUpdateFriends(filter: $filter) {
-      id
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const onDeleteFriends = /* GraphQL */ `
-  subscription OnDeleteFriends($filter: ModelSubscriptionFriendsFilterInput) {
-    onDeleteFriends(filter: $filter) {
-      id
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
 export const onCreateChatGroup = /* GraphQL */ `
   subscription OnCreateChatGroup(
     $filter: ModelSubscriptionChatGroupFilterInput
@@ -175,7 +139,10 @@ export const onCreateChatGroup = /* GraphQL */ `
         nextToken
         startedAt
       }
-
+      users {
+        nextToken
+        startedAt
+      }
       leaderID
       Attachments {
         nextToken
@@ -202,7 +169,6 @@ export const onUpdateChatGroup = /* GraphQL */ `
       id
       name
       image
-      _version
       LastMessage {
         id
         createdAt
@@ -218,7 +184,10 @@ export const onUpdateChatGroup = /* GraphQL */ `
         nextToken
         startedAt
       }
-
+      users {
+        nextToken
+        startedAt
+      }
       leaderID
       Attachments {
         nextToken
@@ -289,11 +258,16 @@ export const onCreateUser = /* GraphQL */ `
       username
       status
       image
+      inviteId
       Messages {
         nextToken
         startedAt
       }
       ChatGroups {
+        nextToken
+        startedAt
+      }
+      Friends {
         nextToken
         startedAt
       }
@@ -316,11 +290,16 @@ export const onUpdateUser = /* GraphQL */ `
       username
       status
       image
+      inviteId
       Messages {
         nextToken
         startedAt
       }
       ChatGroups {
+        nextToken
+        startedAt
+      }
+      Friends {
         nextToken
         startedAt
       }
@@ -343,11 +322,16 @@ export const onDeleteUser = /* GraphQL */ `
       username
       status
       image
+      inviteId
       Messages {
         nextToken
         startedAt
       }
       ChatGroups {
+        nextToken
+        startedAt
+      }
+      Friends {
         nextToken
         startedAt
       }
@@ -360,6 +344,174 @@ export const onDeleteUser = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+    }
+  }
+`;
+export const onCreateUserContact = /* GraphQL */ `
+  subscription OnCreateUserContact(
+    $filter: ModelSubscriptionUserContactFilterInput
+  ) {
+    onCreateUserContact(filter: $filter) {
+      id
+      userID
+      friendID
+      updatedAt
+      sender
+      requestStatus
+      user {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      friend {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      userContact {
+        id
+        userID
+        friendID
+        updatedAt
+        sender
+        requestStatus
+        createdAt
+        _version
+        _deleted
+        _lastChangedAt
+        userContactUserContactId
+      }
+      createdAt
+      _version
+      _deleted
+      _lastChangedAt
+      userContactUserContactId
+    }
+  }
+`;
+export const onUpdateUserContact = /* GraphQL */ `
+  subscription OnUpdateUserContact(
+    $filter: ModelSubscriptionUserContactFilterInput
+  ) {
+    onUpdateUserContact(filter: $filter) {
+      id
+      userID
+      friendID
+      updatedAt
+      sender
+      requestStatus
+      user {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      friend {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      userContact {
+        id
+        userID
+        friendID
+        updatedAt
+        sender
+        requestStatus
+        createdAt
+        _version
+        _deleted
+        _lastChangedAt
+        userContactUserContactId
+      }
+      createdAt
+      _version
+      _deleted
+      _lastChangedAt
+      userContactUserContactId
+    }
+  }
+`;
+export const onDeleteUserContact = /* GraphQL */ `
+  subscription OnDeleteUserContact(
+    $filter: ModelSubscriptionUserContactFilterInput
+  ) {
+    onDeleteUserContact(filter: $filter) {
+      id
+      userID
+      friendID
+      updatedAt
+      sender
+      requestStatus
+      user {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      friend {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      userContact {
+        id
+        userID
+        friendID
+        updatedAt
+        sender
+        requestStatus
+        createdAt
+        _version
+        _deleted
+        _lastChangedAt
+        userContactUserContactId
+      }
+      createdAt
+      _version
+      _deleted
+      _lastChangedAt
+      userContactUserContactId
     }
   }
 `;
@@ -377,45 +529,29 @@ export const onCreateUserChatGroup = /* GraphQL */ `
         name
         image
         leaderID
+        createdAt
         updatedAt
         _version
         _deleted
+        _lastChangedAt
         chatGroupLastMessageId
-        users {
-          items {
-            userID
-            _version
-            id
-            _deleted
-            user {
-              id
-              image
-              username
-            }
-            Chatgroup {
-              _version
-              id
-              LastMessage {
-                id
-                createdAt
-                message
-              }
-            }
-          }
-        }
       }
       user {
         id
         username
         status
         image
+        inviteId
         createdAt
         updatedAt
         _version
         _deleted
+        _lastChangedAt
       }
+      createdAt
       _version
       _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -445,6 +581,7 @@ export const onUpdateUserChatGroup = /* GraphQL */ `
         username
         status
         image
+        inviteId
         createdAt
         updatedAt
         _version
@@ -484,6 +621,7 @@ export const onDeleteUserChatGroup = /* GraphQL */ `
         username
         status
         image
+        inviteId
         createdAt
         updatedAt
         _version
@@ -506,31 +644,12 @@ export const onCreateMessage = /* GraphQL */ `
       userID
       chatgroupID
       Attachments {
-        items {
-          chatgroupID
-          createdAt
-          id
-          messageID
-          updatedAt
-          type
-          storageKey
-          name
-          _version
-          _lastChangedAt
-          _deleted
-        }
+        nextToken
+        startedAt
       }
       Media {
-        items {
-          id
-          storageKey
-          type
-          messageID
-          chatgroupID
-          duration
-          width
-          height
-        }
+        nextToken
+        startedAt
       }
       updatedAt
       _version
@@ -548,19 +667,8 @@ export const onUpdateMessage = /* GraphQL */ `
       userID
       chatgroupID
       Attachments {
-        items {
-          chatgroupID
-          createdAt
-          id
-          messageID
-          updatedAt
-          type
-          storageKey
-          name
-          _version
-          _lastChangedAt
-          _deleted
-        }
+        nextToken
+        startedAt
       }
       Media {
         nextToken

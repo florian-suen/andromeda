@@ -2,16 +2,20 @@ import {
   createSlice,
   createAsyncThunk,
   SerializedError,
+  PayloadAction,
 } from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
 
 import { listbyUserContactFriend } from "./queries";
 
-//Change inviteID post production
+type RequestStatusType = "ACCEPTED" | "BLOCKED" | "REQUESTED" | "DECLINED";
 export interface ContactType {
   sender: boolean;
   requestStatus: string;
+  _version: string;
   _deleted: string;
+  id: string;
+  userContact: { id: string; _version: string };
   friend: {
     inviteId: string;
     image: string;
@@ -45,7 +49,9 @@ export const getContactList = createAsyncThunk(
 
     if ("data" in fetchContacts) {
       return fetchContacts.data
-        ? (fetchContacts.data as any).ListbyUserContactFriend.items
+        ? (fetchContacts.data as any).ListbyUserContactFriend.items.filter(
+            (item: ContactType) => !item._deleted
+          )
         : [];
     }
     return rejectWithValue("fetch Contact error");
@@ -55,7 +61,21 @@ export const getContactList = createAsyncThunk(
 export const contactSlice = createSlice({
   name: "contact",
   initialState,
-  reducers: {},
+  reducers: {
+    addFriendRequest: (state, action: PayloadAction<ContactType>) => {
+      return { ...state, contacts: [...state.contacts, action.payload] };
+    },
+    updateFriendStatus: (
+      state,
+      action: PayloadAction<{ id: string; requestStatus: RequestStatusType }>
+    ) => {
+      const contactIndex = state.contacts.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      state.contacts[contactIndex].requestStatus = action.payload.requestStatus;
+      return state;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getContactList.fulfilled, (state, action) => {
@@ -79,3 +99,5 @@ export const contactSlice = createSlice({
       }); */
   },
 });
+
+export const { addFriendRequest, updateFriendStatus } = contactSlice.actions;

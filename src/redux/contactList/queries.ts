@@ -2,18 +2,23 @@ export const listbyUserContactFriend = /* GraphQL */ `
   query ListbyUserContactFriend($userID: ID!) {
     ListbyUserContactFriend(userID: $userID) {
       items {
-        friend {
-          status
-          username
-          _deleted
-          _version
-          id
-          image
-          inviteId
-        }
-        requestStatus
         sender
+        requestStatus
         _deleted
+        _version
+        userContact {
+          id
+          _version
+        }
+        id
+        friend {
+          inviteId
+          image
+          username
+          id
+          status
+          _deleted
+        }
       }
     }
   }

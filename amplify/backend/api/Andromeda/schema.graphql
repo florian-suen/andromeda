@@ -20,7 +20,7 @@ enum AttachmentType {
 }
 
 enum requestStatusType {
-  WAITING
+  REQUESTED
   ACCEPTED
   DECLINED
   BLOCKED
@@ -81,6 +81,7 @@ type UserContact @model @auth(rules: [{ allow: public }]) {
   requestStatus: requestStatusType!
   user: User @belongsTo(fields: ["userID"])
   friend: User @belongsTo(fields: ["friendID"])
+  userContact: UserContact @hasOne
 }
 
 type UserChatGroup @model @auth(rules: [{ allow: public }]) {

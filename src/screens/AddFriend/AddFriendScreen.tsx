@@ -1,14 +1,22 @@
 import { View, StyleSheet, TextInput, Text, Button, Image } from "react-native";
-import { createUserContact, getUserByInviteId } from "./queries";
+import {
+  createUserContact,
+  getUserByInviteId,
+  updateUserContact,
+} from "./queries";
 import { API, graphqlOperation } from "aws-amplify";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { ContactType } from "../../redux/contactList/contactListSlice";
+import {
+  addFriendRequest,
+  ContactType,
+  updateFriendStatus,
+} from "../../redux/contactList/contactListSlice";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { useDebouncedSearch } from "../../../utility/useDebouncedSearch";
-import { useAppSelector } from "../../../utility/useReduxHooks";
-import { useContext } from "react";
-import { userContext } from "../../../utility/userAuth";
+import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
+
 import { UseAsyncReturn } from "react-async-hook";
+import { useRef } from "react";
 
 type RouteParam = {
   AddFriend: {
@@ -32,18 +40,69 @@ type inviteUser = {
 export const AddFriendScreen = () => {
   const { inputText, setInputText, searchResults } = useInviteCodeSearch();
   const contacts = useAppSelector((state) => state.contacts.contacts);
-  const currentUser = useContext(userContext);
+  const dispatch = useAppDispatch();
   const route = useRoute<RouteProp<RouteParam>>();
+  const justAddedRef = useRef(false);
+  const addFriendHandler = async (userContact?: ContactType) => {
+    if (userContact) {
+      await API.graphql(
+        graphqlOperation(updateUserContact, {
+          input: {
+            id: userContact.id,
+            requestStatus: "ACCEPTED",
+            _version: userContact._version,
+          },
+        })
+      );
+      justAddedRef.current = true;
+      dispatch(
+        updateFriendStatus({ id: userContact.id, requestStatus: "ACCEPTED" })
+      );
 
-  const addFriendHandler = (directAdd?: boolean) => {
-    API.graphql(
+      API.graphql(
+        graphqlOperation(updateUserContact, {
+          input: {
+            id: userContact.userContact.id,
+            requestStatus: "ACCEPTED",
+            _version: userContact.userContact._version,
+          },
+        })
+      );
+
+      return;
+    }
+
+    const createContactUser = await API.graphql(
       graphqlOperation(createUserContact, {
         input: {
-          userID: route.params.currentUser,
+          userID: route.params.currentUser.id,
           friendID: searchResults.result.id,
+          requestStatus: "REQUESTED",
+          sender: true,
         },
       })
     );
+
+    if ("data" in createContactUser) {
+      dispatch(
+        addFriendRequest(
+          createContactUser.data.createUserContact as ContactType
+        )
+      );
+
+      const createContactFriend = await API.graphql(
+        graphqlOperation(createUserContact, {
+          input: {
+            userID: searchResults.result.id,
+            friendID: route.params.currentUser.id,
+            requestStatus: "REQUESTED",
+            sender: false,
+            userContactUserContactId:
+              createContactUser.data.createUserContact.id,
+          },
+        })
+      );
+    }
   };
 
   return (
@@ -67,8 +126,9 @@ export const AddFriendScreen = () => {
           <AddButton
             contacts={contacts}
             searchResults={searchResults}
-            currentUserId={currentUser?.attributes.sub!}
+            currentUserId={route.params.currentUser.id}
             addFriendHandler={addFriendHandler}
+            justAdded={justAddedRef.current}
           />
         </View>
       )}
@@ -108,35 +168,48 @@ const AddButton = ({
   contacts,
   searchResults,
   addFriendHandler,
+  justAdded,
 }: {
   currentUserId: string;
   contacts: ContactType[] | [];
   searchResults: UseAsyncReturn<any, (string | ((...args: any[]) => any))[]>;
-  addFriendHandler: (directAdd?: boolean) => void;
+  addFriendHandler: (userContact?: ContactType) => void;
+  justAdded: boolean;
 }) => {
-  const contactIdArray = contacts.map((item) => item.friend.id);
+  const contactIdArray =
+    contacts.length && contacts.map((item) => item.friend.id);
 
   if (searchResults.status === "success" && searchResults.result) {
     if (searchResults.result.id === currentUserId)
       return <Button title="Unable to add yourself" disabled />;
 
-    if (contactIdArray.some((id) => searchResults.result.id === id)) {
+    if (
+      contactIdArray &&
+      contactIdArray.some((id) => searchResults.result.id === id)
+    ) {
       const friend = contacts.find(
         (item) => searchResults.result.id === item.friend.id
       );
 
-      if (friend?.requestStatus === "WAITING")
-        return friend.sender ? (
-          <Button title="Requested" disabled />
-        ) : (
-          <Button title="Add Friend" onPress={() => addFriendHandler(true)} />
-        );
-      if (friend?.requestStatus === "BLOCKED")
-        return <Button title="Blocked" disabled />;
-
-      return <Button title="Already Added" disabled />;
+      switch (friend?.requestStatus) {
+        case "REQUESTED":
+          return friend.sender ? (
+            <Button title="Requested" disabled />
+          ) : (
+            <Button
+              title="Add Friend"
+              onPress={() => addFriendHandler(friend)}
+            />
+          );
+        case "BLOCKED":
+          return <Button title="Blocked" disabled />;
+        case "ACCEPTED":
+          return (
+            <Button title={justAdded ? "Added" : "Already Friends"} disabled />
+          );
+      }
     }
   }
 
-  return <Button title="Add Friend" onPress={() => addFriendHandler(false)} />;
+  return <Button title="Add Friend" onPress={() => addFriendHandler()} />;
 };

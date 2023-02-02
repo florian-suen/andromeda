@@ -154,70 +154,12 @@ export const syncAttachments = /* GraphQL */ `
     }
   }
 `;
-export const getFriends = /* GraphQL */ `
-  query GetFriends($id: ID!) {
-    getFriends(id: $id) {
-      id
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const listFriends = /* GraphQL */ `
-  query ListFriends(
-    $filter: ModelFriendsFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listFriends(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const syncFriends = /* GraphQL */ `
-  query SyncFriends(
-    $filter: ModelFriendsFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncFriends(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
 export const getChatGroup = /* GraphQL */ `
   query GetChatGroup($id: ID!) {
     getChatGroup(id: $id) {
       id
       name
-
+      image
       LastMessage {
         id
         createdAt
@@ -234,17 +176,8 @@ export const getChatGroup = /* GraphQL */ `
         startedAt
       }
       users {
-        items {
-          id
-          _version
-          _deleted
-          userID
-          user {
-            status
-            username
-            id
-          }
-        }
+        nextToken
+        startedAt
       }
       leaderID
       Attachments {
@@ -274,7 +207,7 @@ export const listChatGroups = /* GraphQL */ `
       items {
         id
         name
-
+        image
         leaderID
         createdAt
         updatedAt
@@ -304,7 +237,7 @@ export const syncChatGroups = /* GraphQL */ `
       items {
         id
         name
-
+        image
         leaderID
         createdAt
         updatedAt
@@ -324,12 +257,17 @@ export const getUser = /* GraphQL */ `
       id
       username
       status
-
+      image
+      inviteId
       Messages {
         nextToken
         startedAt
       }
       ChatGroups {
+        nextToken
+        startedAt
+      }
+      Friends {
         nextToken
         startedAt
       }
@@ -386,12 +324,192 @@ export const syncUsers = /* GraphQL */ `
         id
         username
         status
-
+        image
+        inviteId
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const userByInviteId = /* GraphQL */ `
+  query UserByInviteId(
+    $inviteId: String!
+    $id: ModelIDKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    userByInviteId(
+      inviteId: $inviteId
+      id: $id
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getUserContact = /* GraphQL */ `
+  query GetUserContact($id: ID!) {
+    getUserContact(id: $id) {
+      id
+      userID
+      friendID
+      updatedAt
+      sender
+      requestStatus
+      user {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      friend {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      userContact {
+        id
+        userID
+        friendID
+        updatedAt
+        sender
+        requestStatus
+        createdAt
+        _version
+        _deleted
+        _lastChangedAt
+        userContactUserContactId
+      }
+      createdAt
+      _version
+      _deleted
+      _lastChangedAt
+      userContactUserContactId
+    }
+  }
+`;
+export const listUserContacts = /* GraphQL */ `
+  query ListUserContacts(
+    $filter: ModelUserContactFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listUserContacts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userID
+        friendID
+        updatedAt
+        sender
+        requestStatus
+        createdAt
+        _version
+        _deleted
+        _lastChangedAt
+        userContactUserContactId
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncUserContacts = /* GraphQL */ `
+  query SyncUserContacts(
+    $filter: ModelUserContactFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncUserContacts(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        userID
+        friendID
+        updatedAt
+        sender
+        requestStatus
+        createdAt
+        _version
+        _deleted
+        _lastChangedAt
+        userContactUserContactId
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const listbyUserContactFriend = /* GraphQL */ `
+  query ListbyUserContactFriend(
+    $userID: ID!
+    $friendID: ModelIDKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserContactFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    ListbyUserContactFriend(
+      userID: $userID
+      friendID: $friendID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        userID
+        friendID
+        updatedAt
+        sender
+        requestStatus
+        createdAt
+        _version
+        _deleted
+        _lastChangedAt
+        userContactUserContactId
       }
       nextToken
       startedAt
@@ -408,7 +526,7 @@ export const getUserChatGroup = /* GraphQL */ `
       Chatgroup {
         id
         name
-
+        image
         leaderID
         createdAt
         updatedAt
@@ -421,7 +539,8 @@ export const getUserChatGroup = /* GraphQL */ `
         id
         username
         status
-
+        image
+        inviteId
         createdAt
         updatedAt
         _version

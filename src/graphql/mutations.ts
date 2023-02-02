@@ -128,51 +128,6 @@ export const deleteAttachment = /* GraphQL */ `
     }
   }
 `;
-export const createFriends = /* GraphQL */ `
-  mutation CreateFriends(
-    $input: CreateFriendsInput!
-    $condition: ModelFriendsConditionInput
-  ) {
-    createFriends(input: $input, condition: $condition) {
-      id
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const updateFriends = /* GraphQL */ `
-  mutation UpdateFriends(
-    $input: UpdateFriendsInput!
-    $condition: ModelFriendsConditionInput
-  ) {
-    updateFriends(input: $input, condition: $condition) {
-      id
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
-export const deleteFriends = /* GraphQL */ `
-  mutation DeleteFriends(
-    $input: DeleteFriendsInput!
-    $condition: ModelFriendsConditionInput
-  ) {
-    deleteFriends(input: $input, condition: $condition) {
-      id
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-  }
-`;
 export const createChatGroup = /* GraphQL */ `
   mutation CreateChatGroup(
     $input: CreateChatGroupInput!
@@ -321,11 +276,16 @@ export const createUser = /* GraphQL */ `
       username
       status
       image
+      inviteId
       Messages {
         nextToken
         startedAt
       }
       ChatGroups {
+        nextToken
+        startedAt
+      }
+      Friends {
         nextToken
         startedAt
       }
@@ -351,11 +311,16 @@ export const updateUser = /* GraphQL */ `
       username
       status
       image
+      inviteId
       Messages {
         nextToken
         startedAt
       }
       ChatGroups {
+        nextToken
+        startedAt
+      }
+      Friends {
         nextToken
         startedAt
       }
@@ -381,11 +346,16 @@ export const deleteUser = /* GraphQL */ `
       username
       status
       image
+      inviteId
       Messages {
         nextToken
         startedAt
       }
       ChatGroups {
+        nextToken
+        startedAt
+      }
+      Friends {
         nextToken
         startedAt
       }
@@ -398,6 +368,177 @@ export const deleteUser = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+    }
+  }
+`;
+export const createUserContact = /* GraphQL */ `
+  mutation CreateUserContact(
+    $input: CreateUserContactInput!
+    $condition: ModelUserContactConditionInput
+  ) {
+    createUserContact(input: $input, condition: $condition) {
+      id
+      userID
+      friendID
+      updatedAt
+      sender
+      requestStatus
+      user {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      friend {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      userContact {
+        id
+        userID
+        friendID
+        updatedAt
+        sender
+        requestStatus
+        createdAt
+        _version
+        _deleted
+        _lastChangedAt
+        userContactUserContactId
+      }
+      createdAt
+      _version
+      _deleted
+      _lastChangedAt
+      userContactUserContactId
+    }
+  }
+`;
+export const updateUserContact = /* GraphQL */ `
+  mutation UpdateUserContact(
+    $input: UpdateUserContactInput!
+    $condition: ModelUserContactConditionInput
+  ) {
+    updateUserContact(input: $input, condition: $condition) {
+      id
+      userID
+      friendID
+      updatedAt
+      sender
+      requestStatus
+      user {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      friend {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      userContact {
+        id
+        userID
+        friendID
+        updatedAt
+        sender
+        requestStatus
+        createdAt
+        _version
+        _deleted
+        _lastChangedAt
+        userContactUserContactId
+      }
+      createdAt
+      _version
+      _deleted
+      _lastChangedAt
+      userContactUserContactId
+    }
+  }
+`;
+export const deleteUserContact = /* GraphQL */ `
+  mutation DeleteUserContact(
+    $input: DeleteUserContactInput!
+    $condition: ModelUserContactConditionInput
+  ) {
+    deleteUserContact(input: $input, condition: $condition) {
+      id
+      userID
+      friendID
+      updatedAt
+      sender
+      requestStatus
+      user {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      friend {
+        id
+        username
+        status
+        image
+        inviteId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      userContact {
+        id
+        userID
+        friendID
+        updatedAt
+        sender
+        requestStatus
+        createdAt
+        _version
+        _deleted
+        _lastChangedAt
+        userContactUserContactId
+      }
+      createdAt
+      _version
+      _deleted
+      _lastChangedAt
+      userContactUserContactId
     }
   }
 `;
@@ -428,6 +569,7 @@ export const createUserChatGroup = /* GraphQL */ `
         username
         status
         image
+        inviteId
         createdAt
         updatedAt
         _version
@@ -468,6 +610,7 @@ export const updateUserChatGroup = /* GraphQL */ `
         username
         status
         image
+        inviteId
         createdAt
         updatedAt
         _version
@@ -508,6 +651,7 @@ export const deleteUserChatGroup = /* GraphQL */ `
         username
         status
         image
+        inviteId
         createdAt
         updatedAt
         _version
