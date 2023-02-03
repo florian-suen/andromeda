@@ -10,6 +10,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { getContactList } from "../../redux/contactList/contactListSlice";
 import { getMessageList } from "../../redux/messages/messageSlice";
 import { getCurrentUser } from "../../redux/currentUser/currentUserSlice";
+import { subonUpdateUserContact } from "../../subscription/subUpdateUserContact";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
@@ -19,7 +20,6 @@ export const ChatList = () => {
   const userAuth = useContext(userContext)!;
   const dispatch = useAppDispatch();
   const chatGroup = useAppSelector((state) => state.chatGroup.chatGroup);
-
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   useEffect(() => {
@@ -27,7 +27,6 @@ export const ChatList = () => {
     dispatch(getContactList(userAuth.attributes.sub));
     dispatch(getCurrentUser(userAuth.attributes.sub));
   }, []);
-
   useEffect(() => {
     if (!messageLoaded.current && chatGroup.length) {
       messageLoaded.current = true;
@@ -36,7 +35,7 @@ export const ChatList = () => {
   }, [chatGroup]);
 
   subOnCreateUserChatGroup(userAuth, navigation, dispatch);
-
+  subonUpdateUserContact(userAuth.attributes.sub, dispatch);
   return chatGroup && chatGroup?.length ? (
     <FlatList
       keyExtractor={(item) => {

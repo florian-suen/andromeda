@@ -67,12 +67,17 @@ export const contactSlice = createSlice({
     },
     updateFriendStatus: (
       state,
-      action: PayloadAction<{ id: string; requestStatus: RequestStatusType }>
+      action: PayloadAction<{
+        id: string;
+        requestStatus: RequestStatusType;
+        version: string;
+      }>
     ) => {
       const contactIndex = state.contacts.findIndex(
         (item) => item.id === action.payload.id
       );
       state.contacts[contactIndex].requestStatus = action.payload.requestStatus;
+      state.contacts[contactIndex]._version = action.payload.version;
       return state;
     },
   },

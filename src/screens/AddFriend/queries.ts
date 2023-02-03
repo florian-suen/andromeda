@@ -65,6 +65,9 @@ export const updateUserContact = /* GraphQL */ `
   mutation updateUserContact($input: UpdateUserContactInput!) {
     updateUserContact(input: $input) {
       id
+      sender
+      requestStatus
+      _version
     }
   }
 `;

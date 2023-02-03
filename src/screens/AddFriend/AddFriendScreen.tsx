@@ -45,7 +45,7 @@ export const AddFriendScreen = () => {
   const justAddedRef = useRef(false);
   const addFriendHandler = async (userContact?: ContactType) => {
     if (userContact) {
-      await API.graphql(
+      const updateContact = await API.graphql(
         graphqlOperation(updateUserContact, {
           input: {
             id: userContact.id,
@@ -56,7 +56,11 @@ export const AddFriendScreen = () => {
       );
       justAddedRef.current = true;
       dispatch(
-        updateFriendStatus({ id: userContact.id, requestStatus: "ACCEPTED" })
+        updateFriendStatus({
+          id: userContact.id,
+          requestStatus: "ACCEPTED",
+          version: userContact._version + 1,
+        })
       );
 
       API.graphql(
