@@ -8,14 +8,19 @@ import { API, graphqlOperation } from "aws-amplify";
 
 import { listbyUserContactFriend } from "./queries";
 
-type RequestStatusType = "ACCEPTED" | "BLOCKED" | "REQUESTED" | "DECLINED";
+export type RequestStatusType =
+  | "ACCEPTED"
+  | "BLOCKED"
+  | "REQUESTED"
+  | "DECLINED";
 export interface ContactType {
   sender: boolean;
   requestStatus: string;
   _version: string;
   _deleted: string;
+  friendID: string;
   id: string;
-  userContact: { id: string; _version: string };
+  userContact: { id: string; _version: string; requestStatus: string };
   friend: {
     inviteId: string;
     image: string;
@@ -63,7 +68,21 @@ export const contactSlice = createSlice({
   initialState,
   reducers: {
     addFriendRequest: (state, action: PayloadAction<ContactType>) => {
+      if (state.contacts.some((item) => item.id === action.payload.id))
+        return state;
       return { ...state, contacts: [...state.contacts, action.payload] };
+    },
+    updateUserContact: (
+      state,
+      action: PayloadAction<{ id: string; version: string; request: string }>
+    ) => {
+      const userIndex = state.contacts.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      state.contacts[userIndex].userContact._version = action.payload.version;
+      state.contacts[userIndex].userContact.requestStatus =
+        action.payload.request;
+      return state;
     },
     updateFriendStatus: (
       state,
@@ -71,6 +90,7 @@ export const contactSlice = createSlice({
         id: string;
         requestStatus: RequestStatusType;
         version: string;
+        userContact?: ContactType["userContact"];
       }>
     ) => {
       const contactIndex = state.contacts.findIndex(
@@ -78,6 +98,8 @@ export const contactSlice = createSlice({
       );
       state.contacts[contactIndex].requestStatus = action.payload.requestStatus;
       state.contacts[contactIndex]._version = action.payload.version;
+      if (action.payload.userContact)
+        state.contacts[contactIndex].userContact = action.payload.userContact;
       return state;
     },
   },
@@ -105,4 +127,5 @@ export const contactSlice = createSlice({
   },
 });
 
-export const { addFriendRequest, updateFriendStatus } = contactSlice.actions;
+export const { addFriendRequest, updateFriendStatus, updateUserContact } =
+  contactSlice.actions;

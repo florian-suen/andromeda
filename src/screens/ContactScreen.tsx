@@ -5,6 +5,7 @@ import {
   ViewStyle,
   ImageStyle,
   TextStyle,
+  FlatList,
 } from "react-native";
 import { Octicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -15,6 +16,7 @@ import { useAppSelector } from "../../utility/useReduxHooks";
 import { useContext } from "react";
 import { userContext } from "../../utility/userAuth";
 import { ContactType } from "../redux/contactList/contactListSlice";
+import { RequestComponent } from "../components/Contacts/Request";
 
 type RootStackParamList = {
   AddFriend: { currentUser: ContactType["friend"] };
@@ -30,6 +32,10 @@ export const ContactScreen = () => {
   const contactList = useAppSelector((state) => {
     return state.contacts.contacts;
   }).filter((item) => item.requestStatus === "ACCEPTED");
+
+  const contactRequest = useAppSelector((state) => {
+    return state.contacts.contacts;
+  }).filter((item) => item.requestStatus === "REQUESTED" && !item.sender);
 
   const currentUser = useAppSelector((state) => {
     return state.currentUser.currentUser;
@@ -66,7 +72,7 @@ export const ContactScreen = () => {
     <>
       <Octicons
         name="person-add"
-        size={24}
+        size={44}
         color="black"
         onPress={() =>
           navigation.navigate("AddFriend", {
@@ -74,6 +80,14 @@ export const ContactScreen = () => {
           })
         }
       />
+
+      <FlatList
+        data={contactRequest}
+        renderItem={({ item }) => {
+          return <RequestComponent requestUser={item} />;
+        }}
+      />
+
       <Animated.FlatList
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],

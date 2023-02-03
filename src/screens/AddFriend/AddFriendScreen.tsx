@@ -14,7 +14,6 @@ import {
 import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { useDebouncedSearch } from "../../../utility/useDebouncedSearch";
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
-
 import { UseAsyncReturn } from "react-async-hook";
 import { useRef } from "react";
 
@@ -59,7 +58,7 @@ export const AddFriendScreen = () => {
         updateFriendStatus({
           id: userContact.id,
           requestStatus: "ACCEPTED",
-          version: userContact._version + 1,
+          version: userContact._version,
         })
       );
 
@@ -106,6 +105,19 @@ export const AddFriendScreen = () => {
           },
         })
       );
+
+      if ("data" in createContactFriend) {
+        const updateContact = API.graphql(
+          graphqlOperation(updateUserContact, {
+            input: {
+              id: createContactUser.data.createUserContact.id,
+              userContactUserContactId:
+                createContactFriend.data.createUserContact.id,
+              _version: createContactUser.data.createUserContact._version,
+            },
+          })
+        );
+      }
     }
   };
 

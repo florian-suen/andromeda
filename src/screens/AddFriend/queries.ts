@@ -1,15 +1,16 @@
 export const createUserContact = /* GraphQL */ `
   mutation createUserContact($input: CreateUserContactInput!) {
     createUserContact(input: $input) {
+      id
       sender
       requestStatus
       _deleted
       _version
+      userID
       userContact {
         id
         _version
       }
-      id
       friend {
         inviteId
         image
@@ -68,6 +69,13 @@ export const updateUserContact = /* GraphQL */ `
       sender
       requestStatus
       _version
+      userID
+      friendID
+      userContact {
+        id
+        requestStatus
+        _version
+      }
     }
   }
 `;

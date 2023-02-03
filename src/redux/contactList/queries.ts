@@ -6,9 +6,11 @@ export const listbyUserContactFriend = /* GraphQL */ `
         requestStatus
         _deleted
         _version
+        friendID
         userContact {
           id
           _version
+          requestStatus
         }
         id
         friend {

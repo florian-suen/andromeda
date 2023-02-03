@@ -24,7 +24,7 @@ type RootStackParamList = {
   GroupChat: { chatGroupId: string };
 };
 
-type dispatch = ReturnType<typeof useAppDispatch>;
+export type Dispatch = ReturnType<typeof useAppDispatch>;
 
 export const ContactsComponent = ({
   user,
@@ -189,7 +189,7 @@ async function createChatGroupHandler(
   friend: User,
   currentUser: User,
   navigation: NativeStackNavigationProp<RootStackParamList>,
-  dispatch: dispatch
+  dispatch: Dispatch
 ) {
   const existingChatGroup = await useExistingChatGroups(
     friend.id,
