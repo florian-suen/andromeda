@@ -13,10 +13,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ContactsComponent } from "../components/Contacts/Contacts";
 import { useThemeColor } from "../../utility/useStyles";
 import { useAppSelector } from "../../utility/useReduxHooks";
-import { useContext } from "react";
-import { userContext } from "../../utility/userAuth";
 import { ContactType } from "../redux/contactList/contactListSlice";
 import { RequestComponent } from "../components/Contacts/Request";
+import { BlockedComponent } from "../components/Contacts/Blocked";
 
 type RootStackParamList = {
   AddFriend: { currentUser: ContactType["friend"] };
@@ -24,15 +23,17 @@ type RootStackParamList = {
 
 export const ContactScreen = () => {
   const [selectedUserId, setSelectedUserId] = useState<string[]>([]);
-  const [isSelectable, setIsSelectable] = useState(false);
+  const isSelectable = false;
   const scrollY = useRef(new Animated.Value(0)).current;
   const createGroupOpacity = useRef(new Animated.Value(0)).current;
   const styles = StyleSheet.create(useThemeColor(styleSheet));
-  const userAuth = useContext(userContext);
   const contactList = useAppSelector((state) => {
     return state.contacts.contacts;
   }).filter((item) => item.requestStatus === "ACCEPTED");
 
+  const contactBlocked = useAppSelector((state) => {
+    return state.contacts.contacts;
+  }).filter((item) => item.requestStatus === "BLOCKED" && item.sender);
   const contactRequest = useAppSelector((state) => {
     return state.contacts.contacts;
   }).filter((item) => item.requestStatus === "REQUESTED" && !item.sender);
@@ -43,13 +44,6 @@ export const ContactScreen = () => {
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const contactSelectHandler = (id: string) => {
-    setSelectedUserId((userIds) => {
-      if (userIds.includes(id))
-        return [...userIds].filter((user) => user !== id);
-      return [...userIds, id];
-    });
-  };
 
   useEffect(() => {
     const createGrpOpaTiming = Animated.timing(createGroupOpacity, {
@@ -88,6 +82,13 @@ export const ContactScreen = () => {
         }}
       />
 
+      <FlatList
+        data={contactBlocked}
+        renderItem={({ item }) => {
+          return <BlockedComponent requestUser={item} />;
+        }}
+      />
+
       <Animated.FlatList
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -120,11 +121,9 @@ export const ContactScreen = () => {
               }}
             >
               <ContactsComponent
-                onSelectHandler={() => contactSelectHandler(item.friend.id)}
-                user={item.friend}
+                contact={item}
                 isSelectable={isSelectable}
                 isSelected={isSelected}
-                currentUser={currentUser!}
               />
             </Animated.View>
           );

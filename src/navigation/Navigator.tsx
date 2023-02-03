@@ -8,6 +8,7 @@ import { QRCodeScreen } from "../screens/QRCodeScreen";
 import { View } from "react-native";
 import { ScanScreen } from "../screens/ScanScreen";
 import { AddFriendScreen } from "../screens/AddFriend/AddFriendScreen";
+import { ContactProfileScreen } from "../screens/ContactProfileScreen";
 export const Navigator = () => {
   const Stack = createNativeStackNavigator();
 
@@ -62,6 +63,12 @@ export const Navigator = () => {
             options={{ headerTransparent: true, title: "" }}
             name="Scan"
             component={ScanScreen}
+          />
+
+          <Stack.Screen
+            options={{ headerTransparent: true, title: "" }}
+            name="ContactProfile"
+            component={ContactProfileScreen}
           />
 
           <Stack.Screen name="AddFriend" component={AddFriendScreen} />

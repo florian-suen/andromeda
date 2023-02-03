@@ -4,7 +4,10 @@ import {
   updateFriendStatus,
 } from "../../redux/contactList/contactListSlice";
 import { API, graphqlOperation } from "aws-amplify";
-import { updateUserContact } from "../../screens/AddFriend/queries";
+import {
+  deleteUserContact,
+  updateUserContact,
+} from "../../screens/AddFriend/queries";
 import { useAppDispatch } from "../../../utility/useReduxHooks";
 import { Dispatch } from "./Contacts";
 
@@ -27,8 +30,41 @@ export const RequestComponent = ({
         onPress={() => addFriendHandler(requestUser, dispatch)}
       />
 
-      <Button title="Decline" onPress={() => {}} />
+      <Button
+        title="Decline"
+        onPress={() => {
+          deleteFriendHandler(requestUser, dispatch);
+        }}
+      />
+      <Button
+        title="Block"
+        onPress={() => {
+          blockFriendHandler(requestUser, dispatch);
+        }}
+      />
     </View>
+  );
+};
+
+const deleteFriendHandler = async (
+  userContact: ContactType,
+  dispatch: Dispatch
+) => {
+  const updateContact = await API.graphql(
+    graphqlOperation(deleteUserContact, {
+      input: {
+        id: userContact.id,
+        _version: userContact._version,
+      },
+    })
+  );
+  API.graphql(
+    graphqlOperation(deleteUserContact, {
+      input: {
+        id: userContact.userContact.id,
+        _version: userContact.userContact._version,
+      },
+    })
   );
 };
 
@@ -61,6 +97,29 @@ const addFriendHandler = async (
         requestStatus: "ACCEPTED",
         _version: userContact.userContact._version,
       },
+    })
+  );
+};
+
+const blockFriendHandler = async (
+  userContact: ContactType,
+  dispatch: Dispatch
+) => {
+  const updateContact = await API.graphql(
+    graphqlOperation(updateUserContact, {
+      input: {
+        id: userContact.id,
+        requestStatus: "BLOCKED",
+        _version: userContact._version,
+      },
+    })
+  );
+
+  dispatch(
+    updateFriendStatus({
+      id: userContact.id,
+      requestStatus: "BLOCKED",
+      version: userContact._version,
     })
   );
 };

@@ -44,3 +44,13 @@ export const onCreateUserContact = /* GraphQL */ `
     }
   }
 `;
+
+export const onDeleteUserContact = /* GraphQL */ `
+  subscription OnDeleteUserContact(
+    $filter: ModelSubscriptionUserContactFilterInput
+  ) {
+    onDeleteUserContact(filter: $filter) {
+      id
+    }
+  }
+`;

@@ -72,6 +72,14 @@ export const contactSlice = createSlice({
         return state;
       return { ...state, contacts: [...state.contacts, action.payload] };
     },
+    deleteUserContact: (state, action: PayloadAction<{ id: string }>) => {
+      const filteredContacts = state.contacts.filter(
+        (item) => item.id !== action.payload.id
+      );
+      state.contacts = filteredContacts;
+      return state;
+    },
+
     updateUserContact: (
       state,
       action: PayloadAction<{ id: string; version: string; request: string }>
@@ -127,5 +135,9 @@ export const contactSlice = createSlice({
   },
 });
 
-export const { addFriendRequest, updateFriendStatus, updateUserContact } =
-  contactSlice.actions;
+export const {
+  addFriendRequest,
+  updateFriendStatus,
+  updateUserContact,
+  deleteUserContact,
+} = contactSlice.actions;

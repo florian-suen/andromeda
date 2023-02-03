@@ -1,5 +1,6 @@
 import {
   ContactType,
+  deleteUserContact,
   RequestStatusType,
   updateUserContact,
 } from "./../redux/contactList/contactListSlice";
@@ -12,6 +13,7 @@ import {
 import { AppDispatch } from "../redux/store";
 import {
   onCreateUserContact,
+  onDeleteUserContact,
   onUpdateUserContact,
 } from "./subscriptionQueries";
 
@@ -32,6 +34,30 @@ export const subonUpdateUserContact = (
       })
     );
 
+    const onDeleteContactVersion = API.graphql(
+      graphqlOperation(onDeleteUserContact, {
+        filter: { userID: { eq: userId } },
+      })
+    );
+
+    const onDeleteContactVersionSubscription =
+      "subscribe" in onDeleteContactVersion &&
+      onDeleteContactVersion.subscribe({
+        next: ({
+          value,
+        }: {
+          value: { data: { onUpdateUserContact: ContactType } };
+        }) => {
+          return dispatch(
+            deleteUserContact({
+              id: value.data.onUpdateUserContact.id,
+            })
+          );
+        },
+        error: (err) =>
+          console.log(` onUpdateContactVersion Subscription Error: ${err}`),
+      });
+
     const onUpdateContactVersionSubscription =
       "subscribe" in onUpdateContactVersion &&
       onUpdateContactVersion.subscribe({
@@ -40,7 +66,6 @@ export const subonUpdateUserContact = (
         }: {
           value: { data: { onUpdateUserContact: ContactType } };
         }) => {
-          console.log("hi");
           return dispatch(
             updateUserContact({
               id: value.data.onUpdateUserContact.userContact.id,
@@ -90,6 +115,8 @@ export const subonUpdateUserContact = (
       onUpdateContactSubscription && onUpdateContactSubscription.unsubscribe;
       onUpdateContactVersionSubscription &&
         onUpdateContactVersionSubscription.unsubscribe;
+      onDeleteContactVersionSubscription &&
+        onDeleteContactVersionSubscription.unsubscribe;
     };
   }, []);
 };

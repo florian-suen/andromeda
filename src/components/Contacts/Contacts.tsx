@@ -12,35 +12,25 @@ import {
 import { useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { User } from "../../models/index";
-import { createUserChatGroup, createChatGroup } from "../../graphql/mutations";
-import { API, graphqlOperation } from "aws-amplify";
-import { useExistingChatGroups } from "../../../utility/useExistingChatGroups";
 import { useThemeColor } from "../../../utility/useStyles";
-import { v4 as uuidv4 } from "uuid";
-import { createNewChatGroup } from "../../redux/chatGroup/chatGroupSlice";
 import { useAppDispatch } from "../../../utility/useReduxHooks";
+import { ContactType } from "../../redux/contactList/contactListSlice";
 type RootStackParamList = {
-  GroupChat: { chatGroupId: string };
+  ContactProfile: { contactId: string };
 };
 
 export type Dispatch = ReturnType<typeof useAppDispatch>;
 
 export const ContactsComponent = ({
-  user,
+  contact,
   isSelected = false,
-  onSelectHandler,
   isSelectable,
-  currentUser,
 }: {
-  user: User;
+  contact: ContactType;
   isSelected: boolean;
   isSelectable: boolean;
-  onSelectHandler: () => void;
-  currentUser: User;
 }) => {
-  const dispatch = useAppDispatch();
-  const image = user.image ? user.image : undefined;
+  const image = contact.friend.image ? contact.friend.image : undefined;
   const styles = useThemeColor(styleSheet);
   const translateX = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
@@ -86,9 +76,7 @@ export const ContactsComponent = ({
       <Pressable
         android_ripple={{ color: "#222b3d" }}
         onPress={() => {
-          if (!isSelectable)
-            createChatGroupHandler(user, currentUser, navigation, dispatch);
-          if (isSelectable) onSelectHandler();
+          navigation.navigate("ContactProfile", { contactId: contact.id });
         }}
         style={({ pressed }) => [pressed ? styles.pressed : null]}
       >
@@ -120,10 +108,10 @@ export const ContactsComponent = ({
             <View style={styles.main}>
               <View style={styles.item}>
                 <Text style={styles.name} numberOfLines={1}>
-                  {user.username}
+                  {contact.friend.username}
                 </Text>
               </View>
-              <Text style={styles.status}>{user.status}</Text>
+              <Text style={styles.status}>{contact.friend.status}</Text>
             </View>
           </Animated.View>
         </View>
@@ -184,65 +172,3 @@ const styleSheet: StyleSheet.NamedStyles<{
     borderRadius: 5,
   },
 };
-
-async function createChatGroupHandler(
-  friend: User,
-  currentUser: User,
-  navigation: NativeStackNavigationProp<RootStackParamList>,
-  dispatch: Dispatch
-) {
-  const existingChatGroup = await useExistingChatGroups(
-    friend.id,
-    currentUser.id
-  );
-
-  if (existingChatGroup) {
-    navigation.navigate("GroupChat", {
-      chatGroupId: existingChatGroup.Chatgroup.id,
-    });
-    return;
-  }
-  const chatGroupId: string = uuidv4();
-  const friendUser = friend;
-  const mainUser = currentUser;
-  const userNames = [friendUser.username];
-  const usersArray = [{ user: friendUser }, { user: mainUser }];
-
-  dispatch(
-    createNewChatGroup({
-      chatGroupId,
-      userNames,
-      users: usersArray as { user: User }[],
-      leaderID: null,
-    })
-  );
-
-  navigation.navigate("GroupChat", {
-    chatGroupId: chatGroupId,
-  });
-
-  const newChatGroupResp = await API.graphql(
-    graphqlOperation(createChatGroup, {
-      input: { id: chatGroupId },
-      name: `${userNames.join(" ")} `,
-    })
-  );
-
-  if ("data" in newChatGroupResp && !newChatGroupResp.data?.createChatGroup)
-    console.log("Error creating chatgroup");
-
-  await API.graphql(
-    graphqlOperation(createUserChatGroup, {
-      input: { chatgroupID: chatGroupId, userID: friend.id },
-    })
-  );
-
-  await API.graphql(
-    graphqlOperation(createUserChatGroup, {
-      input: {
-        chatgroupID: chatGroupId,
-        userID: currentUser.id,
-      },
-    })
-  );
-}

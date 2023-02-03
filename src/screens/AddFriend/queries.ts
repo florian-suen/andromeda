@@ -79,3 +79,14 @@ export const updateUserContact = /* GraphQL */ `
     }
   }
 `;
+
+export const deleteUserContact = /* GraphQL */ `
+  mutation DeleteUserContact(
+    $input: DeleteUserContactInput!
+    $condition: ModelUserContactConditionInput
+  ) {
+    deleteUserContact(input: $input, condition: $condition) {
+      id
+    }
+  }
+`;
