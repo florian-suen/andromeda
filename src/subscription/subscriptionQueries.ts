@@ -51,6 +51,7 @@ export const onDeleteUserContact = /* GraphQL */ `
   ) {
     onDeleteUserContact(filter: $filter) {
       id
+      userID
     }
   }
 `;

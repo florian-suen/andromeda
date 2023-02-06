@@ -12,6 +12,7 @@ import { getMessageList } from "../../redux/messages/messageSlice";
 import { getCurrentUser } from "../../redux/currentUser/currentUserSlice";
 import {
   subOnCreateUserContact,
+  subOnDeleteUserContact,
   subonUpdateUserContact,
 } from "../../subscription/subUpdateUserContact";
 
@@ -36,7 +37,7 @@ export const ChatList = () => {
       dispatch(getMessageList(chatGroup.map((item) => item.Chatgroup.id)));
     }
   }, [chatGroup]);
-
+  subOnDeleteUserContact(userAuth.attributes.sub, dispatch);
   subOnCreateUserChatGroup(userAuth, navigation, dispatch);
   subonUpdateUserContact(userAuth.attributes.sub, dispatch);
   subOnCreateUserContact(userAuth.attributes.sub, dispatch);

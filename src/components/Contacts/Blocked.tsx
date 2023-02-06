@@ -1,10 +1,7 @@
 import { View, Text, Image, Button } from "react-native";
-import {
-  ContactType,
-  updateFriendStatus,
-} from "../../redux/contactList/contactListSlice";
+import { ContactType } from "../../redux/contactList/contactListSlice";
 import { API, graphqlOperation } from "aws-amplify";
-import { updateUserContact } from "../../screens/AddFriend/queries";
+import { deleteUserContact } from "../../screens/AddFriend/queries";
 import { useAppDispatch } from "../../../utility/useReduxHooks";
 import { Dispatch } from "./Contacts";
 
@@ -36,26 +33,21 @@ const unBlockFriendHandler = async (
   userContact: ContactType,
   dispatch: Dispatch
 ) => {
-  const requestStatus =
-    userContact.userContact.requestStatus === "ACCEPTED"
-      ? "ACCEPTED"
-      : "REQUESTED";
-
   const updateContact = await API.graphql(
-    graphqlOperation(updateUserContact, {
+    graphqlOperation(deleteUserContact, {
       input: {
         id: userContact.id,
-        requestStatus: requestStatus,
         _version: userContact._version,
       },
     })
   );
 
-  dispatch(
-    updateFriendStatus({
-      id: userContact.id,
-      requestStatus: requestStatus,
-      version: userContact._version + 1,
+  API.graphql(
+    graphqlOperation(deleteUserContact, {
+      input: {
+        id: userContact.userContact.id,
+        _version: userContact.userContact._version,
+      },
     })
   );
 };

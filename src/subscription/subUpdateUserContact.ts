@@ -17,6 +17,42 @@ import {
   onUpdateUserContact,
 } from "./subscriptionQueries";
 
+export const subOnDeleteUserContact = (
+  userId: string,
+  dispatch: AppDispatch
+) => {
+  useEffect(() => {
+    const onDeleteContact = API.graphql(
+      graphqlOperation(onDeleteUserContact, {
+        filter: { userID: { eq: userId } },
+      })
+    );
+
+    const onDeleteContactSubscription =
+      "subscribe" in onDeleteContact &&
+      onDeleteContact.subscribe({
+        next: ({
+          value,
+        }: {
+          value: { data: { onDeleteUserContact: ContactType } };
+        }) => {
+          return dispatch(
+            deleteUserContact({
+              id: value.data.onDeleteUserContact.id,
+            })
+          );
+        },
+        error: (err) =>
+          console.log(` onUpdateContactVersion Subscription Error: ${err}`),
+      });
+
+    return () => {
+      console.log("Unsubscribing User Contacts");
+      onDeleteContactSubscription && onDeleteContactSubscription.unsubscribe;
+    };
+  }, []);
+};
+
 export const subonUpdateUserContact = (
   userId: string,
   dispatch: AppDispatch
@@ -34,30 +70,6 @@ export const subonUpdateUserContact = (
       })
     );
 
-    const onDeleteContactVersion = API.graphql(
-      graphqlOperation(onDeleteUserContact, {
-        filter: { userID: { eq: userId } },
-      })
-    );
-
-    const onDeleteContactVersionSubscription =
-      "subscribe" in onDeleteContactVersion &&
-      onDeleteContactVersion.subscribe({
-        next: ({
-          value,
-        }: {
-          value: { data: { onUpdateUserContact: ContactType } };
-        }) => {
-          return dispatch(
-            deleteUserContact({
-              id: value.data.onUpdateUserContact.id,
-            })
-          );
-        },
-        error: (err) =>
-          console.log(` onUpdateContactVersion Subscription Error: ${err}`),
-      });
-
     const onUpdateContactVersionSubscription =
       "subscribe" in onUpdateContactVersion &&
       onUpdateContactVersion.subscribe({
@@ -66,6 +78,7 @@ export const subonUpdateUserContact = (
         }: {
           value: { data: { onUpdateUserContact: ContactType } };
         }) => {
+          console.log("updating");
           return dispatch(
             updateUserContact({
               id: value.data.onUpdateUserContact.userContact.id,
@@ -86,7 +99,6 @@ export const subonUpdateUserContact = (
         }: {
           value: { data: { onUpdateUserContact: ContactType } };
         }) => {
-          console.log(value.data.onUpdateUserContact);
           if (value.data.onUpdateUserContact.friendID === userId) {
             return dispatch(
               updateUserContact({
@@ -115,13 +127,9 @@ export const subonUpdateUserContact = (
       onUpdateContactSubscription && onUpdateContactSubscription.unsubscribe;
       onUpdateContactVersionSubscription &&
         onUpdateContactVersionSubscription.unsubscribe;
-      onDeleteContactVersionSubscription &&
-        onDeleteContactVersionSubscription.unsubscribe;
     };
   }, []);
 };
-
-//A problem I thought about is if they add each other during the same time? A check may be needed to see if the user and friend exists even with the subscription.
 
 export const subOnCreateUserContact = (
   userId: string,

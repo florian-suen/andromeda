@@ -29,7 +29,11 @@ export const ContactScreen = () => {
   const styles = StyleSheet.create(useThemeColor(styleSheet));
   const contactList = useAppSelector((state) => {
     return state.contacts.contacts;
-  }).filter((item) => item.requestStatus === "ACCEPTED");
+  }).filter(
+    (item) =>
+      item.requestStatus === "ACCEPTED" &&
+      item.userContact.requestStatus === "ACCEPTED"
+  );
 
   const contactBlocked = useAppSelector((state) => {
     return state.contacts.contacts;

@@ -30,6 +30,10 @@ import { subCreateMessage } from "../../subscription/subOnCreateMessage";
 import { MessageType } from "../../redux/messages/messageSlice";
 
 type GroupChatContext = {
+  alert: {
+    blockAlert: boolean;
+    setBlockAlert: React.Dispatch<React.SetStateAction<boolean>>;
+  };
   navigation: NativeStackNavigationProp<AddContactParam>;
   user: {
     users: ChatGroupType["Chatgroup"]["users"]["items"] | [];
@@ -48,14 +52,12 @@ type GroupChatContext = {
     }) => void;
   };
 };
-
 type ChatGroupParam = {
   chat: { chatGroupId: string; username: string };
 };
 type AddContactParam = {
   AddNewContact: { chatGroupId: string; chatGroup: any };
 };
-
 const UserContext = createContext<GroupChatContext>({} as GroupChatContext);
 
 export const GroupChat = ({ children }: PropsWithChildren) => {
@@ -64,13 +66,13 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
     useNavigation<NativeStackNavigationProp<AddContactParam>>();
   const chatGroupId = route.params.chatGroupId;
   const [modalVisible, setModalVisible] = useState(false);
+  const [blockAlert, setBlockAlert] = useState(false);
   const dispatch = useAppDispatch();
   const messages = useAppSelector((state) => {
     return state.messages.messages.find(
       (item) => item.chatGroupId === chatGroupId
     );
   });
-
   const chatGroupData: ChatGroupType["Chatgroup"] = useAppSelector((state) => {
     return state.chatGroup.chatGroup.find(
       (item) => item.Chatgroup.id === chatGroupId
@@ -85,6 +87,7 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   return (
     <UserContext.Provider
       value={{
+        alert: { blockAlert, setBlockAlert },
         navigation,
         user: {
           users: chatGroupData ? chatGroupData.users.items : [],
@@ -105,6 +108,20 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
     </UserContext.Provider>
   );
 };
+
+function AlertBox() {
+  const {
+    alert: { blockAlert },
+  } = useContext(UserContext);
+
+  if (blockAlert)
+    return (
+      <View>
+        <Text>{"Cannot send message to this user."}</Text>
+      </View>
+    );
+  else return null;
+}
 
 function Menu({ children }: PropsWithChildren) {
   const {
@@ -213,10 +230,16 @@ function Messages() {
 
 function InputBox() {
   const {
+    alert: { setBlockAlert, blockAlert },
     chatGroup: { chatGroupData },
   } = useContext<GroupChatContext>(UserContext);
 
-  return <InputBoxComponent chatGroup={chatGroupData} />;
+  return (
+    <InputBoxComponent
+      chatGroup={chatGroupData}
+      blockData={{ blockAlert, setBlockAlert }}
+    />
+  );
 }
 
 function removeUserHandler(userChatGroup: { _version: string; id: string }) {
@@ -318,3 +341,4 @@ const styles = StyleSheet.create({
 GroupChat.Menu = Menu;
 GroupChat.Messages = Messages;
 GroupChat.InputBox = InputBox;
+GroupChat.AlertBox = AlertBox;

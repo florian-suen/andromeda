@@ -5,6 +5,7 @@ export const GroupChatScreen = () => {
     <GroupChat>
       <GroupChat.Menu />
       <GroupChat.Messages />
+      <GroupChat.AlertBox />
       <GroupChat.InputBox />
     </GroupChat>
   );

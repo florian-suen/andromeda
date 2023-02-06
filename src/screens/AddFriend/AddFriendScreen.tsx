@@ -207,6 +207,11 @@ const AddButton = ({
         (item) => searchResults.result.id === item.friend.id
       );
 
+      const isBlocked =
+        friend?.userContact?.requestStatus === "BLOCKED"
+          ? "You have been blocked"
+          : "Already Friends";
+
       switch (friend?.requestStatus) {
         case "REQUESTED":
           return friend.sender ? (
@@ -220,9 +225,7 @@ const AddButton = ({
         case "BLOCKED":
           return <Button title="Blocked" disabled />;
         case "ACCEPTED":
-          return (
-            <Button title={justAdded ? "Added" : "Already Friends"} disabled />
-          );
+          return <Button title={justAdded ? "Added" : isBlocked} disabled />;
       }
     }
   }

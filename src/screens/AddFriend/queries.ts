@@ -87,6 +87,7 @@ export const deleteUserContact = /* GraphQL */ `
   ) {
     deleteUserContact(input: $input, condition: $condition) {
       id
+      userID
     }
   }
 `;

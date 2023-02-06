@@ -25,6 +25,12 @@ import { v4 as uuidv4 } from "uuid";
 import { addMessage } from "../../redux/messages/messageSlice";
 import { useDispatch } from "react-redux";
 import { userContext } from "../../../utility/userAuth";
+import { useAppSelector } from "../../../utility/useReduxHooks";
+import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
+import {
+  ContactState,
+  ContactType,
+} from "../../redux/contactList/contactListSlice";
 
 type messageInput = {
   chatgroupID: string;
@@ -61,7 +67,16 @@ type mediaFile = {
   height: string;
 };
 
-export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
+export const InputBox = ({
+  chatGroup,
+  blockData,
+}: {
+  chatGroup: ChatGroupType["Chatgroup"];
+  blockData: {
+    blockAlert: boolean;
+    setBlockAlert: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+}) => {
   const userAuth = useContext(userContext);
   const [inputText, setInputText] = useState("");
   const [attachments, setAttachments] = useState<any[]>([]);
@@ -69,7 +84,8 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
   const inputOpacity = new Animated.Value(0);
   const inputScale = new Animated.Value(0);
   const animateInput = useRef(true);
-
+  const currentUserID = useContext(userContext)?.attributes.sub!;
+  const contact = useAppSelector((state) => state.contacts.contacts);
   const dispatch = useDispatch();
   const interpo = inputScale.interpolate({
     inputRange: [0, 0.5, 1],
@@ -107,6 +123,19 @@ export const InputBox = ({ chatGroup }: { chatGroup: any }) => {
   };
 
   const sendHandler = async () => {
+    if (
+      !chatGroup.leaderID &&
+      checkIfBlocked(currentUserID, chatGroup, contact)
+    ) {
+      blockData.setBlockAlert(true);
+      setInputText("");
+      setMedia([]);
+      setAttachments([]);
+      return;
+    }
+
+    if (blockData.blockAlert) blockData.setBlockAlert(false);
+
     console.log("sending message");
     const createdAt = new Date().toISOString();
     dispatch(
@@ -312,6 +341,26 @@ const uploadFile = async (uri: string, type: "video" | "image") => {
     console.log("Error uploading file:", err);
     return null;
   }
+};
+
+const checkIfBlocked = (
+  currentUserId: string,
+  chatGroup: ChatGroupType["Chatgroup"],
+  contacts: ContactType[]
+) => {
+  const friendID = chatGroup.users.items.find(
+    (item) => item.user.id !== currentUserId
+  )?.user.id!;
+
+  const userContact = contacts.find((item) => item.friendID === friendID);
+
+  if (
+    userContact?.requestStatus === "BLOCKED" ||
+    userContact?.userContact.requestStatus === "BLOCKED"
+  )
+    return true;
+
+  return false;
 };
 
 const styles = StyleSheet.create({
