@@ -8,11 +8,7 @@ import { API, graphqlOperation } from "aws-amplify";
 
 import { listbyUserContactFriend } from "./queries";
 
-export type RequestStatusType =
-  | "ACCEPTED"
-  | "BLOCKED"
-  | "REQUESTED"
-  | "DECLINED";
+export type RequestStatusType = "ACCEPTED" | "BLOCKED" | "REQUESTED";
 export interface ContactType {
   sender: boolean;
   requestStatus: string;

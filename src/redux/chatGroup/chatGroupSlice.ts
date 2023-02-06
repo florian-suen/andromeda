@@ -14,12 +14,14 @@ export interface ChatGroupType {
     id: string;
     _deleted: null | boolean;
     name: string;
-    image: string | null;
+    image: string;
     leaderID: string | null;
     _version: string;
     users: {
       items: {
         _deleted: boolean | null;
+        id: string;
+        _version: string;
         user: { id: string; image: string | null; username: string };
         Chatgroup?: {
           id: string;
@@ -35,7 +37,7 @@ export interface ChatGroupType {
       LastMessage: { message: string; id: string; createdAt: string };
     };
     id: string;
-    image: string | null;
+    image: string;
     username: string;
   };
 }

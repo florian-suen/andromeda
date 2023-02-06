@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-import { InputBox as InputBx } from "../InputBox/InputBox";
+import { InputBox as InputBoxComponent } from "../InputBox/InputBox";
 import { Message } from "../Message/Message";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
@@ -27,6 +27,27 @@ import { subOnDeleteUserChatGroup } from "../../subscription/subUpdateDeleteUser
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
 import { AppDispatch } from "../../redux/store";
 import { subCreateMessage } from "../../subscription/subOnCreateMessage";
+import { MessageType } from "../../redux/messages/messageSlice";
+
+type GroupChatContext = {
+  navigation: NativeStackNavigationProp<AddContactParam>;
+  user: {
+    users: ChatGroupType["Chatgroup"]["users"]["items"] | [];
+    leaderId: string | null;
+  };
+  chatGroup: { chatGroupData: ChatGroupType["Chatgroup"] };
+  messages: { messages: MessageType[] | [] };
+  modal: {
+    modalVisible: boolean;
+    setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  delete: {
+    removeUserHandler: (userChatGroup: {
+      _version: string;
+      id: string;
+    }) => void;
+  };
+};
 
 type ChatGroupParam = {
   chat: { chatGroupId: string; username: string };
@@ -35,11 +56,7 @@ type AddContactParam = {
   AddNewContact: { chatGroupId: string; chatGroup: any };
 };
 
-const UserContext = createContext<{
-  [p: string]: any;
-  messages: { messages: Message[] };
-  navigation?: NativeStackNavigationProp<AddContactParam>;
-}>({ messages: { messages: [] } });
+const UserContext = createContext<GroupChatContext>({} as GroupChatContext);
 
 export const GroupChat = ({ children }: PropsWithChildren) => {
   const route = useRoute<RouteProp<ChatGroupParam>>();
@@ -70,7 +87,7 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
       value={{
         navigation,
         user: {
-          users: chatGroupData ? chatGroupData?.users?.items : [],
+          users: chatGroupData ? chatGroupData.users.items : [],
           leaderId: chatGroupData ? chatGroupData.leaderID : null,
         },
         chatGroup: { chatGroupData },
@@ -98,13 +115,15 @@ function Menu({ children }: PropsWithChildren) {
     modal: { modalVisible, setModalVisible },
   } = useContext(UserContext);
 
-  const newUsers = [].concat(users);
+  const newUsers = ([] as ChatGroupType["Chatgroup"]["users"]["items"]).concat(
+    users
+  );
 
-  const sortedUsers = newUsers.sort((user: any) => {
+  const sortedUsers = newUsers.sort((user) => {
     if (user.user.id === leaderId) return -1;
     return 0;
   });
-  const filteredUsers: any = sortedUsers.filter((user: any) => !user._deleted);
+  const filteredUsers = sortedUsers.filter((user) => !user._deleted);
 
   return (
     <Modal
@@ -130,7 +149,7 @@ function Menu({ children }: PropsWithChildren) {
               <>
                 <View style={styles.menuContainer}>
                   <Image
-                    source={{ uri: item.user.image }}
+                    source={{ uri: item.user.image! }}
                     style={styles.image}
                   />
                   {index === 0 && leaderId ? (
@@ -195,9 +214,9 @@ function Messages() {
 function InputBox() {
   const {
     chatGroup: { chatGroupData },
-  } = useContext(UserContext);
+  } = useContext<GroupChatContext>(UserContext);
 
-  return <InputBx chatGroup={chatGroupData} />;
+  return <InputBoxComponent chatGroup={chatGroupData} />;
 }
 
 function removeUserHandler(userChatGroup: { _version: string; id: string }) {

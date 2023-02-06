@@ -22,7 +22,6 @@ enum AttachmentType {
 enum requestStatusType {
   REQUESTED
   ACCEPTED
-  DECLINED
   BLOCKED
 }
 
