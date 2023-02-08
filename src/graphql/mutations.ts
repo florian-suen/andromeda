@@ -13,6 +13,7 @@ export const createMedia = /* GraphQL */ `
       type
       messageID
       chatgroupID
+      blogID
       duration
       width
       height
@@ -35,6 +36,7 @@ export const updateMedia = /* GraphQL */ `
       type
       messageID
       chatgroupID
+      blogID
       duration
       width
       height
@@ -57,6 +59,7 @@ export const deleteMedia = /* GraphQL */ `
       type
       messageID
       chatgroupID
+      blogID
       duration
       width
       height
@@ -293,6 +296,10 @@ export const createUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      Blog {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -325,6 +332,10 @@ export const updateUser = /* GraphQL */ `
         startedAt
       }
       Leader {
+        nextToken
+        startedAt
+      }
+      Blog {
         nextToken
         startedAt
       }
@@ -363,7 +374,134 @@ export const deleteUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      Blog {
+        nextToken
+        startedAt
+      }
       createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const createBlog = /* GraphQL */ `
+  mutation CreateBlog(
+    $input: CreateBlogInput!
+    $condition: ModelBlogConditionInput
+  ) {
+    createBlog(input: $input, condition: $condition) {
+      id
+      createdAt
+      message
+      comments {
+        nextToken
+        startedAt
+      }
+      Media {
+        nextToken
+        startedAt
+      }
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateBlog = /* GraphQL */ `
+  mutation UpdateBlog(
+    $input: UpdateBlogInput!
+    $condition: ModelBlogConditionInput
+  ) {
+    updateBlog(input: $input, condition: $condition) {
+      id
+      createdAt
+      message
+      comments {
+        nextToken
+        startedAt
+      }
+      Media {
+        nextToken
+        startedAt
+      }
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteBlog = /* GraphQL */ `
+  mutation DeleteBlog(
+    $input: DeleteBlogInput!
+    $condition: ModelBlogConditionInput
+  ) {
+    deleteBlog(input: $input, condition: $condition) {
+      id
+      createdAt
+      message
+      comments {
+        nextToken
+        startedAt
+      }
+      Media {
+        nextToken
+        startedAt
+      }
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const createComment = /* GraphQL */ `
+  mutation CreateComment(
+    $input: CreateCommentInput!
+    $condition: ModelCommentConditionInput
+  ) {
+    createComment(input: $input, condition: $condition) {
+      id
+      createdAt
+      message
+      commentID
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateComment = /* GraphQL */ `
+  mutation UpdateComment(
+    $input: UpdateCommentInput!
+    $condition: ModelCommentConditionInput
+  ) {
+    updateComment(input: $input, condition: $condition) {
+      id
+      createdAt
+      message
+      commentID
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteComment = /* GraphQL */ `
+  mutation DeleteComment(
+    $input: DeleteCommentInput!
+    $condition: ModelCommentConditionInput
+  ) {
+    deleteComment(input: $input, condition: $condition) {
+      id
+      createdAt
+      message
+      commentID
       updatedAt
       _version
       _deleted

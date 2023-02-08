@@ -8,6 +8,7 @@ export type CreateMediaInput = {
   type?: MediaType | null,
   messageID: string,
   chatgroupID: string,
+  blogID: string,
   duration?: string | null,
   width?: string | null,
   height?: string | null,
@@ -25,6 +26,7 @@ export type ModelMediaConditionInput = {
   type?: ModelMediaTypeInput | null,
   messageID?: ModelIDInput | null,
   chatgroupID?: ModelIDInput | null,
+  blogID?: ModelIDInput | null,
   duration?: ModelStringInput | null,
   width?: ModelStringInput | null,
   height?: ModelStringInput | null,
@@ -101,6 +103,7 @@ export type Media = {
   type?: MediaType | null,
   messageID: string,
   chatgroupID: string,
+  blogID: string,
   duration?: string | null,
   width?: string | null,
   height?: string | null,
@@ -117,6 +120,7 @@ export type UpdateMediaInput = {
   type?: MediaType | null,
   messageID?: string | null,
   chatgroupID?: string | null,
+  blogID?: string | null,
   duration?: string | null,
   width?: string | null,
   height?: string | null,
@@ -296,6 +300,7 @@ export type User = {
   ChatGroups?: ModelUserChatGroupConnection | null,
   Friends?: ModelUserContactConnection | null,
   Leader?: ModelChatGroupConnection | null,
+  Blog?: ModelBlogConnection | null,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -331,7 +336,6 @@ export type UserContact = {
 export enum requestStatusType {
   REQUESTED = "REQUESTED",
   ACCEPTED = "ACCEPTED",
-  DECLINED = "DECLINED",
   BLOCKED = "BLOCKED",
 }
 
@@ -341,6 +345,45 @@ export type ModelChatGroupConnection = {
   items:  Array<ChatGroup | null >,
   nextToken?: string | null,
   startedAt?: number | null,
+};
+
+export type ModelBlogConnection = {
+  __typename: "ModelBlogConnection",
+  items:  Array<Blog | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type Blog = {
+  __typename: "Blog",
+  id: string,
+  createdAt: string,
+  message?: string | null,
+  comments?: ModelCommentConnection | null,
+  Media?: ModelMediaConnection | null,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelCommentConnection = {
+  __typename: "ModelCommentConnection",
+  items:  Array<Comment | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type Comment = {
+  __typename: "Comment",
+  id: string,
+  createdAt?: string | null,
+  message?: string | null,
+  commentID: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
 };
 
 export type UpdateChatGroupInput = {
@@ -386,6 +429,66 @@ export type UpdateUserInput = {
 };
 
 export type DeleteUserInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateBlogInput = {
+  id?: string | null,
+  createdAt?: string | null,
+  message?: string | null,
+  updatedAt?: string | null,
+  _version?: number | null,
+};
+
+export type ModelBlogConditionInput = {
+  createdAt?: ModelStringInput | null,
+  message?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelBlogConditionInput | null > | null,
+  or?: Array< ModelBlogConditionInput | null > | null,
+  not?: ModelBlogConditionInput | null,
+};
+
+export type UpdateBlogInput = {
+  id: string,
+  createdAt?: string | null,
+  message?: string | null,
+  updatedAt?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteBlogInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateCommentInput = {
+  id?: string | null,
+  createdAt?: string | null,
+  message?: string | null,
+  commentID: string,
+  _version?: number | null,
+};
+
+export type ModelCommentConditionInput = {
+  createdAt?: ModelStringInput | null,
+  message?: ModelStringInput | null,
+  commentID?: ModelIDInput | null,
+  and?: Array< ModelCommentConditionInput | null > | null,
+  or?: Array< ModelCommentConditionInput | null > | null,
+  not?: ModelCommentConditionInput | null,
+};
+
+export type UpdateCommentInput = {
+  id: string,
+  createdAt?: string | null,
+  message?: string | null,
+  commentID?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteCommentInput = {
   id: string,
   _version?: number | null,
 };
@@ -510,6 +613,7 @@ export type ModelMediaFilterInput = {
   type?: ModelMediaTypeInput | null,
   messageID?: ModelIDInput | null,
   chatgroupID?: ModelIDInput | null,
+  blogID?: ModelIDInput | null,
   duration?: ModelStringInput | null,
   width?: ModelStringInput | null,
   height?: ModelStringInput | null,
@@ -517,6 +621,12 @@ export type ModelMediaFilterInput = {
   or?: Array< ModelMediaFilterInput | null > | null,
   not?: ModelMediaFilterInput | null,
 };
+
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
 
 export type ModelAttachmentFilterInput = {
   id?: ModelIDInput | null,
@@ -569,11 +679,35 @@ export type ModelIDKeyConditionInput = {
   beginsWith?: string | null,
 };
 
-export enum ModelSortDirection {
-  ASC = "ASC",
-  DESC = "DESC",
-}
+export type ModelBlogFilterInput = {
+  id?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  message?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelBlogFilterInput | null > | null,
+  or?: Array< ModelBlogFilterInput | null > | null,
+  not?: ModelBlogFilterInput | null,
+};
 
+export type ModelStringKeyConditionInput = {
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+};
+
+export type ModelCommentFilterInput = {
+  id?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  message?: ModelStringInput | null,
+  commentID?: ModelIDInput | null,
+  and?: Array< ModelCommentFilterInput | null > | null,
+  or?: Array< ModelCommentFilterInput | null > | null,
+  not?: ModelCommentFilterInput | null,
+};
 
 export type ModelUserContactFilterInput = {
   id?: ModelIDInput | null,
@@ -598,16 +732,6 @@ export type ModelUserChatGroupFilterInput = {
   not?: ModelUserChatGroupFilterInput | null,
 };
 
-export type ModelStringKeyConditionInput = {
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-};
-
 export type ModelMessageFilterInput = {
   id?: ModelIDInput | null,
   createdAt?: ModelStringInput | null,
@@ -625,6 +749,7 @@ export type ModelSubscriptionMediaFilterInput = {
   type?: ModelSubscriptionStringInput | null,
   messageID?: ModelSubscriptionIDInput | null,
   chatgroupID?: ModelSubscriptionIDInput | null,
+  blogID?: ModelSubscriptionIDInput | null,
   duration?: ModelSubscriptionStringInput | null,
   width?: ModelSubscriptionStringInput | null,
   height?: ModelSubscriptionStringInput | null,
@@ -692,6 +817,24 @@ export type ModelSubscriptionUserFilterInput = {
   or?: Array< ModelSubscriptionUserFilterInput | null > | null,
 };
 
+export type ModelSubscriptionBlogFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  message?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionBlogFilterInput | null > | null,
+  or?: Array< ModelSubscriptionBlogFilterInput | null > | null,
+};
+
+export type ModelSubscriptionCommentFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  message?: ModelSubscriptionStringInput | null,
+  commentID?: ModelSubscriptionIDInput | null,
+  and?: Array< ModelSubscriptionCommentFilterInput | null > | null,
+  or?: Array< ModelSubscriptionCommentFilterInput | null > | null,
+};
+
 export type ModelSubscriptionUserContactFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   userID?: ModelSubscriptionIDInput | null,
@@ -740,6 +883,7 @@ export type CreateMediaMutation = {
     type?: MediaType | null,
     messageID: string,
     chatgroupID: string,
+    blogID: string,
     duration?: string | null,
     width?: string | null,
     height?: string | null,
@@ -764,6 +908,7 @@ export type UpdateMediaMutation = {
     type?: MediaType | null,
     messageID: string,
     chatgroupID: string,
+    blogID: string,
     duration?: string | null,
     width?: string | null,
     height?: string | null,
@@ -788,6 +933,7 @@ export type DeleteMediaMutation = {
     type?: MediaType | null,
     messageID: string,
     chatgroupID: string,
+    blogID: string,
     duration?: string | null,
     width?: string | null,
     height?: string | null,
@@ -1057,6 +1203,11 @@ export type CreateUserMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    Blog?:  {
+      __typename: "ModelBlogConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1095,6 +1246,11 @@ export type UpdateUserMutation = {
     } | null,
     Leader?:  {
       __typename: "ModelChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Blog?:  {
+      __typename: "ModelBlogConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1139,7 +1295,153 @@ export type DeleteUserMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    Blog?:  {
+      __typename: "ModelBlogConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateBlogMutationVariables = {
+  input: CreateBlogInput,
+  condition?: ModelBlogConditionInput | null,
+};
+
+export type CreateBlogMutation = {
+  createBlog?:  {
+    __typename: "Blog",
+    id: string,
+    createdAt: string,
+    message?: string | null,
+    comments?:  {
+      __typename: "ModelCommentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateBlogMutationVariables = {
+  input: UpdateBlogInput,
+  condition?: ModelBlogConditionInput | null,
+};
+
+export type UpdateBlogMutation = {
+  updateBlog?:  {
+    __typename: "Blog",
+    id: string,
+    createdAt: string,
+    message?: string | null,
+    comments?:  {
+      __typename: "ModelCommentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteBlogMutationVariables = {
+  input: DeleteBlogInput,
+  condition?: ModelBlogConditionInput | null,
+};
+
+export type DeleteBlogMutation = {
+  deleteBlog?:  {
+    __typename: "Blog",
+    id: string,
+    createdAt: string,
+    message?: string | null,
+    comments?:  {
+      __typename: "ModelCommentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateCommentMutationVariables = {
+  input: CreateCommentInput,
+  condition?: ModelCommentConditionInput | null,
+};
+
+export type CreateCommentMutation = {
+  createComment?:  {
+    __typename: "Comment",
+    id: string,
+    createdAt?: string | null,
+    message?: string | null,
+    commentID: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateCommentMutationVariables = {
+  input: UpdateCommentInput,
+  condition?: ModelCommentConditionInput | null,
+};
+
+export type UpdateCommentMutation = {
+  updateComment?:  {
+    __typename: "Comment",
+    id: string,
+    createdAt?: string | null,
+    message?: string | null,
+    commentID: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteCommentMutationVariables = {
+  input: DeleteCommentInput,
+  condition?: ModelCommentConditionInput | null,
+};
+
+export type DeleteCommentMutation = {
+  deleteComment?:  {
+    __typename: "Comment",
+    id: string,
+    createdAt?: string | null,
+    message?: string | null,
+    commentID: string,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
@@ -1570,6 +1872,7 @@ export type GetMediaQuery = {
     type?: MediaType | null,
     messageID: string,
     chatgroupID: string,
+    blogID: string,
     duration?: string | null,
     width?: string | null,
     height?: string | null,
@@ -1597,6 +1900,7 @@ export type ListMediaQuery = {
       type?: MediaType | null,
       messageID: string,
       chatgroupID: string,
+      blogID: string,
       duration?: string | null,
       width?: string | null,
       height?: string | null,
@@ -1628,6 +1932,106 @@ export type SyncMediaQuery = {
       type?: MediaType | null,
       messageID: string,
       chatgroupID: string,
+      blogID: string,
+      duration?: string | null,
+      width?: string | null,
+      height?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type MediaByMessageIDQueryVariables = {
+  messageID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelMediaFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type MediaByMessageIDQuery = {
+  mediaByMessageID?:  {
+    __typename: "ModelMediaConnection",
+    items:  Array< {
+      __typename: "Media",
+      id: string,
+      storageKey?: string | null,
+      type?: MediaType | null,
+      messageID: string,
+      chatgroupID: string,
+      blogID: string,
+      duration?: string | null,
+      width?: string | null,
+      height?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type MediaByChatgroupIDQueryVariables = {
+  chatgroupID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelMediaFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type MediaByChatgroupIDQuery = {
+  mediaByChatgroupID?:  {
+    __typename: "ModelMediaConnection",
+    items:  Array< {
+      __typename: "Media",
+      id: string,
+      storageKey?: string | null,
+      type?: MediaType | null,
+      messageID: string,
+      chatgroupID: string,
+      blogID: string,
+      duration?: string | null,
+      width?: string | null,
+      height?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type MediaByBlogIDQueryVariables = {
+  blogID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelMediaFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type MediaByBlogIDQuery = {
+  mediaByBlogID?:  {
+    __typename: "ModelMediaConnection",
+    items:  Array< {
+      __typename: "Media",
+      id: string,
+      storageKey?: string | null,
+      type?: MediaType | null,
+      messageID: string,
+      chatgroupID: string,
+      blogID: string,
       duration?: string | null,
       width?: string | null,
       height?: string | null,
@@ -1700,6 +2104,66 @@ export type SyncAttachmentsQueryVariables = {
 
 export type SyncAttachmentsQuery = {
   syncAttachments?:  {
+    __typename: "ModelAttachmentConnection",
+    items:  Array< {
+      __typename: "Attachment",
+      id: string,
+      storageKey: string,
+      type: AttachmentType,
+      messageID: string,
+      chatgroupID: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type AttachmentsByMessageIDQueryVariables = {
+  messageID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelAttachmentFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type AttachmentsByMessageIDQuery = {
+  attachmentsByMessageID?:  {
+    __typename: "ModelAttachmentConnection",
+    items:  Array< {
+      __typename: "Attachment",
+      id: string,
+      storageKey: string,
+      type: AttachmentType,
+      messageID: string,
+      chatgroupID: string,
+      name: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type AttachmentsByChatgroupIDQueryVariables = {
+  chatgroupID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelAttachmentFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type AttachmentsByChatgroupIDQuery = {
+  attachmentsByChatgroupID?:  {
     __typename: "ModelAttachmentConnection",
     items:  Array< {
       __typename: "Attachment",
@@ -1827,6 +2291,35 @@ export type SyncChatGroupsQuery = {
   } | null,
 };
 
+export type ChatGroupsByLeaderIDQueryVariables = {
+  leaderID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelChatGroupFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ChatGroupsByLeaderIDQuery = {
+  chatGroupsByLeaderID?:  {
+    __typename: "ModelChatGroupConnection",
+    items:  Array< {
+      __typename: "ChatGroup",
+      id: string,
+      name?: string | null,
+      image?: string | null,
+      leaderID?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+      chatGroupLastMessageId?: string | null,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
 export type GetUserQueryVariables = {
   id: string,
 };
@@ -1856,6 +2349,11 @@ export type GetUserQuery = {
     } | null,
     Leader?:  {
       __typename: "ModelChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Blog?:  {
+      __typename: "ModelBlogConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -1942,6 +2440,206 @@ export type UserByInviteIdQuery = {
       image?: string | null,
       inviteId: string,
       createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetBlogQueryVariables = {
+  id: string,
+};
+
+export type GetBlogQuery = {
+  getBlog?:  {
+    __typename: "Blog",
+    id: string,
+    createdAt: string,
+    message?: string | null,
+    comments?:  {
+      __typename: "ModelCommentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListBlogsQueryVariables = {
+  filter?: ModelBlogFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListBlogsQuery = {
+  listBlogs?:  {
+    __typename: "ModelBlogConnection",
+    items:  Array< {
+      __typename: "Blog",
+      id: string,
+      createdAt: string,
+      message?: string | null,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncBlogsQueryVariables = {
+  filter?: ModelBlogFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncBlogsQuery = {
+  syncBlogs?:  {
+    __typename: "ModelBlogConnection",
+    items:  Array< {
+      __typename: "Blog",
+      id: string,
+      createdAt: string,
+      message?: string | null,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ListbyBlogUserQueryVariables = {
+  id: string,
+  createdAt?: ModelStringKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelBlogFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListbyBlogUserQuery = {
+  ListbyBlogUser?:  {
+    __typename: "ModelBlogConnection",
+    items:  Array< {
+      __typename: "Blog",
+      id: string,
+      createdAt: string,
+      message?: string | null,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetCommentQueryVariables = {
+  id: string,
+};
+
+export type GetCommentQuery = {
+  getComment?:  {
+    __typename: "Comment",
+    id: string,
+    createdAt?: string | null,
+    message?: string | null,
+    commentID: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListCommentsQueryVariables = {
+  filter?: ModelCommentFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListCommentsQuery = {
+  listComments?:  {
+    __typename: "ModelCommentConnection",
+    items:  Array< {
+      __typename: "Comment",
+      id: string,
+      createdAt?: string | null,
+      message?: string | null,
+      commentID: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncCommentsQueryVariables = {
+  filter?: ModelCommentFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncCommentsQuery = {
+  syncComments?:  {
+    __typename: "ModelCommentConnection",
+    items:  Array< {
+      __typename: "Comment",
+      id: string,
+      createdAt?: string | null,
+      message?: string | null,
+      commentID: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ListMessagesByCommentQueryVariables = {
+  commentID: string,
+  createdAt?: ModelStringKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelCommentFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListMessagesByCommentQuery = {
+  listMessagesByComment?:  {
+    __typename: "ModelCommentConnection",
+    items:  Array< {
+      __typename: "Comment",
+      id: string,
+      createdAt?: string | null,
+      message?: string | null,
+      commentID: string,
       updatedAt: string,
       _version: number,
       _deleted?: boolean | null,
@@ -2334,6 +3032,34 @@ export type SyncMessagesQuery = {
   } | null,
 };
 
+export type MessagesByUserIDQueryVariables = {
+  userID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelMessageFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type MessagesByUserIDQuery = {
+  messagesByUserID?:  {
+    __typename: "ModelMessageConnection",
+    items:  Array< {
+      __typename: "Message",
+      id: string,
+      createdAt?: string | null,
+      message?: string | null,
+      userID: string,
+      chatgroupID: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
 export type ListMessagesByChatGroupQueryVariables = {
   chatgroupID: string,
   createdAt?: ModelStringKeyConditionInput | null,
@@ -2375,6 +3101,7 @@ export type OnCreateMediaSubscription = {
     type?: MediaType | null,
     messageID: string,
     chatgroupID: string,
+    blogID: string,
     duration?: string | null,
     width?: string | null,
     height?: string | null,
@@ -2398,6 +3125,7 @@ export type OnUpdateMediaSubscription = {
     type?: MediaType | null,
     messageID: string,
     chatgroupID: string,
+    blogID: string,
     duration?: string | null,
     width?: string | null,
     height?: string | null,
@@ -2421,6 +3149,7 @@ export type OnDeleteMediaSubscription = {
     type?: MediaType | null,
     messageID: string,
     chatgroupID: string,
+    blogID: string,
     duration?: string | null,
     width?: string | null,
     height?: string | null,
@@ -2683,6 +3412,11 @@ export type OnCreateUserSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    Blog?:  {
+      __typename: "ModelBlogConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2720,6 +3454,11 @@ export type OnUpdateUserSubscription = {
     } | null,
     Leader?:  {
       __typename: "ModelChatGroupConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Blog?:  {
+      __typename: "ModelBlogConnection",
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
@@ -2763,7 +3502,147 @@ export type OnDeleteUserSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    Blog?:  {
+      __typename: "ModelBlogConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
     createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateBlogSubscriptionVariables = {
+  filter?: ModelSubscriptionBlogFilterInput | null,
+};
+
+export type OnCreateBlogSubscription = {
+  onCreateBlog?:  {
+    __typename: "Blog",
+    id: string,
+    createdAt: string,
+    message?: string | null,
+    comments?:  {
+      __typename: "ModelCommentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateBlogSubscriptionVariables = {
+  filter?: ModelSubscriptionBlogFilterInput | null,
+};
+
+export type OnUpdateBlogSubscription = {
+  onUpdateBlog?:  {
+    __typename: "Blog",
+    id: string,
+    createdAt: string,
+    message?: string | null,
+    comments?:  {
+      __typename: "ModelCommentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteBlogSubscriptionVariables = {
+  filter?: ModelSubscriptionBlogFilterInput | null,
+};
+
+export type OnDeleteBlogSubscription = {
+  onDeleteBlog?:  {
+    __typename: "Blog",
+    id: string,
+    createdAt: string,
+    message?: string | null,
+    comments?:  {
+      __typename: "ModelCommentConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Media?:  {
+      __typename: "ModelMediaConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateCommentSubscriptionVariables = {
+  filter?: ModelSubscriptionCommentFilterInput | null,
+};
+
+export type OnCreateCommentSubscription = {
+  onCreateComment?:  {
+    __typename: "Comment",
+    id: string,
+    createdAt?: string | null,
+    message?: string | null,
+    commentID: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateCommentSubscriptionVariables = {
+  filter?: ModelSubscriptionCommentFilterInput | null,
+};
+
+export type OnUpdateCommentSubscription = {
+  onUpdateComment?:  {
+    __typename: "Comment",
+    id: string,
+    createdAt?: string | null,
+    message?: string | null,
+    commentID: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteCommentSubscriptionVariables = {
+  filter?: ModelSubscriptionCommentFilterInput | null,
+};
+
+export type OnDeleteCommentSubscription = {
+  onDeleteComment?:  {
+    __typename: "Comment",
+    id: string,
+    createdAt?: string | null,
+    message?: string | null,
+    commentID: string,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,

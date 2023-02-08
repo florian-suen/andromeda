@@ -32,10 +32,17 @@
           "SMS"
         ],
         "passwordProtectionSettings": {
-          "passwordPolicyCharacters": [],
-          "passwordPolicyMinLength": 6
+          "passwordPolicyCharacters": [
+            "REQUIRES_LOWERCASE",
+            "REQUIRES_NUMBERS",
+            "REQUIRES_SYMBOLS",
+            "REQUIRES_UPPERCASE"
+          ],
+          "passwordPolicyMinLength": 8
         },
-        "signupAttributes": [],
+        "signupAttributes": [
+          "EMAIL"
+        ],
         "socialProviders": [],
         "usernameAttributes": [
           "EMAIL"
@@ -49,22 +56,13 @@
     }
   },
   "function": {
-    "updatedAtTrigger": {
+    "updateTrigger": {
       "build": true,
       "dependsOn": [
         {
           "attributes": [
             "GraphQLAPIIdOutput",
             "GraphQLAPIEndpointOutput"
-          ],
-          "category": "api",
-          "resourceName": "Andromeda"
-        },
-        {
-          "attributes": [
-            "GraphQLAPIIdOutput",
-            "GraphQLAPIEndpointOutput",
-            "GraphQLAPIKeyOutput"
           ],
           "category": "api",
           "resourceName": "Andromeda"
@@ -75,28 +73,21 @@
     }
   },
   "parameters": {
-    "AMPLIFY_function_updatedAtTrigger_deploymentBucketName": {
+    "AMPLIFY_function_updateTrigger_deploymentBucketName": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "updatedAtTrigger"
+          "resourceName": "updateTrigger"
         }
       ]
     },
-    "AMPLIFY_function_updatedAtTrigger_s3Key": {
+    "AMPLIFY_function_updateTrigger_s3Key": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "updatedAtTrigger"
+          "resourceName": "updateTrigger"
         }
       ]
-    }
-  },
-  "storage": {
-    "s3andromedastoragef7667f24": {
-      "dependsOn": [],
-      "providerPlugin": "awscloudformation",
-      "service": "S3"
     }
   }
 }

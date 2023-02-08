@@ -1,31 +1,28 @@
 {
   "staging": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-andromeda-staging-83223-authRole",
-      "UnauthRoleArn": "arn:aws:iam::937927140124:role/amplify-andromeda-staging-83223-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::937927140124:role/amplify-andromeda-staging-83223-authRole",
+      "AuthRoleName": "amplify-andromeda-staging-114205-authRole",
+      "UnauthRoleArn": "arn:aws:iam::937927140124:role/amplify-andromeda-staging-114205-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::937927140124:role/amplify-andromeda-staging-114205-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-andromeda-staging-83223-deployment",
-      "UnauthRoleName": "amplify-andromeda-staging-83223-unauthRole",
-      "StackName": "amplify-andromeda-staging-83223",
-      "StackId": "arn:aws:cloudformation:us-east-1:937927140124:stack/amplify-andromeda-staging-83223/33a71520-60d2-11ed-a418-0a04834ce66d",
-      "AmplifyAppId": "d3et3fw1uo2e7q"
+      "DeploymentBucketName": "amplify-andromeda-staging-114205-deployment",
+      "UnauthRoleName": "amplify-andromeda-staging-114205-unauthRole",
+      "StackName": "amplify-andromeda-staging-114205",
+      "StackId": "arn:aws:cloudformation:us-east-1:937927140124:stack/amplify-andromeda-staging-114205/9cb937e0-a7a5-11ed-9a1a-0e1e21737379",
+      "AmplifyAppId": "d251rxiuwaer4b"
     },
     "categories": {
-      "auth": {
-        "Andromeda": {}
-      },
       "function": {
-        "updatedAtTrigger": {
-          "deploymentBucketName": "amplify-andromeda-staging-83223-deployment",
-          "s3Key": "amplify-builds/updatedAtTrigger-75535a2f32616769374b-build.zip"
+        "updateTrigger": {
+          "deploymentBucketName": "amplify-andromeda-staging-114205-deployment",
+          "s3Key": "amplify-builds/updateTrigger-51474a5837314477616a-build.zip"
         }
       },
       "api": {
         "Andromeda": {}
       },
-      "storage": {
-        "s3andromedastoragef7667f24": {}
+      "auth": {
+        "Andromeda": {}
       }
     }
   }

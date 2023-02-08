@@ -7,7 +7,7 @@ export type AmplifyDependentResourcesAttributes = {
         }
     },
     "function": {
-        "updatedAtTrigger": {
+        "updateTrigger": {
             "Name": "string",
             "Arn": "string",
             "Region": "string",
@@ -24,12 +24,6 @@ export type AmplifyDependentResourcesAttributes = {
             "UserPoolName": "string",
             "AppClientIDWeb": "string",
             "AppClientID": "string"
-        }
-    },
-    "storage": {
-        "s3andromedastoragef7667f24": {
-            "BucketName": "string",
-            "Region": "string"
         }
     }
 }

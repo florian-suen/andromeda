@@ -5,6 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
 import { getUser } from "../../graphql/queries";
+import { Media } from "../messages/messageSlice";
 
 export interface CurrentUserType {
   inviteId: string;
@@ -13,6 +14,14 @@ export interface CurrentUserType {
   id: string;
   status: string;
   _deleted: string;
+  Blog: {
+    items: {
+      createdAt: string;
+      id: string;
+      message: string;
+      Media: { items: Media[] };
+    }[];
+  };
 }
 
 export interface ContactState {

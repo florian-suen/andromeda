@@ -1,4 +1,4 @@
-import { ModelInit, MutableModel } from "@aws-amplify/datastore";
+import { ModelInit, MutableModel, __modelMeta__, ManagedIdentifier } from "@aws-amplify/datastore";
 // @ts-ignore
 import { LazyLoading, LazyLoadingDisabled, AsyncItem, AsyncCollection } from "@aws-amplify/datastore";
 
@@ -12,40 +12,25 @@ export enum AttachmentType {
   VIDEO = "VIDEO"
 }
 
-type MediaMetaData = {
-  readOnlyFields: 'createdAt' | 'updatedAt';
+export enum RequestStatusType {
+  REQUESTED = "REQUESTED",
+  ACCEPTED = "ACCEPTED",
+  BLOCKED = "BLOCKED"
 }
 
-type AttachmentMetaData = {
-  readOnlyFields: 'createdAt' | 'updatedAt';
-}
 
-type ChatGroupMetaData = {
-  readOnlyFields: 'createdAt' | 'updatedAt';
-}
-
-type MessageMetaData = {
-  readOnlyFields: 'updatedAt';
-}
-
-type UserChatGroupMetaData = {
-  readOnlyFields: 'createdAt';
-}
-
-type UserMetaData = {
-  readOnlyFields: 'createdAt' | 'updatedAt';
-}
-
-type UserContactMetaData = {
-  readOnlyFields: 'createdAt';
-}
 
 type EagerMedia = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Media, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
   readonly id: string;
   readonly storageKey?: string | null;
   readonly type?: MediaType | keyof typeof MediaType | null;
   readonly messageID: string;
   readonly chatgroupID: string;
+  readonly blogID: string;
   readonly duration?: string | null;
   readonly width?: string | null;
   readonly height?: string | null;
@@ -54,11 +39,16 @@ type EagerMedia = {
 }
 
 type LazyMedia = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Media, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
   readonly id: string;
   readonly storageKey?: string | null;
   readonly type?: MediaType | keyof typeof MediaType | null;
   readonly messageID: string;
   readonly chatgroupID: string;
+  readonly blogID: string;
   readonly duration?: string | null;
   readonly width?: string | null;
   readonly height?: string | null;
@@ -68,11 +58,15 @@ type LazyMedia = {
 
 export declare type Media = LazyLoading extends LazyLoadingDisabled ? EagerMedia : LazyMedia
 
-export declare const Media: (new (init: ModelInit<Media, MediaMetaData>) => Media) & {
-  copyOf(source: Media, mutator: (draft: MutableModel<Media, MediaMetaData>) => MutableModel<Media, MediaMetaData> | void): Media;
+export declare const Media: (new (init: ModelInit<Media>) => Media) & {
+  copyOf(source: Media, mutator: (draft: MutableModel<Media>) => MutableModel<Media> | void): Media;
 }
 
 type EagerAttachment = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Attachment, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
   readonly id: string;
   readonly storageKey: string;
   readonly type: AttachmentType | keyof typeof AttachmentType;
@@ -84,6 +78,10 @@ type EagerAttachment = {
 }
 
 type LazyAttachment = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Attachment, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
   readonly id: string;
   readonly storageKey: string;
   readonly type: AttachmentType | keyof typeof AttachmentType;
@@ -96,11 +94,15 @@ type LazyAttachment = {
 
 export declare type Attachment = LazyLoading extends LazyLoadingDisabled ? EagerAttachment : LazyAttachment
 
-export declare const Attachment: (new (init: ModelInit<Attachment, AttachmentMetaData>) => Attachment) & {
-  copyOf(source: Attachment, mutator: (draft: MutableModel<Attachment, AttachmentMetaData>) => MutableModel<Attachment, AttachmentMetaData> | void): Attachment;
+export declare const Attachment: (new (init: ModelInit<Attachment>) => Attachment) & {
+  copyOf(source: Attachment, mutator: (draft: MutableModel<Attachment>) => MutableModel<Attachment> | void): Attachment;
 }
 
 type EagerChatGroup = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ChatGroup, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
   readonly id: string;
   readonly name?: string | null;
   readonly image?: string | null;
@@ -116,6 +118,10 @@ type EagerChatGroup = {
 }
 
 type LazyChatGroup = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ChatGroup, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
   readonly id: string;
   readonly name?: string | null;
   readonly image?: string | null;
@@ -132,11 +138,15 @@ type LazyChatGroup = {
 
 export declare type ChatGroup = LazyLoading extends LazyLoadingDisabled ? EagerChatGroup : LazyChatGroup
 
-export declare const ChatGroup: (new (init: ModelInit<ChatGroup, ChatGroupMetaData>) => ChatGroup) & {
-  copyOf(source: ChatGroup, mutator: (draft: MutableModel<ChatGroup, ChatGroupMetaData>) => MutableModel<ChatGroup, ChatGroupMetaData> | void): ChatGroup;
+export declare const ChatGroup: (new (init: ModelInit<ChatGroup>) => ChatGroup) & {
+  copyOf(source: ChatGroup, mutator: (draft: MutableModel<ChatGroup>) => MutableModel<ChatGroup> | void): ChatGroup;
 }
 
 type EagerMessage = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Message, 'id'>;
+    readOnlyFields: 'updatedAt';
+  };
   readonly id: string;
   readonly createdAt?: string | null;
   readonly message?: string | null;
@@ -148,6 +158,10 @@ type EagerMessage = {
 }
 
 type LazyMessage = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Message, 'id'>;
+    readOnlyFields: 'updatedAt';
+  };
   readonly id: string;
   readonly createdAt?: string | null;
   readonly message?: string | null;
@@ -160,12 +174,18 @@ type LazyMessage = {
 
 export declare type Message = LazyLoading extends LazyLoadingDisabled ? EagerMessage : LazyMessage
 
-export declare const Message: (new (init: ModelInit<Message, MessageMetaData>) => Message) & {
-  copyOf(source: Message, mutator: (draft: MutableModel<Message, MessageMetaData>) => MutableModel<Message, MessageMetaData> | void): Message;
+export declare const Message: (new (init: ModelInit<Message>) => Message) & {
+  copyOf(source: Message, mutator: (draft: MutableModel<Message>) => MutableModel<Message> | void): Message;
 }
 
 type EagerUserChatGroup = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<UserChatGroup, 'id'>;
+    readOnlyFields: 'createdAt';
+  };
   readonly id: string;
+  readonly userID: string;
+  readonly chatgroupID: string;
   readonly updatedAt: string;
   readonly Chatgroup?: ChatGroup | null;
   readonly user?: User | null;
@@ -173,7 +193,13 @@ type EagerUserChatGroup = {
 }
 
 type LazyUserChatGroup = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<UserChatGroup, 'id'>;
+    readOnlyFields: 'createdAt';
+  };
   readonly id: string;
+  readonly userID: string;
+  readonly chatgroupID: string;
   readonly updatedAt: string;
   readonly Chatgroup: AsyncItem<ChatGroup | undefined>;
   readonly user: AsyncItem<User | undefined>;
@@ -182,11 +208,15 @@ type LazyUserChatGroup = {
 
 export declare type UserChatGroup = LazyLoading extends LazyLoadingDisabled ? EagerUserChatGroup : LazyUserChatGroup
 
-export declare const UserChatGroup: (new (init: ModelInit<UserChatGroup, UserChatGroupMetaData>) => UserChatGroup) & {
-  copyOf(source: UserChatGroup, mutator: (draft: MutableModel<UserChatGroup, UserChatGroupMetaData>) => MutableModel<UserChatGroup, UserChatGroupMetaData> | void): UserChatGroup;
+export declare const UserChatGroup: (new (init: ModelInit<UserChatGroup>) => UserChatGroup) & {
+  copyOf(source: UserChatGroup, mutator: (draft: MutableModel<UserChatGroup>) => MutableModel<UserChatGroup> | void): UserChatGroup;
 }
 
 type EagerUser = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<User, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
   readonly id: string;
   readonly username: string;
   readonly status?: string | null;
@@ -194,13 +224,18 @@ type EagerUser = {
   readonly inviteId: string;
   readonly Messages?: (Message | null)[] | null;
   readonly ChatGroups?: (UserChatGroup | null)[] | null;
-  readonly Users?: (UserContact | null)[] | null;
+  readonly Friends?: (UserContact | null)[] | null;
   readonly Leader?: (ChatGroup | null)[] | null;
+  readonly Blog?: (Blog | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
 type LazyUser = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<User, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
   readonly id: string;
   readonly username: string;
   readonly status?: string | null;
@@ -208,38 +243,117 @@ type LazyUser = {
   readonly inviteId: string;
   readonly Messages: AsyncCollection<Message>;
   readonly ChatGroups: AsyncCollection<UserChatGroup>;
-  readonly Users: AsyncCollection<UserContact>;
+  readonly Friends: AsyncCollection<UserContact>;
   readonly Leader: AsyncCollection<ChatGroup>;
+  readonly Blog: AsyncCollection<Blog>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
 export declare type User = LazyLoading extends LazyLoadingDisabled ? EagerUser : LazyUser
 
-export declare const User: (new (init: ModelInit<User, UserMetaData>) => User) & {
-  copyOf(source: User, mutator: (draft: MutableModel<User, UserMetaData>) => MutableModel<User, UserMetaData> | void): User;
+export declare const User: (new (init: ModelInit<User>) => User) & {
+  copyOf(source: User, mutator: (draft: MutableModel<User>) => MutableModel<User> | void): User;
 }
 
 type EagerUserContact = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<UserContact, 'id'>;
+    readOnlyFields: 'createdAt';
+  };
   readonly id: string;
+  readonly userID: string;
+  readonly friendID: string;
   readonly updatedAt: string;
-  readonly status?: string | null;
+  readonly sender: boolean;
+  readonly requestStatus: RequestStatusType | keyof typeof RequestStatusType;
   readonly user?: User | null;
   readonly friend?: User | null;
+  readonly userContact?: UserContact | null;
   readonly createdAt?: string | null;
+  readonly userContactUserContactId?: string | null;
 }
 
 type LazyUserContact = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<UserContact, 'id'>;
+    readOnlyFields: 'createdAt';
+  };
   readonly id: string;
+  readonly userID: string;
+  readonly friendID: string;
   readonly updatedAt: string;
-  readonly status?: string | null;
+  readonly sender: boolean;
+  readonly requestStatus: RequestStatusType | keyof typeof RequestStatusType;
   readonly user: AsyncItem<User | undefined>;
   readonly friend: AsyncItem<User | undefined>;
+  readonly userContact: AsyncItem<UserContact | undefined>;
   readonly createdAt?: string | null;
+  readonly userContactUserContactId?: string | null;
 }
 
 export declare type UserContact = LazyLoading extends LazyLoadingDisabled ? EagerUserContact : LazyUserContact
 
-export declare const UserContact: (new (init: ModelInit<UserContact, UserContactMetaData>) => UserContact) & {
-  copyOf(source: UserContact, mutator: (draft: MutableModel<UserContact, UserContactMetaData>) => MutableModel<UserContact, UserContactMetaData> | void): UserContact;
+export declare const UserContact: (new (init: ModelInit<UserContact>) => UserContact) & {
+  copyOf(source: UserContact, mutator: (draft: MutableModel<UserContact>) => MutableModel<UserContact> | void): UserContact;
+}
+
+type EagerBlog = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Blog, 'id'>;
+  };
+  readonly id: string;
+  readonly createdAt: string;
+  readonly message?: string | null;
+  readonly comments?: (Comment | null)[] | null;
+  readonly Media?: (Media | null)[] | null;
+  readonly updatedAt: string;
+}
+
+type LazyBlog = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Blog, 'id'>;
+  };
+  readonly id: string;
+  readonly createdAt: string;
+  readonly message?: string | null;
+  readonly comments: AsyncCollection<Comment>;
+  readonly Media: AsyncCollection<Media>;
+  readonly updatedAt: string;
+}
+
+export declare type Blog = LazyLoading extends LazyLoadingDisabled ? EagerBlog : LazyBlog
+
+export declare const Blog: (new (init: ModelInit<Blog>) => Blog) & {
+  copyOf(source: Blog, mutator: (draft: MutableModel<Blog>) => MutableModel<Blog> | void): Blog;
+}
+
+type EagerComment = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Comment, 'id'>;
+    readOnlyFields: 'updatedAt';
+  };
+  readonly id: string;
+  readonly createdAt?: string | null;
+  readonly message?: string | null;
+  readonly commentID: string;
+  readonly updatedAt?: string | null;
+}
+
+type LazyComment = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Comment, 'id'>;
+    readOnlyFields: 'updatedAt';
+  };
+  readonly id: string;
+  readonly createdAt?: string | null;
+  readonly message?: string | null;
+  readonly commentID: string;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Comment = LazyLoading extends LazyLoadingDisabled ? EagerComment : LazyComment
+
+export declare const Comment: (new (init: ModelInit<Comment>) => Comment) & {
+  copyOf(source: Comment, mutator: (draft: MutableModel<Comment>) => MutableModel<Comment> | void): Comment;
 }

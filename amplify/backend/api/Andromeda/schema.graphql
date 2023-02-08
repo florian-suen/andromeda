@@ -9,6 +9,7 @@ type Media @model @auth(rules: [{ allow: public }]) {
   type: MediaType
   messageID: ID! @index(name: "byMessage")
   chatgroupID: ID! @index(name: "byChatGroup")
+  blogID: ID! @index(name: "byMediaBlog")
   duration: String
   width: String
   height: String
@@ -64,6 +65,33 @@ type User @model @auth(rules: [{ allow: public }]) {
   Friends: [UserContact]
     @hasMany(indexName: "byUserContactFriend", fields: ["id"])
   Leader: [ChatGroup] @hasMany(indexName: "byUserLeader", fields: ["id"])
+  Blog: [Blog] @hasMany(indexName: "byUserBlog", fields: ["id"])
+}
+
+type Blog @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+    @index(
+      name: "byUserBlog"
+      sortKeyFields: ["createdAt"]
+      queryField: "ListbyBlogUser"
+    )
+  createdAt: AWSDateTime!
+  message: String
+  comments: [Comment] @hasMany(indexName: "byComments", fields: ["id"])
+  Media: [Media] @hasMany(indexName: "byMediaBlog", fields: ["id"])
+  updatedAt: AWSDateTime!
+}
+
+type Comment @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  createdAt: AWSDateTime
+  message: String
+  commentID: ID!
+    @index(
+      name: "byComments"
+      sortKeyFields: ["createdAt"]
+      queryField: "listMessagesByComment"
+    )
 }
 
 type UserContact @model @auth(rules: [{ allow: public }]) {

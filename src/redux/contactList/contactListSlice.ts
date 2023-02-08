@@ -5,6 +5,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
+import { Media } from "../messages/messageSlice";
 
 import { listbyUserContactFriend } from "./queries";
 
@@ -24,6 +25,14 @@ export interface ContactType {
     id: string;
     status: string;
     _deleted: string;
+    Blog: {
+      items: {
+        createdAt: string;
+        id: string;
+        message: string;
+        Media: { items: Media[] };
+      }[];
+    };
   };
 }
 

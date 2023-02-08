@@ -10,6 +10,7 @@ export const getMedia = /* GraphQL */ `
       type
       messageID
       chatgroupID
+      blogID
       duration
       width
       height
@@ -34,6 +35,7 @@ export const listMedia = /* GraphQL */ `
         type
         messageID
         chatgroupID
+        blogID
         duration
         width
         height
@@ -67,6 +69,115 @@ export const syncMedia = /* GraphQL */ `
         type
         messageID
         chatgroupID
+        blogID
+        duration
+        width
+        height
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const mediaByMessageID = /* GraphQL */ `
+  query MediaByMessageID(
+    $messageID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelMediaFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    mediaByMessageID(
+      messageID: $messageID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        storageKey
+        type
+        messageID
+        chatgroupID
+        blogID
+        duration
+        width
+        height
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const mediaByChatgroupID = /* GraphQL */ `
+  query MediaByChatgroupID(
+    $chatgroupID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelMediaFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    mediaByChatgroupID(
+      chatgroupID: $chatgroupID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        storageKey
+        type
+        messageID
+        chatgroupID
+        blogID
+        duration
+        width
+        height
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const mediaByBlogID = /* GraphQL */ `
+  query MediaByBlogID(
+    $blogID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelMediaFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    mediaByBlogID(
+      blogID: $blogID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        storageKey
+        type
+        messageID
+        chatgroupID
+        blogID
         duration
         width
         height
@@ -135,6 +246,72 @@ export const syncAttachments = /* GraphQL */ `
       limit: $limit
       nextToken: $nextToken
       lastSync: $lastSync
+    ) {
+      items {
+        id
+        storageKey
+        type
+        messageID
+        chatgroupID
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const attachmentsByMessageID = /* GraphQL */ `
+  query AttachmentsByMessageID(
+    $messageID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelAttachmentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    attachmentsByMessageID(
+      messageID: $messageID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        storageKey
+        type
+        messageID
+        chatgroupID
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const attachmentsByChatgroupID = /* GraphQL */ `
+  query AttachmentsByChatgroupID(
+    $chatgroupID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelAttachmentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    attachmentsByChatgroupID(
+      chatgroupID: $chatgroupID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
     ) {
       items {
         id
@@ -251,6 +428,38 @@ export const syncChatGroups = /* GraphQL */ `
     }
   }
 `;
+export const chatGroupsByLeaderID = /* GraphQL */ `
+  query ChatGroupsByLeaderID(
+    $leaderID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelChatGroupFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    chatGroupsByLeaderID(
+      leaderID: $leaderID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        image
+        leaderID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        chatGroupLastMessageId
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
 export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
@@ -272,6 +481,10 @@ export const getUser = /* GraphQL */ `
         startedAt
       }
       Leader {
+        nextToken
+        startedAt
+      }
+      Blog {
         nextToken
         startedAt
       }
@@ -361,6 +574,202 @@ export const userByInviteId = /* GraphQL */ `
         image
         inviteId
         createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getBlog = /* GraphQL */ `
+  query GetBlog($id: ID!) {
+    getBlog(id: $id) {
+      id
+      createdAt
+      message
+      comments {
+        nextToken
+        startedAt
+      }
+      Media {
+        nextToken
+        startedAt
+      }
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listBlogs = /* GraphQL */ `
+  query ListBlogs(
+    $filter: ModelBlogFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listBlogs(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        createdAt
+        message
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncBlogs = /* GraphQL */ `
+  query SyncBlogs(
+    $filter: ModelBlogFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncBlogs(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        createdAt
+        message
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const listbyBlogUser = /* GraphQL */ `
+  query ListbyBlogUser(
+    $id: ID!
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelBlogFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    ListbyBlogUser(
+      id: $id
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        createdAt
+        message
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getComment = /* GraphQL */ `
+  query GetComment($id: ID!) {
+    getComment(id: $id) {
+      id
+      createdAt
+      message
+      commentID
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listComments = /* GraphQL */ `
+  query ListComments(
+    $filter: ModelCommentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listComments(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        createdAt
+        message
+        commentID
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncComments = /* GraphQL */ `
+  query SyncComments(
+    $filter: ModelCommentFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncComments(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        createdAt
+        message
+        commentID
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const listMessagesByComment = /* GraphQL */ `
+  query ListMessagesByComment(
+    $commentID: ID!
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelCommentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listMessagesByComment(
+      commentID: $commentID
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        createdAt
+        message
+        commentID
         updatedAt
         _version
         _deleted
@@ -726,6 +1135,37 @@ export const syncMessages = /* GraphQL */ `
       limit: $limit
       nextToken: $nextToken
       lastSync: $lastSync
+    ) {
+      items {
+        id
+        createdAt
+        message
+        userID
+        chatgroupID
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const messagesByUserID = /* GraphQL */ `
+  query MessagesByUserID(
+    $userID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    messagesByUserID(
+      userID: $userID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
     ) {
       items {
         id

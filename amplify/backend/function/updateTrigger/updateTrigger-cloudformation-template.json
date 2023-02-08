@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"10.4.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
+  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"10.5.1\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "CloudWatchRule": {
       "Type": "String",
@@ -23,10 +23,6 @@
     "apiAndromedaGraphQLAPIEndpointOutput": {
       "Type": "String",
       "Default": "apiAndromedaGraphQLAPIEndpointOutput"
-    },
-    "apiAndromedaGraphQLAPIKeyOutput": {
-      "Type": "String",
-      "Default": "apiAndromedaGraphQLAPIKeyOutput"
     }
   },
   "Conditions": {
@@ -59,12 +55,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "updatedAtTrigger",
+            "updateTrigger",
             {
               "Fn::Join": [
                 "",
                 [
-                  "updatedAtTrigger",
+                  "updateTrigger",
                   "-",
                   {
                     "Ref": "env"
@@ -81,15 +77,6 @@
             },
             "REGION": {
               "Ref": "AWS::Region"
-            },
-            "API_ANDROMEDA_GRAPHQLAPIIDOUTPUT": {
-              "Ref": "apiAndromedaGraphQLAPIIdOutput"
-            },
-            "API_ANDROMEDA_GRAPHQLAPIENDPOINTOUTPUT": {
-              "Ref": "apiAndromedaGraphQLAPIEndpointOutput"
-            },
-            "API_ANDROMEDA_GRAPHQLAPIKEYOUTPUT": {
-              "Ref": "apiAndromedaGraphQLAPIKeyOutput"
             }
           }
         },
@@ -110,12 +97,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "andromedaLambdaRole2ea9da29",
+            "andromedaLambdaRole5e306407",
             {
               "Fn::Join": [
                 "",
                 [
-                  "andromedaLambdaRole2ea9da29",
+                  "andromedaLambdaRole5e306407",
                   "-",
                   {
                     "Ref": "env"
@@ -186,73 +173,6 @@
         }
       }
     },
-    "AmplifyResourcesPolicy": {
-      "DependsOn": [
-        "LambdaExecutionRole"
-      ],
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyName": "amplify-lambda-execution-policy",
-        "Roles": [
-          {
-            "Ref": "LambdaExecutionRole"
-          }
-        ],
-        "PolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Action": [
-                "appsync:GraphQL"
-              ],
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:appsync:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":apis/",
-                      {
-                        "Ref": "apiAndromedaGraphQLAPIIdOutput"
-                      },
-                      "/types/Query/*"
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:appsync:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":apis/",
-                      {
-                        "Ref": "apiAndromedaGraphQLAPIIdOutput"
-                      },
-                      "/types/Mutation/*"
-                    ]
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      }
-    },
     "LambdaTriggerPolicyChatGroup": {
       "DependsOn": [
         "LambdaExecutionRole"
@@ -298,6 +218,62 @@
         "EventSourceArn": {
           "Fn::ImportValue": {
             "Fn::Sub": "${apiAndromedaGraphQLAPIIdOutput}:GetAtt:ChatGroupTable:StreamArn"
+          }
+        },
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "LambdaFunction",
+            "Arn"
+          ]
+        },
+        "StartingPosition": "LATEST"
+      }
+    },
+    "LambdaTriggerPolicyUserChatGroup": {
+      "DependsOn": [
+        "LambdaExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "amplify-lambda-execution-policy-UserChatGroup",
+        "Roles": [
+          {
+            "Ref": "LambdaExecutionRole"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:DescribeStream",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:ListStreams"
+              ],
+              "Resource": {
+                "Fn::ImportValue": {
+                  "Fn::Sub": "${apiAndromedaGraphQLAPIIdOutput}:GetAtt:UserChatGroupTable:StreamArn"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "LambdaEventSourceMappingUserChatGroup": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "DependsOn": [
+        "LambdaTriggerPolicyUserChatGroup",
+        "LambdaExecutionRole"
+      ],
+      "Properties": {
+        "BatchSize": 100,
+        "Enabled": true,
+        "EventSourceArn": {
+          "Fn::ImportValue": {
+            "Fn::Sub": "${apiAndromedaGraphQLAPIIdOutput}:GetAtt:UserChatGroupTable:StreamArn"
           }
         },
         "FunctionName": {

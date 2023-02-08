@@ -10,6 +10,7 @@ export const onCreateMedia = /* GraphQL */ `
       type
       messageID
       chatgroupID
+      blogID
       duration
       width
       height
@@ -29,6 +30,7 @@ export const onUpdateMedia = /* GraphQL */ `
       type
       messageID
       chatgroupID
+      blogID
       duration
       width
       height
@@ -48,6 +50,7 @@ export const onDeleteMedia = /* GraphQL */ `
       type
       messageID
       chatgroupID
+      blogID
       duration
       width
       height
@@ -275,6 +278,10 @@ export const onCreateUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      Blog {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -304,6 +311,10 @@ export const onUpdateUser = /* GraphQL */ `
         startedAt
       }
       Leader {
+        nextToken
+        startedAt
+      }
+      Blog {
         nextToken
         startedAt
       }
@@ -339,7 +350,116 @@ export const onDeleteUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      Blog {
+        nextToken
+        startedAt
+      }
       createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onCreateBlog = /* GraphQL */ `
+  subscription OnCreateBlog($filter: ModelSubscriptionBlogFilterInput) {
+    onCreateBlog(filter: $filter) {
+      id
+      createdAt
+      message
+      comments {
+        nextToken
+        startedAt
+      }
+      Media {
+        nextToken
+        startedAt
+      }
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateBlog = /* GraphQL */ `
+  subscription OnUpdateBlog($filter: ModelSubscriptionBlogFilterInput) {
+    onUpdateBlog(filter: $filter) {
+      id
+      createdAt
+      message
+      comments {
+        nextToken
+        startedAt
+      }
+      Media {
+        nextToken
+        startedAt
+      }
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteBlog = /* GraphQL */ `
+  subscription OnDeleteBlog($filter: ModelSubscriptionBlogFilterInput) {
+    onDeleteBlog(filter: $filter) {
+      id
+      createdAt
+      message
+      comments {
+        nextToken
+        startedAt
+      }
+      Media {
+        nextToken
+        startedAt
+      }
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onCreateComment = /* GraphQL */ `
+  subscription OnCreateComment($filter: ModelSubscriptionCommentFilterInput) {
+    onCreateComment(filter: $filter) {
+      id
+      createdAt
+      message
+      commentID
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateComment = /* GraphQL */ `
+  subscription OnUpdateComment($filter: ModelSubscriptionCommentFilterInput) {
+    onUpdateComment(filter: $filter) {
+      id
+      createdAt
+      message
+      commentID
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteComment = /* GraphQL */ `
+  subscription OnDeleteComment($filter: ModelSubscriptionCommentFilterInput) {
+    onDeleteComment(filter: $filter) {
+      id
+      createdAt
+      message
+      commentID
       updatedAt
       _version
       _deleted

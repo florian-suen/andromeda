@@ -12,7 +12,13 @@ const AttachmentType = {
   "VIDEO": "VIDEO"
 };
 
-const { Media, Attachment, ChatGroup, Message, UserChatGroup, User, UserContact } = initSchema(schema);
+const RequestStatusType = {
+  "REQUESTED": "REQUESTED",
+  "ACCEPTED": "ACCEPTED",
+  "BLOCKED": "BLOCKED"
+};
+
+const { Media, Attachment, ChatGroup, Message, UserChatGroup, User, UserContact, Blog, Comment } = initSchema(schema);
 
 export {
   Media,
@@ -22,6 +28,9 @@ export {
   UserChatGroup,
   User,
   UserContact,
+  Blog,
+  Comment,
   MediaType,
-  AttachmentType
+  AttachmentType,
+  RequestStatusType
 };

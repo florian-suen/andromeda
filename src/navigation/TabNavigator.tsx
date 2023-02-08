@@ -8,6 +8,7 @@ import {
 
 import { Account } from "../screens/AccountScreen";
 import { ContactScreen } from "../screens/ContactScreen";
+import { BlogScreen } from "../screens/BlogScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -66,7 +67,7 @@ export const TabNavigator = () => {
       />
       <Tab.Screen
         name="Moments"
-        component={ChatList}
+        component={BlogScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons

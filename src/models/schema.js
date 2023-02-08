@@ -40,6 +40,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "blogID": {
+                    "name": "blogID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "duration": {
                     "name": "duration",
                     "isArray": false,
@@ -100,6 +107,15 @@ export const schema = {
                         "name": "byChatGroup",
                         "fields": [
                             "chatgroupID"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byMediaBlog",
+                        "fields": [
+                            "blogID"
                         ]
                     }
                 },
@@ -262,8 +278,12 @@ export const schema = {
                     "attributes": [],
                     "association": {
                         "connectionType": "HAS_ONE",
-                        "associatedWith": "id",
-                        "targetName": "chatGroupLastMessageId"
+                        "associatedWith": [
+                            "id"
+                        ],
+                        "targetNames": [
+                            "chatGroupLastMessageId"
+                        ]
                     }
                 },
                 "Messages": {
@@ -277,7 +297,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "chatgroupID"
+                        "associatedWith": [
+                            "chatgroupID"
+                        ]
                     }
                 },
                 "users": {
@@ -291,7 +313,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "Chatgroup"
+                        "associatedWith": [
+                            "Chatgroup"
+                        ]
                     }
                 },
                 "leaderID": {
@@ -312,7 +336,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "chatgroupID"
+                        "associatedWith": [
+                            "chatgroupID"
+                        ]
                     }
                 },
                 "Media": {
@@ -326,7 +352,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "chatgroupID"
+                        "associatedWith": [
+                            "chatgroupID"
+                        ]
                     }
                 },
                 "createdAt": {
@@ -363,7 +391,7 @@ export const schema = {
                 {
                     "type": "key",
                     "properties": {
-                        "name": "byUser",
+                        "name": "byUserLeader",
                         "fields": [
                             "leaderID"
                         ]
@@ -436,7 +464,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "messageID"
+                        "associatedWith": [
+                            "messageID"
+                        ]
                     }
                 },
                 "Media": {
@@ -450,7 +480,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "messageID"
+                        "associatedWith": [
+                            "messageID"
+                        ]
                     }
                 },
                 "updatedAt": {
@@ -517,6 +549,20 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "userID": {
+                    "name": "userID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "chatgroupID": {
+                    "name": "chatgroupID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "updatedAt": {
                     "name": "updatedAt",
                     "isArray": false,
@@ -534,7 +580,9 @@ export const schema = {
                     "attributes": [],
                     "association": {
                         "connectionType": "BELONGS_TO",
-                        "targetName": "chatgroupID"
+                        "targetNames": [
+                            "chatgroupID"
+                        ]
                     }
                 },
                 "user": {
@@ -547,7 +595,9 @@ export const schema = {
                     "attributes": [],
                     "association": {
                         "connectionType": "BELONGS_TO",
-                        "targetName": "userID"
+                        "targetNames": [
+                            "userID"
+                        ]
                     }
                 },
                 "createdAt": {
@@ -655,7 +705,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "userID"
+                        "associatedWith": [
+                            "userID"
+                        ]
                     }
                 },
                 "ChatGroups": {
@@ -669,11 +721,13 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "user"
+                        "associatedWith": [
+                            "user"
+                        ]
                     }
                 },
-                "Users": {
-                    "name": "Users",
+                "Friends": {
+                    "name": "Friends",
                     "isArray": true,
                     "type": {
                         "model": "UserContact"
@@ -683,7 +737,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "user"
+                        "associatedWith": [
+                            "user"
+                        ]
                     }
                 },
                 "Leader": {
@@ -697,7 +753,25 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "leaderID"
+                        "associatedWith": [
+                            "leaderID"
+                        ]
+                    }
+                },
+                "Blog": {
+                    "name": "Blog",
+                    "isArray": true,
+                    "type": {
+                        "model": "Blog"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "id"
+                        ]
                     }
                 },
                 "createdAt": {
@@ -728,12 +802,10 @@ export const schema = {
                     "type": "key",
                     "properties": {
                         "name": "userByInviteId",
-                        "queryField": "ListuserByInviteId",
+                        "queryField": "userByInviteId",
                         "fields": [
                             "inviteId",
-                            "username",
-                            "status",
-                            "image"
+                            "id"
                         ]
                     }
                 },
@@ -765,6 +837,20 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "userID": {
+                    "name": "userID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "friendID": {
+                    "name": "friendID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "updatedAt": {
                     "name": "updatedAt",
                     "isArray": false,
@@ -772,11 +858,20 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "status": {
-                    "name": "status",
+                "sender": {
+                    "name": "sender",
                     "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
+                    "type": "Boolean",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "requestStatus": {
+                    "name": "requestStatus",
+                    "isArray": false,
+                    "type": {
+                        "enum": "RequestStatusType"
+                    },
+                    "isRequired": true,
                     "attributes": []
                 },
                 "user": {
@@ -789,7 +884,9 @@ export const schema = {
                     "attributes": [],
                     "association": {
                         "connectionType": "BELONGS_TO",
-                        "targetName": "userID"
+                        "targetNames": [
+                            "userID"
+                        ]
                     }
                 },
                 "friend": {
@@ -802,7 +899,27 @@ export const schema = {
                     "attributes": [],
                     "association": {
                         "connectionType": "BELONGS_TO",
-                        "targetName": "friendID"
+                        "targetNames": [
+                            "friendID"
+                        ]
+                    }
+                },
+                "userContact": {
+                    "name": "userContact",
+                    "isArray": false,
+                    "type": {
+                        "model": "UserContact"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "HAS_ONE",
+                        "associatedWith": [
+                            "id"
+                        ],
+                        "targetNames": [
+                            "userContactUserContactId"
+                        ]
                     }
                 },
                 "createdAt": {
@@ -812,6 +929,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": [],
                     "isReadOnly": true
+                },
+                "userContactUserContactId": {
+                    "name": "userContactUserContactId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
                 }
             },
             "syncable": true,
@@ -849,6 +973,182 @@ export const schema = {
                     }
                 }
             ]
+        },
+        "Blog": {
+            "name": "Blog",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "message": {
+                    "name": "message",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "comments": {
+                    "name": "comments",
+                    "isArray": true,
+                    "type": {
+                        "model": "Comment"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "commentID"
+                        ]
+                    }
+                },
+                "Media": {
+                    "name": "Media",
+                    "isArray": true,
+                    "type": {
+                        "model": "Media"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "blogID"
+                        ]
+                    }
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": true,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "Blogs",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byUserBlog",
+                        "queryField": "ListbyBlogUser",
+                        "fields": [
+                            "id",
+                            "createdAt"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "Comment": {
+            "name": "Comment",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "message": {
+                    "name": "message",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "commentID": {
+                    "name": "commentID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Comments",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byComments",
+                        "queryField": "listMessagesByComment",
+                        "fields": [
+                            "commentID",
+                            "createdAt"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
         }
     },
     "enums": {
@@ -865,9 +1165,17 @@ export const schema = {
                 "IMAGE",
                 "VIDEO"
             ]
+        },
+        "RequestStatusType": {
+            "name": "RequestStatusType",
+            "values": [
+                "REQUESTED",
+                "ACCEPTED",
+                "BLOCKED"
+            ]
         }
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "1d30274374e7d5a918557c47b2a909a1"
+    "version": "a85cfd35642bd5c8fe41ddc940ef52d2"
 };
