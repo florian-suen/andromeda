@@ -147,21 +147,23 @@ export const chatGroupSlice = createSlice({
         return false;
       });
 
-      const userExists = state.chatGroup[index].Chatgroup.users.items.some(
-        (item) => {
-          if (item.user.id === action.payload.user.id) {
-            return item._deleted === null;
-          }
+      const userExists = state.chatGroup.length
+        ? state.chatGroup[index].Chatgroup.users.items.some((item) => {
+            if (item.user.id === action.payload.user.id) {
+              return item._deleted === null;
+            }
 
-          return false;
-        }
-      );
+            return false;
+          })
+        : false;
 
       if (!state.chatGroup.length) {
         state.chatGroup = [action.payload];
         return state;
       } else if (chatGroupExists) {
         let newState;
+        console.log(state.chatGroup[index]);
+        console.log(action.payload.Chatgroup);
         if (!userExists) {
           newState = Object.assign(
             state.chatGroup[index],

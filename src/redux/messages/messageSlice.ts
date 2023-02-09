@@ -14,6 +14,7 @@ export type Media = {
   type: string;
   messageID: string;
   chatgroupID: string;
+  blogID: string;
   duration: string;
   width: string;
   height: string;
@@ -182,15 +183,31 @@ export const messageSlice = createSlice({
         return state;
       }
 
-      action.payload.newMessage.status = "complete";
-      Object.assign(
-        state.messages[stateMessageIndex].message.find(
-          (item) =>
-            item.createdAt ===
-            (action.payload.newMessage as MessageType).createdAt
-        ) as MessageType,
-        action.payload.newMessage
+      state.messages[stateMessageIndex].message.find((item) =>
+        console.log(item.createdAt)
       );
+      action.payload.newMessage.status = "complete";
+
+      const messasgeExist = state.messages[stateMessageIndex].message.find(
+        (item) =>
+          item.createdAt ===
+          (action.payload.newMessage as MessageType).createdAt
+      );
+
+      messasgeExist &&
+        Object.assign(
+          state.messages[stateMessageIndex].message.find(
+            (item) =>
+              item.createdAt ===
+              (action.payload.newMessage as MessageType).createdAt
+          ) as MessageType,
+          action.payload.newMessage
+        );
+
+      !messasgeExist &&
+        state.messages[stateMessageIndex].message.unshift(
+          action.payload.newMessage
+        );
 
       return state;
     },

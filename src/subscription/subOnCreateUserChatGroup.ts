@@ -12,8 +12,6 @@ export const subOnCreateUserChatGroup = (
     const onCreateChatGrp = API.graphql(
       graphqlOperation(onCreateUserChatGroup)
     );
-
-    let timeout: NodeJS.Timeout;
     const chatGrpSubscription =
       "subscribe" in onCreateChatGrp &&
       onCreateChatGrp.subscribe({
@@ -27,12 +25,6 @@ export const subOnCreateUserChatGroup = (
             ],
           };
           dispatch(updateUserChatGroup(value.data.onCreateUserChatGroup));
-          timeout && clearTimeout(timeout);
-          timeout = setTimeout(() => {
-            navigation.navigate("GroupChat", {
-              chatGroupId: value.data.onCreateUserChatGroup.Chatgroup.id,
-            });
-          }, 0);
         },
         error: (err) => console.log(`onCreateUserChatGroup error: ${err}`),
       });

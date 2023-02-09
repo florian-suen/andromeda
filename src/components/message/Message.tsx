@@ -80,7 +80,7 @@ export const Message = ({ message }: { message: Message }) => {
       key={message.id}
       style={[
         styles.container,
-        myMsg ? styles.containerme : styles.containerfriend,
+        myMsg.current ? styles.containerme : styles.containerfriend,
       ]}
     >
       {mediaSrc.length > 0 && mediaSrc[0].type === "VIDEO" && (

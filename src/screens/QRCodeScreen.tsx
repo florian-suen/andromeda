@@ -23,10 +23,7 @@ export interface QRCodeProps {
 
 export const QRCodeScreen = () => {
   const ref: any = useRef();
-  const userAuth = useContext(userContext);
-  const currentUser = useAppSelector((state) =>
-    state.contacts.contacts.find((item) => item.id === userAuth?.attributes.sub)
-  )!;
+  const currentUser = useAppSelector((state) => state.currentUser.currentUser)!;
 
   const payload: QRCodeProps = {
     inviteId: currentUser.inviteId[0],
