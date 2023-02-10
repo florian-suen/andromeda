@@ -18,6 +18,7 @@ export type Media = {
   duration: string;
   width: string;
   height: string;
+  userID: string;
 };
 
 export type Attachments = {

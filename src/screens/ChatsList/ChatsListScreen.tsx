@@ -15,6 +15,7 @@ import {
   subOnDeleteUserContact,
   subonUpdateUserContact,
 } from "../../subscription/subUpdateUserContact";
+import { subOnCreateBlog } from "../../subscription/subOnCreateBlog";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
@@ -38,9 +39,10 @@ export const ChatList = () => {
     }
   }, [chatGroup]);
   subOnDeleteUserContact(userAuth.attributes.sub, dispatch);
-  subOnCreateUserChatGroup(userAuth, navigation, dispatch);
+  subOnCreateUserChatGroup(userAuth.attributes.sub, dispatch);
   subonUpdateUserContact(userAuth.attributes.sub, dispatch);
   subOnCreateUserContact(userAuth.attributes.sub, dispatch);
+  subOnCreateBlog(userAuth.attributes.sub, dispatch);
   return chatGroup && chatGroup?.length ? (
     <FlatList
       keyExtractor={(item) => {

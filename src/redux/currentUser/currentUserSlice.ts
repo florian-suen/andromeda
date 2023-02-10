@@ -2,9 +2,10 @@ import {
   createSlice,
   createAsyncThunk,
   SerializedError,
+  PayloadAction,
 } from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
-import { getUser } from "../../graphql/queries";
+import { getUser } from "./queries";
 import { Media } from "../messages/messageSlice";
 
 export interface CurrentUserType {
@@ -16,6 +17,7 @@ export interface CurrentUserType {
   _deleted: string;
   Blog: {
     items: {
+      userID: string;
       createdAt: string;
       id: string;
       message: string;
@@ -46,6 +48,8 @@ export const getCurrentUser = createAsyncThunk(
     );
 
     if ("data" in fetchCurrentUser) {
+      console.log(fetchCurrentUser.data.getUser.Blog);
+
       return fetchCurrentUser.data
         ? (fetchCurrentUser.data as any).getUser
         : null;
@@ -57,7 +61,37 @@ export const getCurrentUser = createAsyncThunk(
 export const currentUserSlice = createSlice({
   name: "contact",
   initialState,
-  reducers: {},
+  reducers: {
+    updateUserBlogOnCreateMedia: (
+      state,
+      action: PayloadAction<{ blogId: string; newMedia: Media }>
+    ) => {
+      state.currentUser?.Blog.items.findIndex(
+        (item) => item.id === action.payload.blogId
+      );
+
+      const stateBlogIndex = state.currentUser?.Blog.items.findIndex(
+        (item) => item.id === action.payload.blogId
+      )!;
+
+      const currentMedia =
+        state.currentUser!.Blog.items[stateBlogIndex].Media.items;
+      currentMedia.push(action.payload.newMedia);
+      return state;
+    },
+    updateUserOnCreateBlog: (
+      state,
+      action: PayloadAction<{ blog: CurrentUserType["Blog"]["items"][0] }>
+    ) => {
+      if (state.currentUser?.Blog?.items) {
+        state.currentUser.Blog.items.push(action.payload.blog);
+        return state;
+      }
+
+      state.currentUser!.Blog.items = [action.payload.blog];
+      return state;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getCurrentUser.fulfilled, (state, action) => {
@@ -81,3 +115,6 @@ export const currentUserSlice = createSlice({
         }); */
   },
 });
+
+export const { updateUserOnCreateBlog, updateUserBlogOnCreateMedia } =
+  currentUserSlice.actions;

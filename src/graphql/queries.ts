@@ -11,6 +11,7 @@ export const getMedia = /* GraphQL */ `
       messageID
       chatgroupID
       blogID
+      userID
       duration
       width
       height
@@ -36,6 +37,7 @@ export const listMedia = /* GraphQL */ `
         messageID
         chatgroupID
         blogID
+        userID
         duration
         width
         height
@@ -70,6 +72,7 @@ export const syncMedia = /* GraphQL */ `
         messageID
         chatgroupID
         blogID
+        userID
         duration
         width
         height
@@ -106,6 +109,7 @@ export const mediaByMessageID = /* GraphQL */ `
         messageID
         chatgroupID
         blogID
+        userID
         duration
         width
         height
@@ -142,6 +146,7 @@ export const mediaByChatgroupID = /* GraphQL */ `
         messageID
         chatgroupID
         blogID
+        userID
         duration
         width
         height
@@ -178,6 +183,44 @@ export const mediaByBlogID = /* GraphQL */ `
         messageID
         chatgroupID
         blogID
+        userID
+        duration
+        width
+        height
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const mediaByUserID = /* GraphQL */ `
+  query MediaByUserID(
+    $userID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelMediaFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    mediaByUserID(
+      userID: $userID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        storageKey
+        type
+        messageID
+        chatgroupID
+        blogID
+        userID
         duration
         width
         height
@@ -488,6 +531,10 @@ export const getUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      Media {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -588,6 +635,7 @@ export const getBlog = /* GraphQL */ `
   query GetBlog($id: ID!) {
     getBlog(id: $id) {
       id
+      userID
       createdAt
       message
       comments {
@@ -614,6 +662,7 @@ export const listBlogs = /* GraphQL */ `
     listBlogs(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        userID
         createdAt
         message
         updatedAt
@@ -641,6 +690,7 @@ export const syncBlogs = /* GraphQL */ `
     ) {
       items {
         id
+        userID
         createdAt
         message
         updatedAt
@@ -655,7 +705,7 @@ export const syncBlogs = /* GraphQL */ `
 `;
 export const listbyBlogUser = /* GraphQL */ `
   query ListbyBlogUser(
-    $id: ID!
+    $userID: ID!
     $createdAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelBlogFilterInput
@@ -663,7 +713,7 @@ export const listbyBlogUser = /* GraphQL */ `
     $nextToken: String
   ) {
     ListbyBlogUser(
-      id: $id
+      userID: $userID
       createdAt: $createdAt
       sortDirection: $sortDirection
       filter: $filter
@@ -672,6 +722,7 @@ export const listbyBlogUser = /* GraphQL */ `
     ) {
       items {
         id
+        userID
         createdAt
         message
         updatedAt

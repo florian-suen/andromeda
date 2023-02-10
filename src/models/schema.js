@@ -30,21 +30,28 @@ export const schema = {
                     "name": "messageID",
                     "isArray": false,
                     "type": "ID",
-                    "isRequired": true,
+                    "isRequired": false,
                     "attributes": []
                 },
                 "chatgroupID": {
                     "name": "chatgroupID",
                     "isArray": false,
                     "type": "ID",
-                    "isRequired": true,
+                    "isRequired": false,
                     "attributes": []
                 },
                 "blogID": {
                     "name": "blogID",
                     "isArray": false,
                     "type": "ID",
-                    "isRequired": true,
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "userID": {
+                    "name": "userID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
                     "attributes": []
                 },
                 "duration": {
@@ -116,6 +123,15 @@ export const schema = {
                         "name": "byMediaBlog",
                         "fields": [
                             "blogID"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byMediaUser",
+                        "fields": [
+                            "userID"
                         ]
                     }
                 },
@@ -770,7 +786,23 @@ export const schema = {
                     "association": {
                         "connectionType": "HAS_MANY",
                         "associatedWith": [
-                            "id"
+                            "userID"
+                        ]
+                    }
+                },
+                "Media": {
+                    "name": "Media",
+                    "isArray": true,
+                    "type": {
+                        "model": "Media"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "userID"
                         ]
                     }
                 },
@@ -984,6 +1016,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "userID": {
+                    "name": "userID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1051,7 +1090,7 @@ export const schema = {
                         "name": "byUserBlog",
                         "queryField": "ListbyBlogUser",
                         "fields": [
-                            "id",
+                            "userID",
                             "createdAt"
                         ]
                     }
@@ -1176,6 +1215,6 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "codegenVersion": "3.3.2",
-    "version": "a85cfd35642bd5c8fe41ddc940ef52d2"
+    "codegenVersion": "3.3.5",
+    "version": "abf887ca9ed107e1fdfe0fda7004b7f2"
 };

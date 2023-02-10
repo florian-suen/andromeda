@@ -3,14 +3,16 @@ import { API, graphqlOperation, Auth } from "aws-amplify";
 import { onCreateUserChatGroup } from "../graphql/subscriptions";
 import { AppDispatch } from "../redux/store";
 import { updateUserChatGroup } from "../redux/chatGroup/chatGroupSlice";
+//Note1
 export const subOnCreateUserChatGroup = (
-  userAuth: any,
-  navigation: any,
+  userId: string,
   dispatch: AppDispatch
 ) => {
   useEffect(() => {
     const onCreateChatGrp = API.graphql(
-      graphqlOperation(onCreateUserChatGroup)
+      graphqlOperation(onCreateUserChatGroup, {
+        filter: { userID: { eq: userId } },
+      })
     );
     const chatGrpSubscription =
       "subscribe" in onCreateChatGrp &&

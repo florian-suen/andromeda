@@ -55,3 +55,32 @@ export const onDeleteUserContact = /* GraphQL */ `
     }
   }
 `;
+
+export const onCreateBlog = /* GraphQL */ `
+  subscription OnCreateBlog($filter: ModelSubscriptionBlogFilterInput) {
+    onCreateBlog(filter: $filter) {
+      id
+      userID
+      createdAt
+      message
+      comments {
+        nextToken
+        startedAt
+      }
+      Media {
+        items {
+          id
+          storageKey
+          type
+          duration
+          width
+          height
+        }
+      }
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;

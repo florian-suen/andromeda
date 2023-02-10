@@ -7,6 +7,7 @@ import {
 import { API, graphqlOperation } from "aws-amplify";
 import { EagerUser } from "../../models";
 import { GetUser } from "../../screens/ChatsList/queries";
+import { ContactType } from "../contactList/contactListSlice";
 
 export interface ChatGroupType {
   Chatgroup: {
@@ -162,8 +163,6 @@ export const chatGroupSlice = createSlice({
         return state;
       } else if (chatGroupExists) {
         let newState;
-        console.log(state.chatGroup[index]);
-        console.log(action.payload.Chatgroup);
         if (!userExists) {
           newState = Object.assign(
             state.chatGroup[index],
@@ -184,7 +183,7 @@ export const chatGroupSlice = createSlice({
       action: PayloadAction<{
         userNames: string[];
         chatGroupId: string;
-        users: { user: EagerUser }[];
+        users: { user: ContactType["friend"] }[];
         leaderID: string | null;
       }>
     ) => {

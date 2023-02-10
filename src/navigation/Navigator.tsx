@@ -9,6 +9,7 @@ import { View } from "react-native";
 import { ScanScreen } from "../screens/ScanScreen";
 import { AddFriendScreen } from "../screens/AddFriend/AddFriendScreen";
 import { ContactProfileScreen } from "../screens/ContactProfileScreen";
+import { AddBlogScreen } from "../screens/AddBlogScreen";
 export const Navigator = () => {
   const Stack = createNativeStackNavigator();
 
@@ -72,6 +73,8 @@ export const Navigator = () => {
           />
 
           <Stack.Screen name="AddFriend" component={AddFriendScreen} />
+
+          <Stack.Screen name="AddBlog" component={AddBlogScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>

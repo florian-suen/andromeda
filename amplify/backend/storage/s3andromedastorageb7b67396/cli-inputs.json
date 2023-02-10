@@ -1,0 +1,16 @@
+{
+  "resourceName": "s3andromedastorageb7b67396",
+  "bucketName": "andromeda-storage-b7b67396",
+  "policyUUID": "867e7fdd",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ]
+}

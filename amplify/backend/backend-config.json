@@ -89,5 +89,12 @@
         }
       ]
     }
+  },
+  "storage": {
+    "s3andromedastorageb7b67396": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
   }
 }

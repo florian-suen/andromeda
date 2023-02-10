@@ -15,6 +15,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { EagerUser, User } from "../../models/index";
 
 import { useThemeColor } from "../../../utility/useStyles";
+import { ContactType } from "../../redux/contactList/contactListSlice";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string };
@@ -27,11 +28,11 @@ export const ChatContactsComponent = ({
   isSelectable,
   chatGroupHandler,
 }: {
-  user: User;
+  user: ContactType["friend"];
   isSelected: boolean;
   isSelectable: boolean;
   onSelectHandler: () => void;
-  chatGroupHandler: (user: EagerUser) => Promise<void>;
+  chatGroupHandler: (user: ContactType["friend"]) => Promise<void>;
 }) => {
   const image = user.image ? user.image : undefined;
   const styles = useThemeColor(styleSheet);

@@ -17,7 +17,7 @@ import {
   createAttachment,
   createMedia,
 } from "../../graphql/mutations";
-import { API, Auth, graphqlOperation, Storage } from "aws-amplify";
+import { API, graphqlOperation, Storage } from "aws-amplify";
 import * as imagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import "react-native-get-random-values";
@@ -27,10 +27,7 @@ import { useDispatch } from "react-redux";
 import { userContext } from "../../../utility/userAuth";
 import { useAppSelector } from "../../../utility/useReduxHooks";
 import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
-import {
-  ContactState,
-  ContactType,
-} from "../../redux/contactList/contactListSlice";
+import { ContactType } from "../../redux/contactList/contactListSlice";
 
 type messageInput = {
   chatgroupID: string;

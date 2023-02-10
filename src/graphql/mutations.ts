@@ -14,6 +14,7 @@ export const createMedia = /* GraphQL */ `
       messageID
       chatgroupID
       blogID
+      userID
       duration
       width
       height
@@ -37,6 +38,7 @@ export const updateMedia = /* GraphQL */ `
       messageID
       chatgroupID
       blogID
+      userID
       duration
       width
       height
@@ -60,6 +62,7 @@ export const deleteMedia = /* GraphQL */ `
       messageID
       chatgroupID
       blogID
+      userID
       duration
       width
       height
@@ -300,6 +303,10 @@ export const createUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      Media {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -336,6 +343,10 @@ export const updateUser = /* GraphQL */ `
         startedAt
       }
       Blog {
+        nextToken
+        startedAt
+      }
+      Media {
         nextToken
         startedAt
       }
@@ -378,6 +389,10 @@ export const deleteUser = /* GraphQL */ `
         nextToken
         startedAt
       }
+      Media {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -393,6 +408,7 @@ export const createBlog = /* GraphQL */ `
   ) {
     createBlog(input: $input, condition: $condition) {
       id
+      userID
       createdAt
       message
       comments {
@@ -417,6 +433,7 @@ export const updateBlog = /* GraphQL */ `
   ) {
     updateBlog(input: $input, condition: $condition) {
       id
+      userID
       createdAt
       message
       comments {
@@ -441,6 +458,7 @@ export const deleteBlog = /* GraphQL */ `
   ) {
     deleteBlog(input: $input, condition: $condition) {
       id
+      userID
       createdAt
       message
       comments {

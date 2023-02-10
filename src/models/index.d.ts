@@ -28,9 +28,10 @@ type EagerMedia = {
   readonly id: string;
   readonly storageKey?: string | null;
   readonly type?: MediaType | keyof typeof MediaType | null;
-  readonly messageID: string;
-  readonly chatgroupID: string;
-  readonly blogID: string;
+  readonly messageID?: string | null;
+  readonly chatgroupID?: string | null;
+  readonly blogID?: string | null;
+  readonly userID?: string | null;
   readonly duration?: string | null;
   readonly width?: string | null;
   readonly height?: string | null;
@@ -46,9 +47,10 @@ type LazyMedia = {
   readonly id: string;
   readonly storageKey?: string | null;
   readonly type?: MediaType | keyof typeof MediaType | null;
-  readonly messageID: string;
-  readonly chatgroupID: string;
-  readonly blogID: string;
+  readonly messageID?: string | null;
+  readonly chatgroupID?: string | null;
+  readonly blogID?: string | null;
+  readonly userID?: string | null;
   readonly duration?: string | null;
   readonly width?: string | null;
   readonly height?: string | null;
@@ -227,6 +229,7 @@ type EagerUser = {
   readonly Friends?: (UserContact | null)[] | null;
   readonly Leader?: (ChatGroup | null)[] | null;
   readonly Blog?: (Blog | null)[] | null;
+  readonly Media?: (Media | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -246,6 +249,7 @@ type LazyUser = {
   readonly Friends: AsyncCollection<UserContact>;
   readonly Leader: AsyncCollection<ChatGroup>;
   readonly Blog: AsyncCollection<Blog>;
+  readonly Media: AsyncCollection<Media>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -303,6 +307,7 @@ type EagerBlog = {
     identifier: ManagedIdentifier<Blog, 'id'>;
   };
   readonly id: string;
+  readonly userID: string;
   readonly createdAt: string;
   readonly message?: string | null;
   readonly comments?: (Comment | null)[] | null;
@@ -315,6 +320,7 @@ type LazyBlog = {
     identifier: ManagedIdentifier<Blog, 'id'>;
   };
   readonly id: string;
+  readonly userID: string;
   readonly createdAt: string;
   readonly message?: string | null;
   readonly comments: AsyncCollection<Comment>;

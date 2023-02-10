@@ -7,9 +7,10 @@ type Media @model @auth(rules: [{ allow: public }]) {
   id: ID!
   storageKey: String
   type: MediaType
-  messageID: ID! @index(name: "byMessage")
-  chatgroupID: ID! @index(name: "byChatGroup")
-  blogID: ID! @index(name: "byMediaBlog")
+  messageID: ID @index(name: "byMessage")
+  chatgroupID: ID @index(name: "byChatGroup")
+  blogID: ID @index(name: "byMediaBlog")
+  userID: ID @index(name: "byMediaUser")
   duration: String
   width: String
   height: String
@@ -66,10 +67,12 @@ type User @model @auth(rules: [{ allow: public }]) {
     @hasMany(indexName: "byUserContactFriend", fields: ["id"])
   Leader: [ChatGroup] @hasMany(indexName: "byUserLeader", fields: ["id"])
   Blog: [Blog] @hasMany(indexName: "byUserBlog", fields: ["id"])
+  Media: [Media] @hasMany(indexName: "byMediaUser", fields: ["id"])
 }
 
 type Blog @model @auth(rules: [{ allow: public }]) {
   id: ID!
+  userID: ID!
     @index(
       name: "byUserBlog"
       sortKeyFields: ["createdAt"]

@@ -219,7 +219,7 @@ function createChatGroupHandler(
   setIsSelectable: React.Dispatch<React.SetStateAction<boolean>>,
   dispatch: dispatch
 ) {
-  return async (user?: User) => {
+  return async (user?: ContactType["friend"]) => {
     const chatGroupId: string = uuidv4();
     let userNames, usersArray;
 
@@ -252,7 +252,7 @@ function createChatGroupHandler(
       createNewChatGroup({
         chatGroupId,
         userNames,
-        users: usersArray as { user: User }[],
+        users: usersArray as { user: ContactType["friend"] }[],
         leaderID: userAuth.attributes.sub,
       })
     );

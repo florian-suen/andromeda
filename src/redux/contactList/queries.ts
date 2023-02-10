@@ -20,6 +20,24 @@ export const listbyUserContactFriend = /* GraphQL */ `
           id
           status
           _deleted
+
+          Blog {
+            items {
+              id
+              createdAt
+              message
+              Media {
+                items {
+                  id
+                  storageKey
+                  type
+                  duration
+                  width
+                  height
+                }
+              }
+            }
+          }
         }
       }
     }

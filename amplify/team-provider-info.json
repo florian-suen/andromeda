@@ -23,6 +23,9 @@
       },
       "auth": {
         "Andromeda": {}
+      },
+      "storage": {
+        "s3andromedastorageb7b67396": {}
       }
     }
   }
