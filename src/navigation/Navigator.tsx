@@ -10,6 +10,7 @@ import { ScanScreen } from "../screens/ScanScreen";
 import { AddFriendScreen } from "../screens/AddFriend/AddFriendScreen";
 import { ContactProfileScreen } from "../screens/ContactProfileScreen";
 import { AddBlogScreen } from "../screens/AddBlogScreen";
+import colors from "../constants/Colors";
 export const Navigator = () => {
   const Stack = createNativeStackNavigator();
 
@@ -18,12 +19,12 @@ export const Navigator = () => {
     dark: true,
     colors: {
       ...DefaultTheme.colors,
-      primary: "#c2bdb6",
-      background: "#1c222e",
-      text: "#212020",
-      border: "green",
-      card: "#2E3D59",
-      notification: "blue",
+      primary: colors.primary,
+      background: colors.secondary,
+      text: "#B2A59F",
+      border: colors.secondary,
+      card: colors.tertiary,
+      notification: "red",
     },
   };
 

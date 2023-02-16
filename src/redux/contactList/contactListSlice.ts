@@ -122,7 +122,7 @@ export const contactSlice = createSlice({
         return { ...state, contacts: action.payload };
       })
       .addCase(getContactList.rejected, (state, action) => {
-        console.log(action.error);
+        console.log("current User Error", action.error);
         if (action.payload === "string")
           return { ...state, error: action.payload };
         else return { ...state, error: action.error };

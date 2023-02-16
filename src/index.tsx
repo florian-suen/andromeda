@@ -6,17 +6,8 @@ import { store } from "./redux/store";
 export const Index = () => {
   return (
     <Provider store={store}>
-      <View style={styles.container}>
-        <Navigator />
-        <StatusBar style="dark" />
-      </View>
+      <Navigator />
+      <StatusBar style="dark" />
     </Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#1c222e",
-    flex: 1,
-  },
-});

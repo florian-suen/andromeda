@@ -48,8 +48,6 @@ export const getCurrentUser = createAsyncThunk(
     );
 
     if ("data" in fetchCurrentUser) {
-      console.log(fetchCurrentUser.data.getUser.Blog);
-
       return fetchCurrentUser.data
         ? (fetchCurrentUser.data as any).getUser
         : null;
@@ -98,7 +96,7 @@ export const currentUserSlice = createSlice({
         return { ...state, currentUser: action.payload };
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
-        console.log(action.error);
+        console.log("error CurrentUser", action.error);
         if (action.payload === "string")
           return { ...state, error: action.payload };
         else return { ...state, error: action.error };

@@ -184,9 +184,6 @@ export const messageSlice = createSlice({
         return state;
       }
 
-      state.messages[stateMessageIndex].message.find((item) =>
-        console.log(item.createdAt)
-      );
       action.payload.newMessage.status = "complete";
 
       const messasgeExist = state.messages[stateMessageIndex].message.find(
