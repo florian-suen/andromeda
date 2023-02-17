@@ -5,6 +5,7 @@ import {
   Image,
   Pressable,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import { useContext, useRef } from "react";
 import dayjs from "dayjs";
@@ -16,6 +17,7 @@ import ImageView from "react-native-image-viewing";
 import { Video, ResizeMode } from "expo-av";
 import { userContext } from "../../../utility/userAuth";
 import { Attachments, Media } from "../../redux/messages/messageSlice";
+import Colors from "../../constants/Colors";
 dayjs.extend(relativeTime);
 
 export type Message = {
@@ -74,68 +76,89 @@ export const Message = ({ message }: { message: Message }) => {
     };
     getMedia();
   }, [message.Media.items.length]);
-  const resize = "contain";
+
   return (
     <View
-      key={message.id}
       style={[
-        styles.container,
-        myMsg.current ? styles.containerme : styles.containerfriend,
+        { flexDirection: "row" },
+        message.status === "sending"
+          ? { alignSelf: "flex-end" }
+          : myMsg.current
+          ? { alignSelf: "flex-end" }
+          : { alignSelf: "flex-start" },
       ]}
     >
-      {mediaSrc.length > 0 && mediaSrc[0].type === "VIDEO" && (
-        <Video
-          resizeMode={ResizeMode.CONTAIN}
-          useNativeControls
-          source={{
-            uri: mediaSrc[0].uri,
-          }}
-          shouldPlay={false}
-          style={{
-            width: 200,
-            height: 200,
-          }}
-        />
+      {message.status === "sending" && (
+        <ActivityIndicator color={Colors.tertiary} size={"small"} />
       )}
-
-      {mediaSrc.length > 0 && mediaSrc[0].type === "IMAGE" && (
-        <>
-          <ImageView
-            images={mediaSrc}
-            visible={imageViewerVisibility}
-            imageIndex={imgViewerIndex.current}
-            onRequestClose={() => setimageViewerVisibility(false)}
-          />
-
-          <FlatList
-            data={mediaSrc}
-            renderItem={({ item, index }) => {
-              return (
-                <Pressable
-                  onPress={() => {
-                    imgViewerIndex.current = index;
-                    setimageViewerVisibility(true);
-                  }}
-                >
-                  <Image style={styles.image} source={{ uri: item.uri }} />
-                </Pressable>
-              );
+      <View
+        key={message.id}
+        style={[
+          styles.container,
+          message.status === "sending"
+            ? styles.containerWaiting
+            : myMsg.current
+            ? styles.containerme
+            : styles.containerfriend,
+        ]}
+      >
+        {mediaSrc.length > 0 && mediaSrc[0].type === "VIDEO" && (
+          <Video
+            resizeMode={ResizeMode.CONTAIN}
+            useNativeControls
+            source={{
+              uri: mediaSrc[0].uri,
+            }}
+            shouldPlay={false}
+            style={{
+              width: 200,
+              height: 200,
             }}
           />
-        </>
-      )}
+        )}
 
-      {attachments.length > 0 && (
-        <FlatList
-          data={attachments}
-          renderItem={({ item }) => {
-            return <Text>You have files {item.type}</Text>;
-          }}
-        />
-      )}
-      <Text style={styles.message}>{message.status}</Text>
-      <Text style={styles.message}>{message.message}</Text>
-      <Text style={styles.time}>{dayjs(message.createdAt).fromNow(true)}</Text>
+        {mediaSrc.length > 0 && mediaSrc[0].type === "IMAGE" && (
+          <>
+            <ImageView
+              images={mediaSrc}
+              visible={imageViewerVisibility}
+              imageIndex={imgViewerIndex.current}
+              onRequestClose={() => setimageViewerVisibility(false)}
+            />
+
+            <FlatList
+              data={mediaSrc}
+              renderItem={({ item, index }) => {
+                return (
+                  <Pressable
+                    onPress={() => {
+                      imgViewerIndex.current = index;
+                      setimageViewerVisibility(true);
+                    }}
+                  >
+                    <Image style={styles.image} source={{ uri: item.uri }} />
+                  </Pressable>
+                );
+              }}
+            />
+          </>
+        )}
+
+        {attachments.length > 0 && (
+          <FlatList
+            data={attachments}
+            renderItem={({ item }) => {
+              return <Text>You have files {item.type}</Text>;
+            }}
+          />
+        )}
+        <Text style={styles.message}>{message.message}</Text>
+        {message.status !== "sending" && (
+          <Text style={styles.time}>
+            {dayjs(message.createdAt).fromNow(true)}
+          </Text>
+        )}
+      </View>
     </View>
   );
 };
@@ -148,10 +171,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     maxWidth: "75%",
   },
+
   container: {
-    margin: 6,
-    padding: 15,
-    borderRadius: 15,
+    margin: 7,
+    padding: 10,
+    borderRadius: 5,
     maxWidth: "90%",
     shadowColor: "#000",
     shadowOffset: {
@@ -160,11 +184,26 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 1.0,
-
     elevation: 1,
   },
-  containerfriend: { backgroundColor: "lightblue", alignSelf: "flex-start" },
-  containerme: { backgroundColor: "magenta", alignSelf: "flex-end" },
-  time: { color: "purple", alignSelf: "flex-end" },
-  message: {},
+
+  containerWaiting: {
+    backgroundColor: Colors.messageTwo,
+    opacity: 0.6,
+    padding: 10,
+  },
+
+  containerfriend: {
+    backgroundColor: Colors.messageOne,
+  },
+  containerme: {
+    backgroundColor: Colors.messageTwo,
+  },
+  time: {
+    fontStyle: "italic",
+    color: "purple",
+    alignSelf: "flex-end",
+    fontSize: 10,
+  },
+  message: { fontFamily: "Exo2" },
 });

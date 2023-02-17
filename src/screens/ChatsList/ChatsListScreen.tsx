@@ -16,7 +16,7 @@ import {
   subonUpdateUserContact,
 } from "../../subscription/subUpdateUserContact";
 import { subOnCreateBlog } from "../../subscription/subOnCreateBlog";
-import { LinearGradient } from "expo-linear-gradient";
+import Colors from "../../constants/Colors";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
@@ -45,26 +45,28 @@ export const ChatList = () => {
   subOnCreateUserContact(userAuth.attributes.sub, dispatch);
   subOnCreateBlog(userAuth.attributes.sub, dispatch);
   return chatGroup && chatGroup?.length ? (
-    <LinearGradient
-      colors={["#060A17", "#191F30"]}
-      start={{ x: 1, y: 0.4 }}
-      end={{ x: 0.5, y: 1.5 }}
-      style={{ flex: 1 }}
-    >
-      <FlatList
-        keyExtractor={(item) => {
-          return item.Chatgroup.id;
-        }}
-        extraData={chatGroup}
-        data={chatGroup ? chatGroup : []}
-        renderItem={({ item, index }) => {
-          return <ChatGroup key={index} chat={item} />;
-        }}
-      ></FlatList>
-    </LinearGradient>
+    <FlatList
+      keyExtractor={(item) => {
+        return item.Chatgroup.id;
+      }}
+      extraData={chatGroup}
+      data={chatGroup ? chatGroup : []}
+      renderItem={({ item, index }) => {
+        return <ChatGroup key={index} chat={item} />;
+      }}
+    ></FlatList>
   ) : (
-    <View>
-      <Text>Welcome to Andromeda</Text>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text
+        style={{
+          color: Colors.accent,
+          textAlign: "center",
+          fontFamily: "Exo2",
+          fontSize: 20,
+        }}
+      >
+        Start a conversation with a contact!
+      </Text>
     </View>
   );
 };

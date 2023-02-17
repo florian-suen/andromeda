@@ -6,4 +6,6 @@ export default {
   black: "#000",
   white: "white",
   gray: "gray",
+  messageOne: "#569DA3",
+  messageTwo: "#B2A59F",
 };

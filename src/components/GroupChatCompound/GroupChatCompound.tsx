@@ -28,7 +28,8 @@ import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
 import { AppDispatch } from "../../redux/store";
 import { subCreateMessage } from "../../subscription/subOnCreateMessage";
 import { MessageType } from "../../redux/messages/messageSlice";
-
+import { BlurView } from "expo-blur";
+import Colors from "../../constants/Colors";
 type GroupChatContext = {
   alert: {
     blockAlert: boolean;
@@ -126,6 +127,7 @@ function AlertBox() {
 function Menu({ children }: PropsWithChildren) {
   const {
     chatGroup: { chatGroupData },
+
     navigation,
     delete: { removeUserHandler },
     user: { users, leaderId },
@@ -155,8 +157,16 @@ function Menu({ children }: PropsWithChildren) {
         style={styles.modalOverlay}
         onPress={() => setModalVisible(!modalVisible)}
       ></Pressable>
-      <View style={styles.modalContainer}>
-        <Text style={{ fontSize: 18, fontWeight: "500", marginBottom: 15 }}>
+      <BlurView intensity={50} style={styles.modalContainer}>
+        <Text
+          style={{
+            fontFamily: "Chakra",
+            color: Colors.accent,
+            fontSize: 18,
+            fontWeight: "500",
+            marginBottom: 10,
+          }}
+        >
           Users
         </Text>
         <FlatList
@@ -170,46 +180,53 @@ function Menu({ children }: PropsWithChildren) {
                     style={styles.image}
                   />
                   {index === 0 && leaderId ? (
-                    <Text>{item.user.username}(Owner)</Text>
+                    <Text style={styles.menuName}>
+                      {item.user.username}(Owner)
+                    </Text>
                   ) : (
-                    <Text>{item.user.username}</Text>
+                    <Text style={styles.menuName}>{item.user.username}</Text>
                   )}
                 </View>
-                <FontAwesome
-                  onPress={() =>
-                    Alert.alert(
-                      "Removing User",
-                      `Are you sure that you want to remove ${item.user.username} from this group?`,
-                      [
-                        { text: "Cancel", style: "cancel" },
-                        {
-                          text: "Remove",
-                          style: "destructive",
-                          onPress: () => removeUserHandler(item),
-                        },
-                      ]
-                    )
-                  }
-                  name="remove"
-                  size={24}
-                  color="black"
-                />
+                {leaderId ? (
+                  <FontAwesome
+                    onPress={() =>
+                      Alert.alert(
+                        "Removing User",
+                        `Are you sure that you want to remove ${item.user.username} from this group?`,
+                        [
+                          { text: "Cancel", style: "cancel" },
+                          {
+                            text: "Remove",
+                            style: "destructive",
+                            onPress: () => removeUserHandler(item),
+                          },
+                        ]
+                      )
+                    }
+                    name="remove"
+                    size={24}
+                    color="black"
+                  />
+                ) : null}
               </>
             );
           }}
         ></FlatList>
-        <Button
-          title="Add Friends to Group"
-          accessibilityLabel="Adding Friends Button"
-          onPress={() => {
-            setModalVisible(false);
-            navigation!.navigate("AddNewContact", {
-              chatGroupId: chatGroupData.id,
-              chatGroup: chatGroupData,
-            });
-          }}
-        />
-      </View>
+        <View style={{ marginTop: 15 }}>
+          <Button
+            color={Colors.secondary}
+            title="Add Friends to Group"
+            accessibilityLabel="Adding Friends Button"
+            onPress={() => {
+              setModalVisible(false);
+              navigation!.navigate("AddNewContact", {
+                chatGroupId: chatGroupData.id,
+                chatGroup: chatGroupData,
+              });
+            }}
+          />
+        </View>
+      </BlurView>
     </Modal>
   );
 }
@@ -272,7 +289,7 @@ function setNavHeaderOptions(
               style={{ zIndex: 20 }}
               name="menu-open"
               size={24}
-              color="black"
+              color={Colors.tertiary}
             />
           ) : (
             <MaterialIcons
@@ -281,7 +298,7 @@ function setNavHeaderOptions(
               }}
               name="menu"
               size={24}
-              color="black"
+              color={Colors.tertiary}
             />
           );
         },
@@ -307,12 +324,9 @@ function userChatGroupSubscription(
 }
 
 const styles = StyleSheet.create({
-  image: { width: 80, height: 80, marginRight: 10, borderRadius: 5 },
-  menuContainer: {
-    width: 200,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  image: { width: 50, height: 50, marginRight: 10, borderRadius: 5 },
+  menuName: { color: "#fff5ee", fontFamily: "Exo2" },
+  menuContainer: { flexDirection: "row", padding: 8 },
   modalOverlay: {
     position: "absolute",
     top: 0,
@@ -320,21 +334,13 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: "rgba(0,0,0,0.3)",
+    opacity: 0.5,
   },
   modalContainer: {
-    alignItems: "center",
     margin: 75,
-    backgroundColor: "white",
+    backgroundColor: " Colors.accent",
     borderRadius: 5,
-    padding: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    padding: 20,
   },
 });
 

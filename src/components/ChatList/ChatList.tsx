@@ -25,7 +25,7 @@ export const ChatGroup = ({ chat }: { chat: ChatGroupType }) => {
     chatGroupData &&
     chatGroupData.users.items && (
       <Pressable
-        android_ripple={{ color: "#222b3d" }}
+        android_ripple={{ color: Colors.primary }}
         style={({ pressed }) => [
           styles.container,
           pressed ? styles.pressed : null,
@@ -101,15 +101,17 @@ const styles = StyleSheet.create({
   item: { flexDirection: "row" },
   name: {
     flex: 1,
-    fontWeight: "bold",
     color: Colors.accent,
-    fontSize: 18,
+    fontSize: 20,
+    fontFamily: "Exo2",
   },
   subtext: {
     color: Colors.gray,
+    fontSize: 12,
   },
   time: {
     alignSelf: "flex-end",
+    fontSize: 10,
     color: Colors.gray,
   },
   image: { width: 80, height: 80, marginRight: 10, borderRadius: 5 },
