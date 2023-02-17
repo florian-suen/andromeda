@@ -28,6 +28,7 @@ import { userContext } from "../../../utility/userAuth";
 import { useAppSelector } from "../../../utility/useReduxHooks";
 import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
 import { ContactType } from "../../redux/contactList/contactListSlice";
+import Colors from "../../constants/Colors";
 
 type messageInput = {
   chatgroupID: string;
@@ -88,7 +89,6 @@ export const InputBox = ({
     inputRange: [0, 0.5, 1],
     outputRange: [0, 0.6, 1],
   });
-
   const pickMedia = async (multiple: boolean) => {
     setMedia([]);
     let result = await imagePicker.launchImageLibraryAsync({
@@ -101,7 +101,6 @@ export const InputBox = ({
       setMedia(result.assets);
     } else if (!result.canceled) setMedia(result.assets);
   };
-
   const pickAttachment = async () => {
     let result = await DocumentPicker.getDocumentAsync({
       copyToCacheDirectory: false,
@@ -182,7 +181,6 @@ export const InputBox = ({
       })
     );
   };
-
   useEffect(() => {
     const opacityTiming = () => {
       Animated.timing(inputOpacity, {
@@ -191,7 +189,6 @@ export const InputBox = ({
         useNativeDriver: true,
       }).start();
     };
-
     const scaleTiming = () => {
       Animated.timing(inputScale, {
         toValue: 1,
@@ -199,15 +196,12 @@ export const InputBox = ({
         useNativeDriver: true,
       }).start();
     };
-
     animateInput.current =
       inputText.length === 0 && animateInput.current === true;
     const shouldAnimate = animateInput.current && inputText.length === 1;
-
     if (shouldAnimate)
       scaleTiming(), opacityTiming(), (animateInput.current = false);
   }, [inputText]);
-
   return (
     <>
       {attachments.length > 0 && (
@@ -224,34 +218,33 @@ export const InputBox = ({
       )}
 
       {media.length > 0 && (
-        <View>
-          <FlatList
-            data={media}
-            horizontal
-            renderItem={({ item }) => {
-              return (
-                <>
-                  <Ionicons
-                    name="remove-circle-outline"
-                    size={24}
-                    color="black"
-                    style={styles.removeSelectedImage}
-                    onPress={() =>
-                      setMedia((media) => {
-                        return media.filter((media) => media !== item);
-                      })
-                    }
-                  />
-                  <Image
-                    resizeMode="contain"
-                    style={styles.selectedImage}
-                    source={{ uri: item.uri }}
-                  />
-                </>
-              );
-            }}
-          />
-        </View>
+        <FlatList
+          data={media}
+          horizontal
+          renderItem={({ item }) => {
+            return (
+              <View style={styles.imageContainer}>
+                <Image
+                  resizeMode="contain"
+                  style={styles.selectedImage}
+                  source={{ uri: item.uri }}
+                />
+
+                <Ionicons
+                  name="remove-circle-outline"
+                  size={24}
+                  color={Colors.white}
+                  style={styles.removeSelectedImage}
+                  onPress={() =>
+                    setMedia((media) => {
+                      return media.filter((media) => media !== item);
+                    })
+                  }
+                />
+              </View>
+            );
+          }}
+        />
       )}
 
       <SafeAreaView edges={["bottom"]} style={styles.container}>
@@ -361,11 +354,30 @@ const checkIfBlocked = (
 };
 
 const styles = StyleSheet.create({
-  selectedImage: { width: 120, height: 120 },
-  removeSelectedImage: {},
+  imageContainer: {
+    flexDirection: "row",
+    backgroundColor: Colors.tertiary,
+    flex: 1,
+    padding: 5,
+    paddingHorizontal: 10,
+  },
+  selectedImage: {
+    maxWidth: 100,
+    maxHeight: 100,
+    minHeight: 80,
+    minWidth: 80,
+    backgroundColor: Colors.black,
+  },
+  removeSelectedImage: {
+    padding: 0,
+    margin: 0,
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
   container: {
     flexDirection: "row",
-    backgroundColor: "#2E3D59",
+    backgroundColor: Colors.tertiary,
     padding: 5,
     paddingHorizontal: 6,
     borderColor: "black",

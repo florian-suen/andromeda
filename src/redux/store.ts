@@ -5,6 +5,11 @@ import { currentUserSlice } from "./currentUser/currentUserSlice";
 import { messageSlice } from "./messages/messageSlice";
 
 export const store = configureStore({
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      immutableCheck: { warnAfter: 128 },
+      serializableCheck: { warnAfter: 128 },
+    }),
   reducer: {
     chatGroup: chatGroupSlice.reducer,
     contacts: contactSlice.reducer,

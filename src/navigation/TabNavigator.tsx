@@ -66,9 +66,9 @@ const TabButton = ({
   let inputOpacity = useRef(
     focused ? new Animated.Value(1) : new Animated.Value(0.2)
   );
-  let color = useRef(colors.tertiary);
-  if (color.current !== colors.tertiary && focused === false)
-    (color.current = colors.tertiary),
+  let color = useRef(colors.peacock);
+  if (color.current !== colors.peacock && focused === false)
+    (color.current = colors.peacock),
       (inputOpacity.current = new Animated.Value(0.2));
   if (focused) color.current = colors.accent;
 

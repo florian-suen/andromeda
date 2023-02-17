@@ -161,10 +161,11 @@ function Menu({ children }: PropsWithChildren) {
         <Text
           style={{
             fontFamily: "Chakra",
-            color: Colors.accent,
+            color: "oldlace",
             fontSize: 18,
             fontWeight: "500",
             marginBottom: 10,
+            alignSelf: "center",
           }}
         >
           Users
@@ -289,7 +290,7 @@ function setNavHeaderOptions(
               style={{ zIndex: 20 }}
               name="menu-open"
               size={24}
-              color={Colors.tertiary}
+              color={Colors.peacock}
             />
           ) : (
             <MaterialIcons
@@ -298,7 +299,7 @@ function setNavHeaderOptions(
               }}
               name="menu"
               size={24}
-              color={Colors.tertiary}
+              color={Colors.peacock}
             />
           );
         },

@@ -13,11 +13,16 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { Storage } from "aws-amplify";
 import { useState, useEffect } from "react";
 import ImageView from "react-native-image-viewing";
+import { Feather } from "@expo/vector-icons";
 
 import { Video, ResizeMode } from "expo-av";
 import { userContext } from "../../../utility/userAuth";
 import { Attachments, Media } from "../../redux/messages/messageSlice";
 import Colors from "../../constants/Colors";
+import { MediaItem } from "../Blogs/BlogComponent";
+import { ImageSource } from "react-native-image-viewing/dist/@types";
+import { BlurView } from "expo-blur";
+
 dayjs.extend(relativeTime);
 
 export type Message = {
@@ -35,8 +40,9 @@ export const Message = ({ message }: { message: Message }) => {
   const myMsg = useRef(false);
   const userAuth = useContext(userContext);
   const [attachments, setAttachments] = useState<any>([]);
-  const [mediaSrc, setMediaSrc] = useState<any>([]);
+  const [mediaSrc, setMediaSrc] = useState<MediaItem[]>([]);
   const [imageViewerVisibility, setimageViewerVisibility] = useState(false);
+  const isMaxedImage = mediaSrc.length > 4;
   let imgViewerIndex = useRef(0);
 
   if (userAuth && message.userID === userAuth.attributes.sub)
@@ -89,7 +95,7 @@ export const Message = ({ message }: { message: Message }) => {
       ]}
     >
       {message.status === "sending" && (
-        <ActivityIndicator color={Colors.tertiary} size={"small"} />
+        <ActivityIndicator color={Colors.secondary} size={"small"} />
       )}
       <View
         key={message.id}
@@ -120,25 +126,82 @@ export const Message = ({ message }: { message: Message }) => {
         {mediaSrc.length > 0 && mediaSrc[0].type === "IMAGE" && (
           <>
             <ImageView
-              images={mediaSrc}
+              images={mediaSrc as any}
               visible={imageViewerVisibility}
               imageIndex={imgViewerIndex.current}
               onRequestClose={() => setimageViewerVisibility(false)}
             />
 
             <FlatList
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                width: "100%",
+                marginBottom: -15,
+                backgroundColor: myMsg.current
+                  ? Colors.accentDark
+                  : Colors.messageOneDark,
+                borderRadius: 1,
+                borderWidth: StyleSheet.hairlineWidth,
+                borderColor: "mistyrose",
+              }}
               data={mediaSrc}
               renderItem={({ item, index }) => {
-                return (
-                  <Pressable
-                    onPress={() => {
-                      imgViewerIndex.current = index;
-                      setimageViewerVisibility(true);
-                    }}
-                  >
-                    <Image style={styles.image} source={{ uri: item.uri }} />
-                  </Pressable>
-                );
+                if (index < 4) {
+                  return (
+                    <Pressable
+                      style={styles.imageContainer}
+                      onPress={() => {
+                        imgViewerIndex.current = index;
+                        setimageViewerVisibility(true);
+                      }}
+                    >
+                      {isMaxedImage && index === 3 ? (
+                        <View
+                          style={[
+                            styles.image,
+                            {
+                              backgroundColor: Colors.accent,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              zIndex: 1,
+                            },
+                          ]}
+                        >
+                          <Feather
+                            style={{
+                              position: "absolute",
+                              zIndex: 1,
+                              opacity: 0.7,
+                            }}
+                            name="plus-square"
+                            size={40}
+                            color={myMsg.current ? "seashell" : Colors.peacock}
+                          />
+                          <Image
+                            style={[styles.image]}
+                            source={{ uri: item.uri }}
+                          />
+
+                          <BlurView
+                            intensity={110}
+                            style={[
+                              styles.image,
+                              { position: "absolute", zIndex: 1 },
+                            ]}
+                          />
+                        </View>
+                      ) : (
+                        <Image
+                          style={[styles.image]}
+                          source={{ uri: item.uri }}
+                        />
+                      )}
+                    </Pressable>
+                  );
+                }
+
+                return null;
               }}
             />
           </>
@@ -165,18 +228,20 @@ export const Message = ({ message }: { message: Message }) => {
 
 const styles = StyleSheet.create({
   image: {
-    height: 300,
-    width: 300,
-    borderWidth: 3,
-    borderRadius: 5,
-    maxWidth: "75%",
+    borderRadius: 1,
+    aspectRatio: 1,
+    width: 110,
   },
+  imageContainer: {
+    flex: 1,
 
+    padding: 1,
+  },
   container: {
     margin: 7,
     padding: 10,
     borderRadius: 5,
-    maxWidth: "90%",
+    maxWidth: "85%",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -186,13 +251,11 @@ const styles = StyleSheet.create({
     shadowRadius: 1.0,
     elevation: 1,
   },
-
   containerWaiting: {
     backgroundColor: Colors.messageTwo,
     opacity: 0.6,
     padding: 10,
   },
-
   containerfriend: {
     backgroundColor: Colors.messageOne,
   },
@@ -201,7 +264,7 @@ const styles = StyleSheet.create({
   },
   time: {
     fontStyle: "italic",
-    color: "purple",
+    color: " mediumorchid ",
     alignSelf: "flex-end",
     fontSize: 10,
   },
