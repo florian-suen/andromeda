@@ -7,7 +7,9 @@ import {
 import { API, graphqlOperation } from "aws-amplify";
 import { getUser } from "./queries";
 import { Media } from "../messages/messageSlice";
-
+import { UserBlogsType } from "../../screens/BlogScreen";
+import { Image } from "react-native";
+import { Storage } from "aws-amplify";
 export interface CurrentUserType {
   inviteId: string;
   image: string;
@@ -28,12 +30,14 @@ export interface CurrentUserType {
 
 export interface ContactState {
   currentUser: CurrentUserType | null;
+  blog: UserBlogsType[] | [];
   status: "idle" | "fetching";
   error: string | null | SerializedError;
 }
 
 const initialState: ContactState = {
   currentUser: null,
+  blog: [],
   status: "idle",
   error: null,
 };
@@ -48,9 +52,41 @@ export const getCurrentUser = createAsyncThunk(
     );
 
     if ("data" in fetchCurrentUser) {
-      return fetchCurrentUser.data
+      const returnData: CurrentUserType = fetchCurrentUser.data
         ? (fetchCurrentUser.data as any).getUser
         : null;
+
+      const blogs =
+        returnData.Blog?.items && returnData.Blog.items.length
+          ? returnData.Blog.items.map((item) => {
+              return {
+                name: returnData.username,
+                image: returnData.image,
+                blog: item,
+              };
+            })
+          : [];
+
+      for (let i = 0; i < blogs.length; i += 1) {
+        if (blogs[i].blog.Media.items && blogs[i].blog.Media.items.length) {
+          const uriMedia = await Promise.all(
+            blogs[i].blog.Media.items.map((item) =>
+              Storage.get(item.storageKey).then((uri) => {
+                return Image.prefetch(uri).then((completed) => {
+                  return {
+                    ...item,
+                    uri,
+                  };
+                });
+              })
+            )
+          );
+
+          blogs[i].blog.Media.items = uriMedia;
+        }
+      }
+
+      return { currentUser: returnData, blog: blogs };
     }
     return rejectWithValue("fetch Current User error");
   }
@@ -93,7 +129,11 @@ export const currentUserSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getCurrentUser.fulfilled, (state, action) => {
-        return { ...state, currentUser: action.payload };
+        return {
+          ...state,
+          currentUser: action.payload.currentUser,
+          blog: action.payload.blog,
+        };
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
         console.log("error CurrentUser", action.error);

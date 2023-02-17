@@ -5,7 +5,7 @@ import { TabNavigator } from "./TabNavigator";
 import { GroupChatScreen } from "../screens/GroupChatScreen";
 import { AddContacts } from "../screens/AddNewContactScreen";
 import { QRCodeScreen } from "../screens/QRCodeScreen";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { ScanScreen } from "../screens/ScanScreen";
 import { AddFriendScreen } from "../screens/AddFriend/AddFriendScreen";
 import { ContactProfileScreen } from "../screens/ContactProfileScreen";

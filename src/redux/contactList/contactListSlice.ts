@@ -5,10 +5,11 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
+import { UserBlogsType } from "../../screens/BlogScreen";
 import { Media } from "../messages/messageSlice";
-
+import { Storage } from "aws-amplify";
 import { listbyUserContactFriend } from "./queries";
-
+import { Image } from "react-native";
 export type RequestStatusType = "ACCEPTED" | "BLOCKED" | "REQUESTED";
 export interface ContactType {
   sender: boolean;
@@ -38,12 +39,14 @@ export interface ContactType {
 
 export interface ContactState {
   contacts: ContactType[] | [];
+  blogs: UserBlogsType[] | [];
   status: "idle" | "fetching";
   error: string | null | SerializedError;
 }
 
 const initialState: ContactState = {
   contacts: [],
+  blogs: [],
   status: "idle",
   error: null,
 };
@@ -58,11 +61,52 @@ export const getContactList = createAsyncThunk(
     );
 
     if ("data" in fetchContacts) {
-      return fetchContacts.data
+      const returnData: ContactType[] = fetchContacts.data
         ? (fetchContacts.data as any).ListbyUserContactFriend.items.filter(
             (item: ContactType) => !item._deleted
           )
         : [];
+
+      let blogArray: UserBlogsType[] = [];
+      for (let i = 0; i < returnData.length; i += 1) {
+        const friend = returnData[i].friend;
+        const blogList =
+          friend.Blog?.items &&
+          friend.Blog.items.length &&
+          friend.Blog.items.map((item) => {
+            return {
+              name: friend.username,
+              image: friend.image,
+              blog: item,
+            };
+          });
+
+        blogArray = [...blogArray, ...(blogList || [])];
+      }
+
+      for (let i = 0; i < blogArray.length; i += 1) {
+        if (
+          blogArray[i].blog.Media.items &&
+          blogArray[i].blog.Media.items.length
+        ) {
+          const uriMedia = await Promise.all(
+            blogArray[i].blog.Media.items.map((item) =>
+              Storage.get(item.storageKey).then((uri) => {
+                return Image.prefetch(uri).then((completed) => {
+                  return {
+                    ...item,
+                    uri,
+                  };
+                });
+              })
+            )
+          );
+
+          blogArray[i].blog.Media.items = uriMedia;
+        }
+      }
+
+      return { contacts: returnData, blogs: blogArray };
     }
     return rejectWithValue("fetch Contact error");
   }
@@ -119,7 +163,11 @@ export const contactSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getContactList.fulfilled, (state, action) => {
-        return { ...state, contacts: action.payload };
+        return {
+          ...state,
+          blogs: action.payload.blogs,
+          contacts: action.payload.contacts,
+        };
       })
       .addCase(getContactList.rejected, (state, action) => {
         console.log("current User Error", action.error);

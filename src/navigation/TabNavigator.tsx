@@ -68,12 +68,13 @@ const TabButton = ({
   onPress: BottomTabBarButtonProps["onPress"];
 }) => {
   const focused = accessibilityState && accessibilityState.selected;
-  const viewRef = useRef(null);
+  const viewRef = useRef();
   const inputScale = useRef(new Animated.Value(1)).current;
-  let inputOpacity = useRef(new Animated.Value(0.2));
+  let inputOpacity = useRef(
+    focused ? new Animated.Value(1) : new Animated.Value(0.2)
+  );
   let color = useRef(colors.accent);
-  let blue = false;
-  if (color.current !== colors.accent)
+  if (color.current !== colors.accent && focused === false)
     (color.current = colors.accent),
       (inputOpacity.current = new Animated.Value(0.2));
   if (focused) color.current = colors.primary;
@@ -112,16 +113,13 @@ const TabButton = ({
   }, [focused]);
 
   return (
-    <Pressable onPress={onPress} style={styles.container}>
+    <Pressable onPress={onPress} style={styles.navContainer}>
       <Animated.View
         ref={viewRef}
-        style={[
-          styles.container,
-          {
-            transform: [{ scale: inputScale }],
-            opacity: inputOpacity.current,
-          },
-        ]}
+        style={{
+          transform: [{ scale: inputScale }],
+          opacity: inputOpacity.current,
+        }}
       >
         <Icon
           type={item.type}
@@ -141,20 +139,30 @@ export const TabNavigator = () => {
       initialRouteName="Chats"
       screenOptions={({ route }) => {
         return {
+          headerTransparent: true,
           header: ({ route, layout }) => {
             return (
-              <View>
-                <Text></Text>
+              <View style={styles.headerContainer}>
+                <Text
+                  style={{
+                    fontSize: 40,
+                    height: 200,
+                    width: 200,
+                    fontFamily: "Chakra",
+                  }}
+                >
+                  {route.name}
+                </Text>
               </View>
             );
           },
-          tabBarLabelPosition: "below-icon",
+
           tabBarLabel: ({ focused, color }) => {
             return focused ? (
               <Text
                 style={{
                   fontSize: 30,
-                  color: "green",
+                  color: "white",
                   marginBottom: 5,
                   marginTop: -5,
                   height: 10,
@@ -183,7 +191,7 @@ export const TabNavigator = () => {
             component={item.component}
             options={{
               tabBarShowLabel: true,
-              tabBarButton: ({ accessibilityState, onPress, onBlur }) => (
+              tabBarButton: ({ accessibilityState, onPress }) => (
                 <TabButton
                   accessibilityState={accessibilityState}
                   onPress={onPress}
@@ -224,9 +232,10 @@ headerRight: () => (
 ), */
 
 const styles = StyleSheet.create({
-  container: {
+  navContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
+  headerContainer: { height: 100, backgroundColor: "white" },
 });
