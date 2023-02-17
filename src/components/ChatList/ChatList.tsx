@@ -3,11 +3,11 @@ import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useThemeColor } from "../../../utility/useStyles";
-
+import { BlurView } from "expo-blur";
 import { subUpdateChatGroup } from "../../subscription/subUpdateChatGroup";
 import { useAppDispatch } from "../../../utility/useReduxHooks";
 import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
+import Colors from "../../constants/Colors";
 
 dayjs.extend(relativeTime);
 
@@ -17,7 +17,6 @@ type ChatGroupParam = {
 
 export const ChatGroup = ({ chat }: { chat: ChatGroupType }) => {
   const navigation = useNavigation<NativeStackNavigationProp<ChatGroupParam>>();
-  const styles = StyleSheet.create(useThemeColor(styleSheet));
   const dispatch = useAppDispatch();
   const chatGroupData = chat.Chatgroup;
   subUpdateChatGroup(chatGroupData, chatGroupData.id, dispatch, true);
@@ -38,40 +37,42 @@ export const ChatGroup = ({ chat }: { chat: ChatGroupType }) => {
           })
         }
       >
-        <Image
-          source={{
-            uri: chatGroupData.users.items[0].user?.image
-              ? chatGroupData.users.items[0].user?.image
-              : undefined,
-          }}
-          style={styles.image}
-        />
-        <View style={styles.main}>
-          <View style={styles.item}>
-            <Text style={styles.name} numberOfLines={1}>
-              {chatGroupData.name
-                ? chatGroupData.name
-                : chatGroupData.users.items[0].user.username}
-            </Text>
-            {chatGroupData.LastMessage ? (
-              <Text style={styles.time}>
-                {dayjs(chatGroupData.LastMessage.createdAt).fromNow(true)}
+        <BlurView intensity={20} style={styles.mainContainer}>
+          <Image
+            source={{
+              uri: chatGroupData.users.items[0].user?.image
+                ? chatGroupData.users.items[0].user?.image
+                : undefined,
+            }}
+            style={styles.image}
+          />
+          <View style={styles.textContainer}>
+            <View style={styles.item}>
+              <Text style={styles.name} numberOfLines={1}>
+                {chatGroupData.name
+                  ? chatGroupData.name
+                  : chatGroupData.users.items[0].user.username}
               </Text>
-            ) : null}
+              {chatGroupData.LastMessage ? (
+                <Text style={styles.time}>
+                  {dayjs(chatGroupData.LastMessage.createdAt).fromNow(true)}
+                </Text>
+              ) : null}
+            </View>
+            <Text style={styles.subtext} numberOfLines={2}>
+              {chatGroupData.LastMessage?.message
+                ? chatGroupData.LastMessage.message
+                : "Newly created chat! Say Hi!"}
+            </Text>
           </View>
-          <Text style={styles.subtext} numberOfLines={2}>
-            {chatGroupData.LastMessage?.message
-              ? chatGroupData.LastMessage.message
-              : "Newly created chat! Say Hi!"}
-          </Text>
-        </View>
+        </BlurView>
       </Pressable>
     )
   );
 };
 
-const styleSheet = {
-  pressed: { opacity: 0.7, backgroundColor: "#151b26" },
+const styles = StyleSheet.create({
+  pressed: { opacity: 0.7, backgroundColor: Colors.tertiary },
 
   container: {
     flexDirection: "row",
@@ -81,24 +82,35 @@ const styleSheet = {
     alignItems: "center",
     justifyContent: "center",
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: "#18202e",
+    borderColor: Colors.tertiary,
   },
-  main: {
+  mainContainer: {
     flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: Colors.secondary,
+    backgroundColor: Colors.secondary,
+    padding: 5,
+    borderRadius: 4,
+  },
+  textContainer: {
+    flex: 1,
+    padding: 5,
   },
   item: { flexDirection: "row" },
   name: {
     flex: 1,
     fontWeight: "bold",
-    color: "primary",
+    color: Colors.accent,
     fontSize: 18,
   },
   subtext: {
-    color: "gray",
+    color: Colors.gray,
   },
   time: {
-    color: "gray",
-    marginBottom: 0,
+    alignSelf: "flex-end",
+    color: Colors.gray,
   },
   image: { width: 80, height: 80, marginRight: 10, borderRadius: 5 },
-};
+});

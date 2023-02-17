@@ -11,6 +11,7 @@ import { AddFriendScreen } from "../screens/AddFriend/AddFriendScreen";
 import { ContactProfileScreen } from "../screens/ContactProfileScreen";
 import { AddBlogScreen } from "../screens/AddBlogScreen";
 import colors from "../constants/Colors";
+import Colors from "../constants/Colors";
 export const Navigator = () => {
   const Stack = createNativeStackNavigator();
 
@@ -20,10 +21,10 @@ export const Navigator = () => {
     colors: {
       ...DefaultTheme.colors,
       primary: colors.primary,
-      background: colors.secondary,
+      background: "transparent",
       text: "#B2A59F",
       border: colors.secondary,
-      card: colors.tertiary,
+      card: colors.secondary,
       notification: "red",
     },
   };
@@ -34,6 +35,7 @@ export const Navigator = () => {
         <Stack.Navigator
           initialRouteName="Home"
           screenOptions={{
+            contentStyle: { backgroundColor: "transparent" },
             headerTitleStyle: { color: myTheme.colors.primary },
             headerTitleAlign: "center",
           }}
@@ -48,6 +50,7 @@ export const Navigator = () => {
             component={GroupChatScreen}
             options={{
               headerTitleAlign: "left",
+              headerTitleStyle: { fontFamily: "Chakra", color: Colors.accent },
             }}
           />
 

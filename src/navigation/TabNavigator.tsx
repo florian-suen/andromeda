@@ -13,14 +13,7 @@ import {
   MaterialCommunityIcons,
   AntDesign,
 } from "@expo/vector-icons";
-import {
-  PropsWithChildren,
-  ReactComponentElement,
-  ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef } from "react";
 import React from "react";
 import colors from "../constants/Colors";
 
@@ -73,11 +66,11 @@ const TabButton = ({
   let inputOpacity = useRef(
     focused ? new Animated.Value(1) : new Animated.Value(0.2)
   );
-  let color = useRef(colors.accent);
-  if (color.current !== colors.accent && focused === false)
-    (color.current = colors.accent),
+  let color = useRef(colors.tertiary);
+  if (color.current !== colors.tertiary && focused === false)
+    (color.current = colors.tertiary),
       (inputOpacity.current = new Animated.Value(0.2));
-  if (focused) color.current = colors.primary;
+  if (focused) color.current = colors.accent;
 
   useEffect(() => {
     const scaleTiming = () =>
@@ -137,10 +130,9 @@ export const TabNavigator = () => {
   return (
     <Tab.Navigator
       initialRouteName="Chats"
-      screenOptions={({ route }) => {
+      screenOptions={({ route, navigation }) => {
         return {
-          headerTransparent: true,
-          header: ({ route, layout }) => {
+          header: ({ route }) => {
             return (
               <View style={styles.headerContainer}>
                 <Text
@@ -153,6 +145,26 @@ export const TabNavigator = () => {
                 >
                   {route.name}
                 </Text>
+
+                <Ionicons
+                  name="scan-outline"
+                  size={60}
+                  color="black"
+                  onPress={() => navigation.navigate("Scan")}
+                />
+                <AntDesign
+                  name="qrcode"
+                  size={50}
+                  color="black"
+                  onPress={() => navigation.navigate("QRCode")}
+                />
+                <MaterialCommunityIcons
+                  name="chat-plus-outline"
+                  onPress={() => navigation.navigate("SelectContacts")}
+                  size={20}
+                  color=" teal"
+                  style={{ marginRight: 12 }}
+                />
               </View>
             );
           },
@@ -206,36 +218,15 @@ export const TabNavigator = () => {
   );
 };
 
-/* 
-headerRight: () => (
-  <>
-    <Ionicons
-      name="scan-outline"
-      size={60}
-      color="black"
-      onPress={() => navigation.navigate("Scan")}
-    />
-    <AntDesign
-      name="qrcode"
-      size={50}
-      color="black"
-      onPress={() => navigation.navigate("QRCode")}
-    />
-    <MaterialCommunityIcons
-      name="chat-plus-outline"
-      onPress={() => navigation.navigate("SelectContacts")}
-      size={20}
-      color=" teal"
-      style={{ marginRight: 12 }}
-    />
-  </>
-), */
-
 const styles = StyleSheet.create({
   navContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  headerContainer: { height: 100, backgroundColor: "white" },
+  headerContainer: {
+    height: 100,
+    backgroundColor: colors.secondary,
+    flexDirection: "row",
+  },
 });
