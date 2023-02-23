@@ -7,6 +7,7 @@ import {
   Image,
   FlatList,
   Alert,
+  Pressable,
 } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState, useEffect, useRef, useContext } from "react";
@@ -29,6 +30,7 @@ import { useAppSelector } from "../../../utility/useReduxHooks";
 import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
 import { ContactType } from "../../redux/contactList/contactListSlice";
 import Colors from "../../constants/Colors";
+import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 
 type messageInput = {
   chatgroupID: string;
@@ -57,38 +59,62 @@ type file = {
   name: string;
 };
 
-type mediaFile = {
-  uri: string;
-  type: "image" | "video";
-  duration: string;
-  width: string;
-  height: string;
-};
-
 export const InputBox = ({
   chatGroup,
   blockData,
+  selectorInput: { openSelector, setOpenSelector },
+  timingFunction,
 }: {
   chatGroup: ChatGroupType["Chatgroup"];
   blockData: {
     blockAlert: boolean;
     setBlockAlert: React.Dispatch<React.SetStateAction<boolean>>;
   };
+  selectorInput: {
+    openSelector: boolean;
+    setOpenSelector: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  timingFunction: () => void;
 }) => {
+  let disableOverlayPress = false;
   const userAuth = useContext(userContext);
   const [inputText, setInputText] = useState("");
   const [attachments, setAttachments] = useState<any[]>([]);
   const [media, setMedia] = useState<imagePicker.ImagePickerAsset[]>([]);
+  const transformY = useRef(new Animated.Value(0));
   const inputOpacity = new Animated.Value(0);
   const inputScale = new Animated.Value(0);
   const animateInput = useRef(true);
   const currentUserID = useContext(userContext)?.attributes.sub!;
   const contact = useAppSelector((state) => state.contacts.contacts);
   const dispatch = useDispatch();
+  transformY.current = new Animated.Value(0);
+  if (openSelector) transformY.current = new Animated.Value(95);
+
+  const reverseTransformTiming = () =>
+    Animated.timing(transformY.current, {
+      toValue: 95,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      finished && setOpenSelector(!openSelector);
+    });
+
+  useEffect(() => {
+    const transformTiming = () =>
+      Animated.timing(transformY.current, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    if (openSelector) transformTiming();
+  }, [openSelector]);
+
   const interpo = inputScale.interpolate({
     inputRange: [0, 0.5, 1],
     outputRange: [0, 0.6, 1],
   });
+
   const pickMedia = async (multiple: boolean) => {
     setMedia([]);
     let result = await imagePicker.launchImageLibraryAsync({
@@ -204,82 +230,181 @@ export const InputBox = ({
   }, [inputText]);
   return (
     <>
-      {attachments.length > 0 && (
-        <View>
-          <Text>You currently have {attachments.length} files</Text>
-          {attachments.map((val, i) => {
-            return (
-              <Text key={val.uri + i}>
-                File name:{val.name} Size:{val.size}
-              </Text>
-            );
-          })}
-        </View>
-      )}
-
-      {media.length > 0 && (
-        <FlatList
-          data={media}
-          horizontal
-          renderItem={({ item }) => {
-            return (
-              <View style={styles.imageContainer}>
-                <Image
-                  resizeMode="contain"
-                  style={styles.selectedImage}
-                  source={{ uri: item.uri }}
-                />
-
-                <Ionicons
-                  name="remove-circle-outline"
-                  size={24}
-                  color={Colors.white}
-                  style={styles.removeSelectedImage}
-                  onPress={() =>
-                    setMedia((media) => {
-                      return media.filter((media) => media !== item);
-                    })
-                  }
-                />
-              </View>
-            );
+      {openSelector ? (
+        <Pressable
+          style={styles.modalOverlay}
+          disabled={disableOverlayPress}
+          onPress={() => {
+            disableOverlayPress = true;
+            if (!openSelector) setOpenSelector(!openSelector);
+            if (openSelector) reverseTransformTiming(), timingFunction();
           }}
-        />
-      )}
-
-      <SafeAreaView edges={["bottom"]} style={styles.container}>
-        <TextInput
-          style={styles.input}
-          placeholder="Message"
-          value={inputText}
-          onChangeText={setInputText}
-        />
-        <MaterialCommunityIcons
-          onPress={() => pickMedia(true)}
-          style={styles.plusCircleIcon}
-          name="plus-circle-outline"
-          size={30}
-          color={"white"}
-        />
-        {inputText || media.length || attachments.length ? (
-          <Animated.View
+        ></Pressable>
+      ) : null}
+      <Animated.View
+        style={{
+          transform: [{ translateY: transformY.current }],
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+          left: 0,
+        }}
+      >
+        {attachments.length > 0 && (
+          <View
             style={{
-              width: 22,
-              marginRight: 7,
-              //opacity: inputOpacity,
-              // transform: [{ scale: interpo }],
+              alignItems: "center",
+
+              marginBottom: 10,
             }}
           >
-            <Ionicons
-              style={styles.sendIcon}
-              name="send"
-              size={25}
-              color={"white"}
-              onPress={sendHandler}
-            />
-          </Animated.View>
+            <View style={styles.attachmentContainer}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: attachments.length > 2 ? "flex-start" : "center",
+                }}
+              >
+                <View>
+                  <Text
+                    style={[styles.attachmentText, { fontStyle: "italic" }]}
+                  >
+                    {`You currently have ${attachments.length} file${
+                      attachments.length > 1 ? "s" : ""
+                    }`}
+                  </Text>
+                  {attachments.map((val, i) => {
+                    return (
+                      <View key={val.uri + i}>
+                        <Text style={styles.attachmentText}>
+                          File name: {val.name}
+                        </Text>
+                        {attachments.length > 1 ? (
+                          <Text style={styles.attachmentText}>
+                            Size: {val.size}
+                          </Text>
+                        ) : null}
+                      </View>
+                    );
+                  })}
+                  <Text>{`Total Size: ${attachments.reduce((prev, curr) => {
+                    const prevValue = prev.size || prev;
+                    return prevValue + curr.size;
+                  }, 0)}`}</Text>
+                </View>
+                <Pressable
+                  onPress={() => {
+                    setAttachments([]);
+                  }}
+                >
+                  <MaterialIcons
+                    style={{
+                      borderRadius: 1,
+                      borderBottomLeftRadius: 8,
+                      borderTopLeftRadius: 8,
+                      padding: 8,
+                      marginLeft: 10,
+                      marginRight: -10,
+                      backgroundColor: Colors.secondary,
+                      borderColor: Colors.peacock,
+                      borderWidth: StyleSheet.hairlineWidth,
+                    }}
+                    name="highlight-remove"
+                    size={24}
+                    color={Colors.peacock}
+                  />
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {media.length > 0 && (
+          <FlatList
+            data={media}
+            horizontal
+            renderItem={({ item }) => {
+              return (
+                <View style={styles.imageContainer}>
+                  <Image
+                    resizeMode="contain"
+                    style={styles.selectedImage}
+                    source={{ uri: item.uri }}
+                  />
+
+                  <Ionicons
+                    name="remove-circle-outline"
+                    size={24}
+                    color={Colors.white}
+                    style={styles.removeSelectedImage}
+                    onPress={() =>
+                      setMedia((media) => {
+                        return media.filter((media) => media !== item);
+                      })
+                    }
+                  />
+                </View>
+              );
+            }}
+          />
+        )}
+
+        <SafeAreaView edges={["bottom"]} style={styles.container}>
+          <TextInput
+            style={styles.input}
+            placeholder="Message"
+            value={inputText}
+            onChangeText={setInputText}
+          />
+          <MaterialCommunityIcons
+            onPress={() => {
+              if (!openSelector) setOpenSelector(!openSelector);
+              if (openSelector) reverseTransformTiming(), timingFunction();
+            }}
+            style={styles.plusCircleIcon}
+            name="plus-circle-outline"
+            size={32}
+            color={"white"}
+          />
+
+          {inputText || media.length || attachments.length ? (
+            <Animated.View
+              style={{
+                width: 22,
+                marginRight: 7,
+                //opacity: inputOpacity,
+                // transform: [{ scale: interpo }],
+              }}
+            >
+              <Ionicons
+                style={styles.sendIcon}
+                name="send"
+                size={28}
+                color={"white"}
+                onPress={sendHandler}
+              />
+            </Animated.View>
+          ) : null}
+        </SafeAreaView>
+        {openSelector ? (
+          <>
+            <View style={styles.openSelector}>
+              <Pressable onPress={() => pickMedia(true)}>
+                <View style={styles.openSelector__Media}>
+                  <MaterialIcons name="perm-media" size={30} color="black" />
+                  <Text>{"Media"}</Text>
+                </View>
+              </Pressable>
+              <Pressable onPress={() => pickAttachment()}>
+                <View style={styles.openSelector__Files}>
+                  <AntDesign name="addfolder" size={30} color="black" />
+                  <Text>{"Files"}</Text>
+                </View>
+              </Pressable>
+            </View>
+          </>
         ) : null}
-      </SafeAreaView>
+      </Animated.View>
     </>
   );
 };
@@ -360,6 +485,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 5,
     paddingHorizontal: 10,
+    borderTopRightRadius: 5,
   },
   selectedImage: {
     maxWidth: 100,
@@ -368,6 +494,19 @@ const styles = StyleSheet.create({
     minWidth: 80,
     backgroundColor: Colors.black,
   },
+
+  attachmentContainer: {
+    backgroundColor: Colors.messageOne,
+    maxWidth: 400,
+    padding: 10,
+    borderRadius: 5,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.tertiary,
+  },
+  attachmentText: {
+    fontFamily: "Exo2",
+  },
+
   removeSelectedImage: {
     padding: 0,
     margin: 0,
@@ -380,21 +519,59 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.tertiary,
     padding: 5,
     paddingHorizontal: 6,
-    borderColor: "black",
     alignItems: "center",
   },
   input: {
+    marginVertical: 3,
     backgroundColor: "white",
     borderWidth: StyleSheet.hairlineWidth,
     flex: 1,
-    borderRadius: 5,
+    borderRadius: 3,
     marginEnd: 5,
     marginLeft: 5,
     paddingLeft: 5,
+    paddingVertical: 3,
   },
   fading: {},
-  plusCircleIcon: { paddingRight: 5 },
+  plusCircleIcon: { paddingRight: 6 },
   sendIcon: {
     minWidth: 26,
+  },
+
+  openSelector: {
+    backgroundColor: Colors.tertiary,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 15,
+    paddingTop: 10,
+  },
+
+  openSelector__Media: {
+    alignItems: "center",
+    marginRight: 10,
+    borderRadius: 5,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: 10,
+    width: 70,
+    backgroundColor: Colors.accent,
+    borderColor: Colors.accentDark,
+  },
+  openSelector__Files: {
+    alignItems: "center",
+    marginRight: 10,
+    borderRadius: 5,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: 10,
+    width: 70,
+    backgroundColor: Colors.accent,
+    borderColor: Colors.accentDark,
+  },
+  modalOverlay: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });

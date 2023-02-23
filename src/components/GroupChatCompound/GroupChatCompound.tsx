@@ -10,13 +10,13 @@ import {
   Pressable,
   Alert,
   Button,
+  Animated,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
 import { InputBox as InputBoxComponent } from "../InputBox/InputBox";
 import { Message } from "../Message/Message";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { deleteUserChatGroup } from "../../graphql/mutations";
 import { useState, useContext, createContext, PropsWithChildren } from "react";
@@ -31,6 +31,14 @@ import { MessageType } from "../../redux/messages/messageSlice";
 import { BlurView } from "expo-blur";
 import Colors from "../../constants/Colors";
 type GroupChatContext = {
+  messageTiming: {
+    transformY: React.MutableRefObject<Animated.Value>;
+    reverseTranslateYTiming: () => void;
+  };
+  inputSelector: {
+    openSelector: boolean;
+    setOpenSelector: React.Dispatch<React.SetStateAction<boolean>>;
+  };
   alert: {
     blockAlert: boolean;
     setBlockAlert: React.Dispatch<React.SetStateAction<boolean>>;
@@ -62,10 +70,13 @@ type AddContactParam = {
 const UserContext = createContext<GroupChatContext>({} as GroupChatContext);
 
 export const GroupChat = ({ children }: PropsWithChildren) => {
+  const transformY = useRef(new Animated.Value(0));
+
   const route = useRoute<RouteProp<ChatGroupParam>>();
   const navigation =
     useNavigation<NativeStackNavigationProp<AddContactParam>>();
   const chatGroupId = route.params.chatGroupId;
+  let [openSelector, setOpenSelector] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [blockAlert, setBlockAlert] = useState(false);
   const dispatch = useAppDispatch();
@@ -80,6 +91,13 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
     )!.Chatgroup;
   });
 
+  const reverseTranslateYTiming = () =>
+    Animated.timing(transformY.current, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+
   userChatGroupSubscription(chatGroupId, chatGroupData, dispatch);
   setNavHeaderOptions(navigation, chatGroupData, modalVisible, setModalVisible);
   subCreateMessage(chatGroupId, dispatch);
@@ -88,6 +106,8 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
   return (
     <UserContext.Provider
       value={{
+        messageTiming: { transformY: transformY, reverseTranslateYTiming },
+        inputSelector: { openSelector, setOpenSelector },
         alert: { blockAlert, setBlockAlert },
         navigation,
         user: {
@@ -234,28 +254,55 @@ function Menu({ children }: PropsWithChildren) {
 
 function Messages() {
   const {
+    messageTiming: { transformY },
+    inputSelector: { openSelector },
     messages: { messages },
   } = useContext(UserContext);
 
+  useEffect(() => {
+    const translateYTiming = () =>
+      Animated.timing(transformY.current, {
+        toValue: -95,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    if (openSelector) translateYTiming();
+  }, [openSelector]);
+
   return (
-    <FlatList
-      inverted
-      data={messages}
-      renderItem={({ item }) => <Message message={item} />}
-    ></FlatList>
+    <Animated.View
+      style={{
+        marginBottom: 55,
+        transform: [{ translateY: transformY.current }],
+      }}
+    >
+      <FlatList
+        initialNumToRender={20}
+        maxToRenderPerBatch={1}
+        inverted
+        data={messages}
+        renderItem={({ item }) => (
+          <Message openSelector={openSelector} message={item} />
+        )}
+      ></FlatList>
+    </Animated.View>
   );
 }
 
 function InputBox() {
   const {
+    messageTiming: { reverseTranslateYTiming },
+    inputSelector,
     alert: { setBlockAlert, blockAlert },
     chatGroup: { chatGroupData },
   } = useContext<GroupChatContext>(UserContext);
 
   return (
     <InputBoxComponent
+      selectorInput={inputSelector}
       chatGroup={chatGroupData}
       blockData={{ blockAlert, setBlockAlert }}
+      timingFunction={reverseTranslateYTiming}
     />
   );
 }

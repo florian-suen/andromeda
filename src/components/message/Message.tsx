@@ -6,6 +6,7 @@ import {
   Pressable,
   FlatList,
   ActivityIndicator,
+  Animated,
 } from "react-native";
 import { useContext, useRef } from "react";
 import dayjs from "dayjs";
@@ -20,7 +21,6 @@ import { userContext } from "../../../utility/userAuth";
 import { Attachments, Media } from "../../redux/messages/messageSlice";
 import Colors from "../../constants/Colors";
 import { MediaItem } from "../Blogs/BlogComponent";
-import { ImageSource } from "react-native-image-viewing/dist/@types";
 import { BlurView } from "expo-blur";
 
 dayjs.extend(relativeTime);
@@ -36,7 +36,12 @@ export type Message = {
   Attachments: { items: Attachments[] };
 };
 
-export const Message = ({ message }: { message: Message }) => {
+export const Message = ({
+  message,
+}: {
+  message: Message;
+  openSelector: boolean;
+}) => {
   const myMsg = useRef(false);
   const userAuth = useContext(userContext);
   const [attachments, setAttachments] = useState<any>([]);
@@ -86,7 +91,9 @@ export const Message = ({ message }: { message: Message }) => {
   return (
     <View
       style={[
-        { flexDirection: "row" },
+        {
+          flexDirection: "row",
+        },
         message.status === "sending"
           ? { alignSelf: "flex-end" }
           : myMsg.current
@@ -234,8 +241,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
-
-    padding: 1,
+    padding: StyleSheet.hairlineWidth,
   },
   container: {
     margin: 7,
@@ -264,7 +270,7 @@ const styles = StyleSheet.create({
   },
   time: {
     fontStyle: "italic",
-    color: " mediumorchid ",
+    color: "purple",
     alignSelf: "flex-end",
     fontSize: 10,
   },
