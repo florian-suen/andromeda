@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import ViewShot, { captureScreen } from "react-native-view-shot";
 import QRCode from "react-native-qrcode-svg";
-import { userContext } from "../../utility/userAuth";
 import { useAppSelector } from "../../utility/useReduxHooks";
 import { LinearGradient } from "expo-linear-gradient";
 import * as MediaLibrary from "expo-media-library";

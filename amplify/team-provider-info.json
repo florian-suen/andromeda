@@ -15,7 +15,7 @@
       "function": {
         "updateTrigger": {
           "deploymentBucketName": "amplify-andromeda-staging-114205-deployment",
-          "s3Key": "amplify-builds/updateTrigger-51474a5837314477616a-build.zip"
+          "s3Key": "amplify-builds/updateTrigger-2b454f4f685047354977-build.zip"
         }
       },
       "api": {

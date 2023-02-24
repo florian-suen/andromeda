@@ -244,6 +244,7 @@ export const getAttachment = /* GraphQL */ `
       messageID
       chatgroupID
       name
+      size
       createdAt
       updatedAt
       _version
@@ -266,6 +267,7 @@ export const listAttachments = /* GraphQL */ `
         messageID
         chatgroupID
         name
+        size
         createdAt
         updatedAt
         _version
@@ -297,6 +299,7 @@ export const syncAttachments = /* GraphQL */ `
         messageID
         chatgroupID
         name
+        size
         createdAt
         updatedAt
         _version
@@ -330,6 +333,7 @@ export const attachmentsByMessageID = /* GraphQL */ `
         messageID
         chatgroupID
         name
+        size
         createdAt
         updatedAt
         _version
@@ -363,6 +367,7 @@ export const attachmentsByChatgroupID = /* GraphQL */ `
         messageID
         chatgroupID
         name
+        size
         createdAt
         updatedAt
         _version

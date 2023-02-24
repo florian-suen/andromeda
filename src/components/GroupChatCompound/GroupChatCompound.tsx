@@ -277,7 +277,7 @@ function Messages() {
       }}
     >
       <FlatList
-        initialNumToRender={20}
+        initialNumToRender={5}
         maxToRenderPerBatch={1}
         inverted
         data={messages}

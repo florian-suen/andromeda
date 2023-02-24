@@ -57,6 +57,7 @@ type file = {
   uri: string;
   mimeType: string;
   name: string;
+  size: string;
 };
 
 export const InputBox = ({
@@ -421,6 +422,7 @@ const addAttachment = async (
     name: file.name,
     messageID: messageId,
     chatgroupID: chatGroupId,
+    size: file.size,
   };
   API.graphql(graphqlOperation(createAttachment, { input: newAttachment }));
 };

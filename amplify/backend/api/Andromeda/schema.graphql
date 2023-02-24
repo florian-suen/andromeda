@@ -34,6 +34,7 @@ type Attachment @model @auth(rules: [{ allow: public }]) {
   messageID: ID! @index(name: "byMessage")
   chatgroupID: ID! @index(name: "byChatGroup")
   name: String!
+  size: String!
 }
 
 type ChatGroup @model @auth(rules: [{ allow: public }]) {

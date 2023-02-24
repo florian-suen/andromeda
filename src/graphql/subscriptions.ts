@@ -76,6 +76,7 @@ export const onCreateAttachment = /* GraphQL */ `
       messageID
       chatgroupID
       name
+      size
       createdAt
       updatedAt
       _version
@@ -95,6 +96,7 @@ export const onUpdateAttachment = /* GraphQL */ `
       messageID
       chatgroupID
       name
+      size
       createdAt
       updatedAt
       _version
@@ -114,6 +116,7 @@ export const onDeleteAttachment = /* GraphQL */ `
       messageID
       chatgroupID
       name
+      size
       createdAt
       updatedAt
       _version

@@ -4,24 +4,24 @@ import {
   StyleSheet,
   Image,
   Pressable,
-  FlatList,
   ActivityIndicator,
-  Animated,
 } from "react-native";
 import { useContext, useRef } from "react";
+import * as FileSystem from "expo-file-system";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Storage } from "aws-amplify";
 import { useState, useEffect } from "react";
 import ImageView from "react-native-image-viewing";
 import { Feather } from "@expo/vector-icons";
-
 import { Video, ResizeMode } from "expo-av";
 import { userContext } from "../../../utility/userAuth";
 import { Attachments, Media } from "../../redux/messages/messageSlice";
 import Colors from "../../constants/Colors";
 import { MediaItem } from "../Blogs/BlogComponent";
 import { BlurView } from "expo-blur";
+import * as MediaLibrary from "expo-media-library";
+import { ProgressBar, MD3Colors } from "react-native-paper";
 
 dayjs.extend(relativeTime);
 
@@ -36,23 +36,28 @@ export type Message = {
   Attachments: { items: Attachments[] };
 };
 
+interface AttachmentType extends Attachments {
+  uri: string;
+}
+
 export const Message = ({
   message,
 }: {
   message: Message;
   openSelector: boolean;
 }) => {
+  let currentIndex = 0;
   const myMsg = useRef(false);
   const userAuth = useContext(userContext);
-  const [attachments, setAttachments] = useState<any>([]);
+  const [attachments, setAttachments] = useState<AttachmentType[]>([]);
   const [mediaSrc, setMediaSrc] = useState<MediaItem[]>([]);
   const [imageViewerVisibility, setimageViewerVisibility] = useState(false);
+  const [progress, setProgress] = useState<number[][]>([[0]]);
+
   const isMaxedImage = mediaSrc.length > 4;
   let imgViewerIndex = useRef(0);
-
   if (userAuth && message.userID === userAuth.attributes.sub)
     myMsg.current = true;
-
   useEffect(() => {
     const getAttachements = async () => {
       if (message && message.Attachments && message.Attachments.items.length) {
@@ -70,7 +75,6 @@ export const Message = ({
 
     getAttachements();
   }, [message.Attachments.items]);
-
   useEffect(() => {
     const getMedia = async () => {
       if (message && message.Media && message.Media.items.length) {
@@ -88,8 +92,89 @@ export const Message = ({
     getMedia();
   }, [message.Media.items.length]);
 
+  const callback = (downloadProgress: FileSystem.DownloadProgressData) => {
+    const currentProgress =
+      downloadProgress.totalBytesWritten /
+      downloadProgress.totalBytesExpectedToWrite;
+    setProgress((progress) => {
+      const value = [...progress, [0]];
+      value[currentIndex] = [currentProgress];
+      return [...value];
+    });
+  };
+
+  const downloadAttachments = async () => {
+    const dateCreated = Date.parse(message.createdAt!);
+    let downloadedUri = [];
+    for (let i = 0; i < attachments.length; i += 1) {
+      currentIndex = i;
+      const checkDownloaded = await FileSystem.getInfoAsync(
+        `${FileSystem.cacheDirectory}/${dateCreated}/`
+      );
+
+      /*  if (checkDownloaded.exists) {
+        return;
+      }
+ */
+      !checkDownloaded.exists &&
+        FileSystem.makeDirectoryAsync(
+          `${FileSystem.cacheDirectory}/${dateCreated}`
+        );
+
+      const downloadFile = FileSystem.createDownloadResumable(
+        attachments[i].uri,
+        `${FileSystem.cacheDirectory}/${dateCreated}/${attachments[i].name}`,
+        {},
+        callback
+      );
+
+      try {
+        const downloadedFile = await downloadFile.downloadAsync();
+        console.log("Finished downloading to ", downloadedFile?.uri);
+        downloadedUri.push(downloadedFile?.uri);
+      } catch (e) {
+        console.error(e);
+      }
+
+      addMedia(
+        downloadedUri.filter((item): item is string => item !== undefined)
+      );
+    }
+  };
+
+  const addMedia = async (uri: string[]) => {
+    let status;
+    const permission = await MediaLibrary.getPermissionsAsync();
+    if (permission.status !== "granted") {
+      const requestPermission = await MediaLibrary.requestPermissionsAsync();
+      status = requestPermission.status;
+    }
+
+    if (status !== "granted") {
+      return;
+    }
+
+    try {
+      const asset = await Promise.all(
+        uri.map((uri) => {
+          return MediaLibrary.createAssetAsync(uri);
+        })
+      );
+
+      const album = await MediaLibrary.getAlbumAsync("Download");
+      if (album === null) {
+        await MediaLibrary.createAlbumAsync("Andromeda", asset[0], false);
+      }
+
+      await MediaLibrary.addAssetsToAlbumAsync(asset, album, false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <View
+      key={message.id}
       style={[
         {
           flexDirection: "row",
@@ -139,12 +224,12 @@ export const Message = ({
               onRequestClose={() => setimageViewerVisibility(false)}
             />
 
-            <FlatList
+            <View
               style={{
                 flexDirection: "row",
                 flexWrap: "wrap",
                 width: "100%",
-                marginBottom: -15,
+                marginBottom: 5,
                 backgroundColor: myMsg.current
                   ? Colors.accentDark
                   : Colors.messageOneDark,
@@ -152,11 +237,12 @@ export const Message = ({
                 borderWidth: StyleSheet.hairlineWidth,
                 borderColor: "mistyrose",
               }}
-              data={mediaSrc}
-              renderItem={({ item, index }) => {
+            >
+              {mediaSrc.map((item, index) => {
                 if (index < 4) {
                   return (
                     <Pressable
+                      key={index}
                       style={styles.imageContainer}
                       onPress={() => {
                         imgViewerIndex.current = index;
@@ -207,22 +293,56 @@ export const Message = ({
                     </Pressable>
                   );
                 }
-
                 return null;
-              }}
-            />
+              })}
+            </View>
           </>
         )}
 
         {attachments.length > 0 && (
-          <FlatList
-            data={attachments}
-            renderItem={({ item }) => {
-              return <Text>You have files {item.type}</Text>;
-            }}
-          />
+          <>
+            <View
+              key={message.createdAt}
+              style={{
+                backgroundColor: Colors.accentDark,
+                padding: 5,
+                borderRadius: 3,
+                borderWidth: StyleSheet.hairlineWidth,
+                marginBottom: 5,
+              }}
+            >
+              {attachments.map((item, index) => {
+                return (
+                  <View key={item.updatedAt}>
+                    <Text>File Name: {item.name}</Text>
+                    <ProgressBar
+                      visible={
+                        progress[index] !== undefined && progress[index][0] > 0
+                      }
+                      progress={progress[index] ? progress[index][0] : 0.5}
+                      color={"green"}
+                    />
+                  </View>
+                );
+              })}
+              <View style={{ flexDirection: "row", padding: 3, marginTop: 5 }}>
+                <Text style={{ marginTop: 5, flex: 1 }}>{`Total Size: ${(
+                  attachments.reduce((prev, curr) => {
+                    return prev + Number(curr.size);
+                  }, 0) /
+                  1000 /
+                  1000
+                ).toFixed(2)} MB`}</Text>
+                <Pressable onPress={() => downloadAttachments()}>
+                  <Feather name="download" size={24} color="black" />
+                </Pressable>
+              </View>
+            </View>
+          </>
         )}
-        <Text style={styles.message}>{message.message}</Text>
+        {message.message ? (
+          <Text style={styles.message}>{message.message}</Text>
+        ) : null}
         {message.status !== "sending" && (
           <Text style={styles.time}>
             {dayjs(message.createdAt).fromNow(true)}
@@ -240,7 +360,6 @@ const styles = StyleSheet.create({
     width: 110,
   },
   imageContainer: {
-    flex: 1,
     padding: StyleSheet.hairlineWidth,
   },
   container: {

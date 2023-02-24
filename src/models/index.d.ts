@@ -75,6 +75,7 @@ type EagerAttachment = {
   readonly messageID: string;
   readonly chatgroupID: string;
   readonly name: string;
+  readonly size: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -90,6 +91,7 @@ type LazyAttachment = {
   readonly messageID: string;
   readonly chatgroupID: string;
   readonly name: string;
+  readonly size: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

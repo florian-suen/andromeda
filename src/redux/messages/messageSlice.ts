@@ -33,6 +33,7 @@ export type Attachments = {
   _version: string;
   _lastChangedAt: string;
   _deleted: string;
+  size: string;
 };
 export interface MessageType {
   status: "sending" | "complete" | "error";

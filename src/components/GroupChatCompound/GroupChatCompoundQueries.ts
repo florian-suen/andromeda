@@ -33,7 +33,6 @@ export const listMessagesByChatGroup = /* GraphQL */ `
             height
           }
         }
-
         Attachments {
           items {
             chatgroupID
@@ -47,6 +46,7 @@ export const listMessagesByChatGroup = /* GraphQL */ `
             _version
             _lastChangedAt
             _deleted
+            size
           }
         }
         updatedAt
