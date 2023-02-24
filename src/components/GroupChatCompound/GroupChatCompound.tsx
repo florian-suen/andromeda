@@ -177,7 +177,7 @@ function Menu({ children }: PropsWithChildren) {
         style={styles.modalOverlay}
         onPress={() => setModalVisible(!modalVisible)}
       ></Pressable>
-      <BlurView intensity={50} style={styles.modalContainer}>
+      <BlurView intensity={100} style={styles.modalContainer}>
         <Text
           style={{
             fontFamily: "Chakra",

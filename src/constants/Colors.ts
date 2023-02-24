@@ -11,4 +11,7 @@ export default {
   messageOne: "#569DA3",
   messageTwo: "#B2A59F",
   peacock: "#002c2F",
+  attachBoxOne: "#a19792",
+  attachBoxTwo: "#107c94",
+  progressBar: "purple",
 };

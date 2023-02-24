@@ -53,14 +53,18 @@ export const Message = ({
   const [mediaSrc, setMediaSrc] = useState<MediaItem[]>([]);
   const [imageViewerVisibility, setimageViewerVisibility] = useState(false);
   const [progress, setProgress] = useState<number[][]>([[0]]);
-
+  const disableButton = useRef(false);
+  const attachmentExists =
+    message && message.Attachments && message.Attachments.items.length > 0;
+  const mediaExists =
+    message && message.Media && message.Media.items.length > 0;
   const isMaxedImage = mediaSrc.length > 4;
   let imgViewerIndex = useRef(0);
   if (userAuth && message.userID === userAuth.attributes.sub)
     myMsg.current = true;
   useEffect(() => {
     const getAttachements = async () => {
-      if (message && message.Attachments && message.Attachments.items.length) {
+      if (attachmentExists) {
         const uriAttachments = await Promise.all(
           message.Attachments.items.map((attachment: any) =>
             Storage.get(attachment.storageKey).then((uri) => ({
@@ -298,30 +302,66 @@ export const Message = ({
             </View>
           </>
         )}
+        {attachmentExists && attachments.length === 0 && (
+          <ActivityIndicator style={{ padding: 10 }} />
+        )}
 
+        {mediaExists && mediaSrc.length === 0 && (
+          <ActivityIndicator style={{ padding: 10 }} />
+        )}
         {attachments.length > 0 && (
           <>
             <View
               key={message.createdAt}
               style={{
-                backgroundColor: Colors.accentDark,
-                padding: 5,
+                backgroundColor: myMsg.current
+                  ? Colors.attachBoxOne
+                  : Colors.attachBoxTwo,
+                padding: 10,
                 borderRadius: 3,
                 borderWidth: StyleSheet.hairlineWidth,
-                marginBottom: 5,
               }}
             >
               {attachments.map((item, index) => {
                 return (
                   <View key={item.updatedAt}>
                     <Text>File Name: {item.name}</Text>
-                    <ProgressBar
-                      visible={
-                        progress[index] !== undefined && progress[index][0] > 0
-                      }
-                      progress={progress[index] ? progress[index][0] : 0.5}
-                      color={"green"}
-                    />
+                    {progress[index] !== undefined &&
+                    progress[index][0] !== undefined &&
+                    progress[index][0] > 0 ? (
+                      <View
+                        style={{
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "Exo2",
+                            fontSize: 10,
+                            marginRight: 5,
+                          }}
+                        >
+                          {progress[index] !== undefined &&
+                          progress[index][0] === 1
+                            ? "Completed"
+                            : "Downloading"}
+                        </Text>
+                        <ProgressBar
+                          style={{
+                            backgroundColor: "white",
+                            marginVertical: 5,
+                            height: 4,
+                            width: "50%",
+                          }}
+                          visible={
+                            progress[index] !== undefined &&
+                            progress[index][0] > 0
+                          }
+                          progress={progress[index] ? progress[index][0] : 0.5}
+                          color={Colors.progressBar}
+                        />
+                      </View>
+                    ) : null}
                   </View>
                 );
               })}
@@ -333,8 +373,19 @@ export const Message = ({
                   1000 /
                   1000
                 ).toFixed(2)} MB`}</Text>
-                <Pressable onPress={() => downloadAttachments()}>
-                  <Feather name="download" size={24} color="black" />
+                <Pressable
+                  disabled={disableButton.current}
+                  onPress={() => {
+                    !disableButton.current && downloadAttachments();
+                    disableButton.current = true;
+                  }}
+                >
+                  <Feather
+                    style={{ opacity: progress[0][0] > 0 ? 0.2 : 1 }}
+                    name="download"
+                    size={24}
+                    color="black"
+                  />
                 </Pressable>
               </View>
             </View>
