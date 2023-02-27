@@ -2,6 +2,8 @@ import {
   createBottomTabNavigator,
   BottomTabBarButtonProps,
 } from "@react-navigation/bottom-tabs";
+
+import { FontAwesome } from "@expo/vector-icons";
 import { ChatList } from "../screens/ChatsList/ChatsListScreen";
 import { AccountScreen } from "../screens/AccountScreen";
 import { ContactScreen } from "../screens/ContactScreen";
@@ -13,9 +15,10 @@ import {
   MaterialCommunityIcons,
   AntDesign,
 } from "@expo/vector-icons";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import React from "react";
 import colors from "../constants/Colors";
+import Colors from "../constants/Colors";
 
 const tabArray = [
   {
@@ -127,6 +130,19 @@ const TabButton = ({
 const Tab = createBottomTabNavigator();
 
 export const TabNavigator = () => {
+  const rotation = new Animated.Value(0);
+  const [openMenu, setOpenMenu] = useState(false);
+  const interpolateRotation = rotation.interpolate({
+    inputRange: [0, 0.1, 0.3, 0.5, 0.7, 1],
+    outputRange: ["0deg", "40deg", "0deg", "70deg", "160deg", "360deg"],
+  });
+
+  const rotateTiming = Animated.timing(rotation, {
+    toValue: 1,
+    duration: 1000,
+    useNativeDriver: true,
+  });
+
   return (
     <Tab.Navigator
       initialRouteName="Chats"
@@ -137,34 +153,53 @@ export const TabNavigator = () => {
               <View style={styles.headerContainer}>
                 <Text
                   style={{
-                    fontSize: 40,
-                    height: 200,
-                    width: 200,
+                    fontSize: 25,
+                    marginTop: 40,
                     fontFamily: "Chakra",
+                    color: Colors.accentDark,
                   }}
                 >
                   {route.name}
                 </Text>
-
-                <Ionicons
-                  name="scan-outline"
-                  size={60}
-                  color="black"
-                  onPress={() => navigation.navigate("Scan")}
-                />
-                <AntDesign
-                  name="qrcode"
-                  size={50}
-                  color="black"
-                  onPress={() => navigation.navigate("QRCode")}
-                />
-                <MaterialCommunityIcons
-                  name="chat-plus-outline"
-                  onPress={() => navigation.navigate("SelectContacts")}
-                  size={20}
-                  color=" teal"
-                  style={{ marginRight: 12 }}
-                />
+                <Animated.View
+                  style={{
+                    position: "absolute",
+                    right: 15,
+                    bottom: 10,
+                    transform: [{ rotate: interpolateRotation }],
+                  }}
+                >
+                  <FontAwesome
+                    onPress={() => {
+                      rotateTiming.start(({ finished }) => {
+                        finished && rotateTiming.reset();
+                      });
+                      setOpenMenu(true);
+                    }}
+                    name="cog"
+                    size={25}
+                    color="black"
+                  />
+                </Animated.View>
+                {true && (
+                  <View style={styles.openMenuContainer}>
+                    <View style={styles.openMenuText}>
+                      <Text>New Chat</Text>
+                    </View>
+                    <View style={styles.openMenuText}>
+                      <Ionicons
+                        name="scan-outline"
+                        size={60}
+                        color="black"
+                        onPress={() => navigation.navigate("Scan")}
+                      />
+                      <Text>Scan</Text>
+                    </View>
+                    <View style={styles.openMenuText}>
+                      <Text>Some Text Here</Text>
+                    </View>
+                  </View>
+                )}
               </View>
             );
           },
@@ -225,8 +260,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerContainer: {
-    height: 100,
+    height: 90,
     backgroundColor: colors.secondary,
-    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  openMenuContainer: {
+    position: "absolute",
+    width: 100,
+    right: 0,
+    top: 100,
+  },
+  openMenuText: {
+    borderRadius: 5,
+
+    padding: 5,
+
+    backgroundColor: "white",
   },
 });
