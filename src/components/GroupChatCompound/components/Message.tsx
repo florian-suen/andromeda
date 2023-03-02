@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { Animated, FlatList } from "react-native";
 import { Message } from "../../Message/Message";
-import { UserContext } from "../GroupChatCompound";
+import { UserContext } from "../context";
 
 export const Messages = () => {
   const {

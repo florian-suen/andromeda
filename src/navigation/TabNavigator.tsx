@@ -2,7 +2,6 @@ import {
   createBottomTabNavigator,
   BottomTabBarButtonProps,
 } from "@react-navigation/bottom-tabs";
-
 import { FontAwesome } from "@expo/vector-icons";
 import { ChatList } from "../screens/ChatsList/ChatsListScreen";
 import { AccountScreen } from "../screens/AccountScreen";
@@ -10,15 +9,12 @@ import { ContactScreen } from "../screens/ContactScreen";
 import { BlogScreen } from "../screens/BlogScreen";
 import { View, Text, Pressable, Animated, StyleSheet } from "react-native";
 import { Icon, Icons } from "../components/Icon/Icon";
-import {
-  Ionicons,
-  MaterialCommunityIcons,
-  AntDesign,
-} from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
 import React from "react";
 import colors from "../constants/Colors";
 import Colors from "../constants/Colors";
+import { createAnimation, AnimationType } from "../../utility/createAnimation";
 
 const tabArray = [
   {
@@ -136,12 +132,65 @@ export const TabNavigator = () => {
     inputRange: [0, 0.1, 0.3, 0.5, 0.7, 1],
     outputRange: ["0deg", "40deg", "0deg", "70deg", "160deg", "360deg"],
   });
-
   const rotateTiming = Animated.timing(rotation, {
     toValue: 1,
     duration: 1000,
     useNativeDriver: true,
   });
+
+  const menuAnimationOpen = createAnimation([
+    { type: "opacity", startValue: 0, toValue: 1, delay: 0 },
+    { type: "scale", startValue: 0, toValue: 1, delay: 0 },
+    { type: "translateX", startValue: -50, toValue: 0, delay: 0 },
+  ]);
+
+  const menuAnimationClose = createAnimation([
+    {
+      type: "opacity",
+      startValue: menuAnimationOpen.opacity?.startValue!,
+      toValue: 0,
+      delay: 250,
+    },
+    {
+      type: "scale",
+      startValue: menuAnimationOpen.scale?.startValue!,
+      toValue: 0,
+      delay: 250,
+    },
+    {
+      type: "translateX",
+      startValue: menuAnimationOpen.translateX?.startValue!,
+      toValue: -50,
+      delay: 250,
+    },
+  ]);
+
+  const secondMenuAnimationOpen = createAnimation([
+    { type: "opacity", startValue: 0, toValue: 1, delay: 250 },
+    { type: "scale", startValue: 0, toValue: 1, delay: 250 },
+    { type: "translateX", startValue: -50, toValue: 0, delay: 250 },
+  ]);
+
+  const secondMenuAnimationClose = createAnimation([
+    {
+      type: "opacity",
+      startValue: secondMenuAnimationOpen.opacity?.startValue!,
+      toValue: 0,
+      delay: 0,
+    },
+    {
+      type: "scale",
+      startValue: secondMenuAnimationOpen.scale?.startValue!,
+      toValue: 0,
+      delay: 0,
+    },
+    {
+      type: "translateX",
+      startValue: secondMenuAnimationOpen.translateX?.startValue!,
+      toValue: -50,
+      delay: 0,
+    },
+  ]);
 
   return (
     <Tab.Navigator
@@ -174,6 +223,38 @@ export const TabNavigator = () => {
                       rotateTiming.start(({ finished }) => {
                         finished && rotateTiming.reset();
                       });
+                      if (openMenu === true) {
+                        Object.keys(menuAnimationClose).forEach((item) => {
+                          menuAnimationClose[
+                            item as AnimationType
+                          ]!.timing().start(({ finished }) => {
+                            finished && setOpenMenu(false);
+                          });
+                        });
+
+                        Object.keys(secondMenuAnimationClose).forEach(
+                          (item) => {
+                            secondMenuAnimationClose[
+                              item as AnimationType
+                            ]!.timing().start();
+                          }
+                        );
+
+                        return;
+                      }
+
+                      Object.keys(menuAnimationOpen).forEach((item) => {
+                        menuAnimationOpen[
+                          item as AnimationType
+                        ]!.timing().start();
+                      });
+
+                      Object.keys(secondMenuAnimationOpen).forEach((item) => {
+                        secondMenuAnimationOpen[
+                          item as AnimationType
+                        ]!.timing().start();
+                      });
+
                       setOpenMenu(true);
                     }}
                     name="cog"
@@ -181,30 +262,67 @@ export const TabNavigator = () => {
                     color="black"
                   />
                 </Animated.View>
-                {true && (
+                {openMenu && (
                   <View style={styles.openMenuContainer}>
-                    <View style={styles.openMenuText}>
+                    <Animated.View
+                      style={[
+                        styles.openMenuText,
+                        {
+                          opacity: menuAnimationOpen.opacity?.startValue,
+                          transform: [
+                            {
+                              translateX:
+                                menuAnimationOpen.translateX?.startValue!,
+                            },
+                            { scaleX: menuAnimationOpen.scale?.startValue! },
+                          ],
+                        },
+                      ]}
+                    >
+                      <MaterialCommunityIcons
+                        name="chat-plus"
+                        size={20}
+                        color="black"
+                        onPress={() => navigation.navigate("ChatContacts")}
+                        style={{ marginRight: 5 }}
+                      />
                       <Text>New Chat</Text>
-                    </View>
-                    <View style={styles.openMenuText}>
+                    </Animated.View>
+                    <Animated.View
+                      style={[
+                        styles.openMenuText,
+                        {
+                          minWidth: "100%",
+                          opacity: secondMenuAnimationOpen.opacity?.startValue,
+                          transform: [
+                            {
+                              translateX:
+                                secondMenuAnimationOpen.translateX?.startValue!,
+                            },
+                            {
+                              scaleX:
+                                secondMenuAnimationOpen.scale?.startValue!,
+                            },
+                          ],
+                        },
+                      ]}
+                    >
                       <Ionicons
                         name="scan-outline"
-                        size={60}
+                        size={20}
                         color="black"
                         onPress={() => navigation.navigate("Scan")}
+                        style={{ marginRight: 5 }}
                       />
                       <Text>Scan</Text>
-                    </View>
-                    <View style={styles.openMenuText}>
-                      <Text>Some Text Here</Text>
-                    </View>
+                    </Animated.View>
                   </View>
                 )}
               </View>
             );
           },
 
-          tabBarLabel: ({ focused, color }) => {
+          tabBarLabel: ({ focused }) => {
             return focused ? (
               <Text
                 style={{
@@ -267,15 +385,14 @@ const styles = StyleSheet.create({
   },
   openMenuContainer: {
     position: "absolute",
-    width: 100,
-    right: 0,
-    top: 100,
+    width: 107,
+    right: 7,
+    top: 85,
   },
   openMenuText: {
-    borderRadius: 5,
-
-    padding: 5,
-
-    backgroundColor: "white",
+    flexDirection: "row",
+    padding: 10,
+    backgroundColor: Colors.accent,
+    marginBottom: 0.2,
   },
 });

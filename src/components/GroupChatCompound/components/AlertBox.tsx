@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { View, Text } from "react-native";
-import { UserContext } from "../GroupChatCompound";
+import { UserContext } from "../context";
 
 export const AlertBox = () => {
   const {

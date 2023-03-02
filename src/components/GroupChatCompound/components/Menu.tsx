@@ -13,8 +13,8 @@ import {
 } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { ChatGroupType } from "../../../redux/chatGroup/chatGroupSlice";
-import { UserContext } from "../GroupChatCompound";
 import { FontAwesome } from "@expo/vector-icons";
+import { UserContext } from "../context";
 export const Menu = () => {
   const {
     chatGroup: { chatGroupData },

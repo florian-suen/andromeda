@@ -13,12 +13,9 @@ import { InputBox } from "./components/Input";
 import { removeUserHandler } from "./functions/removeUserHandler";
 import { userChatGroupSubscription } from "./functions/ChatGroupSubscription";
 import { setNavHeaderOptions } from "./functions/setNavHeaderOptions";
-export const UserContext = createContext<GroupChatContext>(
-  {} as GroupChatContext
-);
+import { UserContext } from "./context";
 export const GroupChat = ({ children }: PropsWithChildren) => {
   const transformY = useRef(new Animated.Value(0));
-
   const route = useRoute<RouteProp<ChatGroupParam>>();
   const navigation =
     useNavigation<NativeStackNavigationProp<AddContactParam>>();
@@ -44,12 +41,10 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
       duration: 300,
       useNativeDriver: true,
     }).start();
-
   userChatGroupSubscription(chatGroupId, chatGroupData, dispatch);
   setNavHeaderOptions(navigation, chatGroupData, modalVisible, setModalVisible);
   subCreateMessage(chatGroupId, dispatch);
   subUpdateChatGroup(chatGroupData, chatGroupId, dispatch);
-
   return (
     <UserContext.Provider
       value={{

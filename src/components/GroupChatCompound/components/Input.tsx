@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
-import { UserContext } from "../GroupChatCompound";
+
 import { InputBox as InputBoxComponent } from "../../InputBox/InputBox";
+import { UserContext } from "../context";
 export const InputBox = () => {
   const {
     messageTiming: { reverseTranslateYTiming },
