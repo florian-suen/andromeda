@@ -19,7 +19,7 @@ export const Index = () => {
         colors={[Colors.primary, Colors.secondary]}
         start={{ x: 1, y: 0.4 }}
         end={{ x: 0.5, y: 1.5 }}
-        style={{ flex: 1 }}
+        style={{ flex: 1, position: "relative" }}
       >
         {fontsLoaded ? <Navigator /> : null}
         <StatusBar style="dark" />

@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Animated } from "react-native";
 
-export type AnimationType = "opacity" | "scale" | "translateX";
+export type AnimationType = "opacity" | "scale" | "translateX" | "rotate";
 
 type Animation = {
   type: AnimationType;

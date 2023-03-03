@@ -35,7 +35,9 @@ export const Navigator = () => {
         <Stack.Navigator
           initialRouteName="Home"
           screenOptions={{
-            contentStyle: { backgroundColor: "transparent" },
+            contentStyle: {
+              backgroundColor: "transparent",
+            },
             headerTitleStyle: { color: myTheme.colors.primary },
             headerTitleAlign: "center",
           }}

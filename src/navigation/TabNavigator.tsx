@@ -7,7 +7,14 @@ import { ChatList } from "../screens/ChatsList/ChatsListScreen";
 import { AccountScreen } from "../screens/AccountScreen";
 import { ContactScreen } from "../screens/ContactScreen";
 import { BlogScreen } from "../screens/BlogScreen";
-import { View, Text, Pressable, Animated, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  Animated,
+  StyleSheet,
+  Modal,
+} from "react-native";
 import { Icon, Icons } from "../components/Icon/Icon";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
@@ -126,16 +133,13 @@ const TabButton = ({
 const Tab = createBottomTabNavigator();
 
 export const TabNavigator = () => {
-  const rotation = new Animated.Value(0);
   const [openMenu, setOpenMenu] = useState(false);
-  const interpolateRotation = rotation.interpolate({
+  const cogRotate = createAnimation([
+    { type: "rotate", startValue: 0, toValue: 1, duration: 1000 },
+  ]);
+  const interpolateRotation = cogRotate.rotate?.startValue.interpolate({
     inputRange: [0, 0.1, 0.3, 0.5, 0.7, 1],
-    outputRange: ["0deg", "40deg", "0deg", "70deg", "160deg", "360deg"],
-  });
-  const rotateTiming = Animated.timing(rotation, {
-    toValue: 1,
-    duration: 1000,
-    useNativeDriver: true,
+    outputRange: ["0deg", "40deg", "0deg", "70deg", "130deg", "180deg"],
   });
 
   const menuAnimationOpen = createAnimation([
@@ -192,6 +196,40 @@ export const TabNavigator = () => {
     },
   ]);
 
+  const closingAnimation = () => {
+    Object.keys(menuAnimationClose).forEach((item, index, arr) => {
+      menuAnimationClose[item as AnimationType]!.timing().start(
+        ({ finished }) => {
+          finished && index === arr.length - 1 && setOpenMenu(false);
+        }
+      );
+    });
+
+    Object.keys(secondMenuAnimationClose).forEach((item) => {
+      secondMenuAnimationClose[item as AnimationType]!.timing().start();
+    });
+  };
+
+  const resetAnimation = () => {
+    Object.keys(menuAnimationClose).forEach((item, index, arr) => {
+      menuAnimationClose[item as AnimationType]!.timing().reset();
+    });
+
+    Object.keys(secondMenuAnimationClose).forEach((item) => {
+      secondMenuAnimationClose[item as AnimationType]!.timing().reset();
+    });
+  };
+
+  const openingAnimation = () => {
+    Object.keys(menuAnimationOpen).forEach((item) => {
+      menuAnimationOpen[item as AnimationType]!.timing().start();
+    });
+
+    Object.keys(secondMenuAnimationOpen).forEach((item) => {
+      secondMenuAnimationOpen[item as AnimationType]!.timing().start();
+    });
+  };
+
   return (
     <Tab.Navigator
       initialRouteName="Chats"
@@ -215,45 +253,24 @@ export const TabNavigator = () => {
                     position: "absolute",
                     right: 15,
                     bottom: 10,
-                    transform: [{ rotate: interpolateRotation }],
+                    transform: [
+                      {
+                        rotate: interpolateRotation!,
+                      },
+                    ],
                   }}
                 >
                   <FontAwesome
                     onPress={() => {
-                      rotateTiming.start(({ finished }) => {
-                        finished && rotateTiming.reset();
+                      cogRotate.rotate?.timing().start(({ finished }) => {
+                        finished && cogRotate.rotate?.timing().reset();
                       });
                       if (openMenu === true) {
-                        Object.keys(menuAnimationClose).forEach((item) => {
-                          menuAnimationClose[
-                            item as AnimationType
-                          ]!.timing().start(({ finished }) => {
-                            finished && setOpenMenu(false);
-                          });
-                        });
-
-                        Object.keys(secondMenuAnimationClose).forEach(
-                          (item) => {
-                            secondMenuAnimationClose[
-                              item as AnimationType
-                            ]!.timing().start();
-                          }
-                        );
-
+                        closingAnimation();
                         return;
                       }
 
-                      Object.keys(menuAnimationOpen).forEach((item) => {
-                        menuAnimationOpen[
-                          item as AnimationType
-                        ]!.timing().start();
-                      });
-
-                      Object.keys(secondMenuAnimationOpen).forEach((item) => {
-                        secondMenuAnimationOpen[
-                          item as AnimationType
-                        ]!.timing().start();
-                      });
+                      openingAnimation();
 
                       setOpenMenu(true);
                     }}
@@ -262,62 +279,122 @@ export const TabNavigator = () => {
                     color="black"
                   />
                 </Animated.View>
-                {openMenu && (
-                  <View style={styles.openMenuContainer}>
-                    <Animated.View
-                      style={[
-                        styles.openMenuText,
-                        {
-                          opacity: menuAnimationOpen.opacity?.startValue,
-                          transform: [
+
+                <>
+                  <Modal transparent={true} visible={openMenu}>
+                    <Pressable
+                      style={{ flex: 1 }}
+                      onPress={() => {
+                        closingAnimation();
+                      }}
+                    ></Pressable>
+
+                    <View style={styles.openMenuContainer}>
+                      <Pressable
+                        onPress={() => {
+                          setOpenMenu(false);
+                          resetAnimation();
+                          navigation.navigate("SelectContacts");
+                        }}
+                      >
+                        <Animated.View
+                          style={[
+                            styles.openMenuText,
                             {
-                              translateX:
-                                menuAnimationOpen.translateX?.startValue!,
+                              opacity: menuAnimationOpen.opacity?.startValue,
+                              transform: [
+                                {
+                                  translateX:
+                                    menuAnimationOpen.translateX?.startValue!,
+                                },
+                                {
+                                  scaleX: menuAnimationOpen.scale?.startValue!,
+                                },
+                              ],
                             },
-                            { scaleX: menuAnimationOpen.scale?.startValue! },
-                          ],
-                        },
-                      ]}
-                    >
-                      <MaterialCommunityIcons
-                        name="chat-plus"
-                        size={20}
-                        color="black"
-                        onPress={() => navigation.navigate("ChatContacts")}
-                        style={{ marginRight: 5 }}
-                      />
-                      <Text>New Chat</Text>
-                    </Animated.View>
-                    <Animated.View
-                      style={[
-                        styles.openMenuText,
-                        {
-                          minWidth: "100%",
-                          opacity: secondMenuAnimationOpen.opacity?.startValue,
-                          transform: [
+                          ]}
+                        >
+                          <View
+                            style={{
+                              position: "absolute",
+                              top: -12,
+                              right: 0,
+                              left: 73.5,
+                              bottom: 0,
+                              marginTop: 10,
+                              marginHorizontal: 15,
+                            }}
+                          >
+                            <View style={{ position: "relative", top: 0 }}>
+                              <View
+                                style={{
+                                  position: "absolute",
+                                  top: 0,
+                                  left: -5,
+                                }}
+                              >
+                                <View
+                                  style={{
+                                    backgroundColor: Colors.accent,
+                                    width: 10,
+                                    height: 10,
+                                    transform: [{ rotate: "45deg" }],
+                                  }}
+                                ></View>
+                              </View>
+                            </View>
+                          </View>
+
+                          <MaterialCommunityIcons
+                            name="chat-plus"
+                            size={20}
+                            color="black"
+                            style={{ marginRight: 5 }}
+                          />
+                          <Text>New Chat</Text>
+                        </Animated.View>
+                      </Pressable>
+
+                      <Pressable
+                        onPress={() => {
+                          setOpenMenu(false);
+                          resetAnimation();
+                          navigation.navigate("Scan");
+                        }}
+                      >
+                        <Animated.View
+                          style={[
+                            styles.openMenuText,
                             {
-                              translateX:
-                                secondMenuAnimationOpen.translateX?.startValue!,
+                              minWidth: "100%",
+                              opacity:
+                                secondMenuAnimationOpen.opacity?.startValue,
+                              transform: [
+                                {
+                                  translateX:
+                                    secondMenuAnimationOpen.translateX
+                                      ?.startValue!,
+                                },
+                                {
+                                  scaleX:
+                                    secondMenuAnimationOpen.scale?.startValue!,
+                                },
+                              ],
                             },
-                            {
-                              scaleX:
-                                secondMenuAnimationOpen.scale?.startValue!,
-                            },
-                          ],
-                        },
-                      ]}
-                    >
-                      <Ionicons
-                        name="scan-outline"
-                        size={20}
-                        color="black"
-                        onPress={() => navigation.navigate("Scan")}
-                        style={{ marginRight: 5 }}
-                      />
-                      <Text>Scan</Text>
-                    </Animated.View>
-                  </View>
-                )}
+                          ]}
+                        >
+                          <Ionicons
+                            name="scan-outline"
+                            size={20}
+                            color="black"
+                            style={{ marginRight: 5 }}
+                          />
+                          <Text>Scan</Text>
+                        </Animated.View>
+                      </Pressable>
+                    </View>
+                  </Modal>
+                </>
               </View>
             );
           },
@@ -387,7 +464,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 107,
     right: 7,
-    top: 85,
+    top: 48,
   },
   openMenuText: {
     flexDirection: "row",
