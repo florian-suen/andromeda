@@ -15,14 +15,8 @@ import { GraphQLResult } from "@aws-amplify/api-graphql";
 import { useDebouncedSearch } from "../../../utility/useDebouncedSearch";
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
 import { UseAsyncReturn } from "react-async-hook";
-import { useRef } from "react";
-
-type RouteParam = {
-  AddFriend: {
-    currentUser: ContactType;
-  };
-};
-
+import { useContext, useRef } from "react";
+import { userContext } from "../../../utility/userAuth";
 interface userByInviteId {
   userByInviteId: {
     items: inviteUser[];
@@ -40,7 +34,7 @@ export const AddFriendScreen = () => {
   const { inputText, setInputText, searchResults } = useInviteCodeSearch();
   const contacts = useAppSelector((state) => state.contacts.contacts);
   const dispatch = useAppDispatch();
-  const route = useRoute<RouteProp<RouteParam>>();
+  const userAuth = useContext(userContext);
   const justAddedRef = useRef(false);
   const addFriendHandler = async (userContact?: ContactType) => {
     if (userContact) {
@@ -78,7 +72,7 @@ export const AddFriendScreen = () => {
     const createContactUser = await API.graphql(
       graphqlOperation(createUserContact, {
         input: {
-          userID: route.params.currentUser.id,
+          userID: userAuth?.attributes.sub,
           friendID: searchResults.result.id,
           requestStatus: "REQUESTED",
           sender: true,
@@ -97,7 +91,7 @@ export const AddFriendScreen = () => {
         graphqlOperation(createUserContact, {
           input: {
             userID: searchResults.result.id,
-            friendID: route.params.currentUser.id,
+            friendID: userAuth?.attributes.sub,
             requestStatus: "REQUESTED",
             sender: false,
             userContactUserContactId:
@@ -142,7 +136,7 @@ export const AddFriendScreen = () => {
           <AddButton
             contacts={contacts}
             searchResults={searchResults}
-            currentUserId={route.params.currentUser.id}
+            currentUserId={userAuth?.attributes.sub!}
             addFriendHandler={addFriendHandler}
             justAdded={justAddedRef.current}
           />

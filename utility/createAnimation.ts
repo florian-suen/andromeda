@@ -16,7 +16,7 @@ type AnimationValue = {
   startValue: Animated.Value;
 };
 
-type returnAnimation = {
+export type returnAnimation = {
   [P in Animation["type"]]?: AnimationValue;
 };
 

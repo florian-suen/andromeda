@@ -5,17 +5,13 @@ import {
   ViewStyle,
   ImageStyle,
   TextStyle,
-  FlatList,
 } from "react-native";
 import { Octicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ContactsComponent } from "../components/Contacts/Contacts";
-import { useThemeColor } from "../../utility/useStyles";
 import { useAppSelector } from "../../utility/useReduxHooks";
 import { ContactType } from "../redux/contactList/contactListSlice";
-import { RequestComponent } from "../components/Contacts/Request";
-import { BlockedComponent } from "../components/Contacts/Blocked";
 
 type RootStackParamList = {
   AddFriend: { currentUser: ContactType["friend"] };
@@ -26,7 +22,6 @@ export const ContactScreen = () => {
   const isSelectable = false;
   const scrollY = useRef(new Animated.Value(0)).current;
   const createGroupOpacity = useRef(new Animated.Value(0)).current;
-  const styles = StyleSheet.create(useThemeColor(styleSheet));
   const contactList = useAppSelector((state) => {
     return state.contacts.contacts;
   }).filter(
@@ -34,14 +29,6 @@ export const ContactScreen = () => {
       item.requestStatus === "ACCEPTED" &&
       item.userContact.requestStatus === "ACCEPTED"
   );
-
-  const contactBlocked = useAppSelector((state) => {
-    return state.contacts.contacts;
-  }).filter((item) => item.requestStatus === "BLOCKED" && item.sender);
-  const contactRequest = useAppSelector((state) => {
-    return state.contacts.contacts;
-  }).filter((item) => item.requestStatus === "REQUESTED" && !item.sender);
-
   const currentUser = useAppSelector((state) => {
     return state.currentUser.currentUser;
   });
@@ -77,20 +64,6 @@ export const ContactScreen = () => {
             currentUser: currentUser!,
           })
         }
-      />
-
-      <FlatList
-        data={contactRequest}
-        renderItem={({ item }) => {
-          return <RequestComponent requestUser={item} />;
-        }}
-      />
-
-      <FlatList
-        data={contactBlocked}
-        renderItem={({ item }) => {
-          return <BlockedComponent requestUser={item} />;
-        }}
       />
 
       <Animated.FlatList
