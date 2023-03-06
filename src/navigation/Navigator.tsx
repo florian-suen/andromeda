@@ -5,12 +5,11 @@ import { TabNavigator } from "./TabNavigator";
 import { GroupChatScreen } from "../screens/GroupChatScreen";
 import { AddContacts } from "../screens/AddNewContactScreen";
 import { QRCodeScreen } from "../screens/QRCodeScreen";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { ScanScreen } from "../screens/ScanScreen";
 import { AddFriendScreen } from "../screens/AddFriend/AddFriendScreen";
 import { ContactProfileScreen } from "../screens/ContactProfileScreen";
 import { AddBlogScreen } from "../screens/AddBlogScreen";
-import colors from "../constants/Colors";
 import Colors from "../constants/Colors";
 export const Navigator = () => {
   const Stack = createNativeStackNavigator();
@@ -20,11 +19,11 @@ export const Navigator = () => {
     dark: true,
     colors: {
       ...DefaultTheme.colors,
-      primary: colors.primary,
+      primary: Colors.primary,
       background: "transparent",
       text: "#B2A59F",
-      border: colors.secondary,
-      card: colors.secondary,
+      border: Colors.secondary,
+      card: Colors.secondary,
       notification: "red",
     },
   };

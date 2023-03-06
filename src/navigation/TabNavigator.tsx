@@ -5,7 +5,6 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import { ChatList } from "../screens/ChatsList/ChatsListScreen";
 import { AccountScreen } from "../screens/AccountScreen";
-import { ContactScreen } from "../screens/ContactScreen";
 import { BlogScreen } from "../screens/BlogScreen";
 import {
   View,
@@ -16,12 +15,17 @@ import {
   Modal,
 } from "react-native";
 import { Icon, Icons } from "../components/Icon/Icon";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
 import React from "react";
 import colors from "../constants/Colors";
 import Colors from "../constants/Colors";
-import { createAnimation, AnimationType } from "../../utility/createAnimation";
+import {
+  createAnimation,
+  AnimationType,
+  returnAnimation,
+} from "../../utility/createAnimation";
+import { ContactNavigator } from "./ContactNavigator";
 
 const tabArray = [
   {
@@ -33,12 +37,12 @@ const tabArray = [
     component: ChatList,
   },
   {
-    route: "Contacts",
+    route: "ContactsNavigator",
     label: "Contacts",
     type: Icons.MaterialCommunityIcons,
     activeIcon: "contacts",
     inActiveIcon: "contacts-outline",
-    component: ContactScreen,
+    component: ContactNavigator,
   },
   {
     route: "Moments",
@@ -67,7 +71,6 @@ const TabButton = ({
   onPress: BottomTabBarButtonProps["onPress"];
 }) => {
   const focused = accessibilityState && accessibilityState.selected;
-  const viewRef = useRef();
   const inputScale = useRef(new Animated.Value(1)).current;
   let inputOpacity = useRef(
     focused ? new Animated.Value(1) : new Animated.Value(0.2)
@@ -114,7 +117,6 @@ const TabButton = ({
   return (
     <Pressable onPress={onPress} style={styles.navContainer}>
       <Animated.View
-        ref={viewRef}
         style={{
           transform: [{ scale: inputScale }],
           opacity: inputOpacity.current,
@@ -129,10 +131,9 @@ const TabButton = ({
     </Pressable>
   );
 };
-
 const Tab = createBottomTabNavigator();
-
 export const TabNavigator = () => {
+  const disableModalClick = useRef(false);
   const [openMenu, setOpenMenu] = useState(false);
   const cogRotate = createAnimation([
     { type: "rotate", startValue: 0, toValue: 1, duration: 1000 },
@@ -141,101 +142,104 @@ export const TabNavigator = () => {
     inputRange: [0, 0.1, 0.3, 0.5, 0.7, 1],
     outputRange: ["0deg", "40deg", "0deg", "70deg", "130deg", "180deg"],
   });
-
   const menuAnimationOpen = createAnimation([
     { type: "opacity", startValue: 0, toValue: 1, delay: 0 },
     { type: "scale", startValue: 0, toValue: 1, delay: 0 },
     { type: "translateX", startValue: -50, toValue: 0, delay: 0 },
   ]);
-
+  const secondMenuAnimationOpen = createAnimation([
+    { type: "opacity", startValue: 0, toValue: 1, delay: 150 },
+    { type: "scale", startValue: 0, toValue: 1, delay: 150 },
+    { type: "translateX", startValue: -50, toValue: 0, delay: 150 },
+  ]);
+  const thirdMenuAnimationOpen = createAnimation([
+    { type: "opacity", startValue: 0, toValue: 1, delay: 300 },
+    { type: "scale", startValue: 0, toValue: 1, delay: 300 },
+    { type: "translateX", startValue: -50, toValue: 0, delay: 300 },
+  ]);
   const menuAnimationClose = createAnimation([
     {
       type: "opacity",
       startValue: menuAnimationOpen.opacity?.startValue!,
       toValue: 0,
-      delay: 250,
+      delay: 200,
     },
     {
       type: "scale",
       startValue: menuAnimationOpen.scale?.startValue!,
       toValue: 0,
-      delay: 250,
+      delay: 200,
     },
     {
       type: "translateX",
       startValue: menuAnimationOpen.translateX?.startValue!,
       toValue: -50,
-      delay: 250,
+      delay: 200,
     },
   ]);
-
-  const secondMenuAnimationOpen = createAnimation([
-    { type: "opacity", startValue: 0, toValue: 1, delay: 250 },
-    { type: "scale", startValue: 0, toValue: 1, delay: 250 },
-    { type: "translateX", startValue: -50, toValue: 0, delay: 250 },
-  ]);
-
   const secondMenuAnimationClose = createAnimation([
     {
       type: "opacity",
       startValue: secondMenuAnimationOpen.opacity?.startValue!,
       toValue: 0,
-      delay: 0,
+      delay: 100,
     },
     {
       type: "scale",
       startValue: secondMenuAnimationOpen.scale?.startValue!,
       toValue: 0,
-      delay: 0,
+      delay: 100,
     },
     {
       type: "translateX",
       startValue: secondMenuAnimationOpen.translateX?.startValue!,
       toValue: -50,
+      delay: 100,
+    },
+  ]);
+  const thirdMenuAnimationClose = createAnimation([
+    {
+      type: "opacity",
+      startValue: thirdMenuAnimationOpen.opacity?.startValue!,
+      toValue: 0,
+      delay: 0,
+    },
+    {
+      type: "scale",
+      startValue: thirdMenuAnimationOpen.scale?.startValue!,
+      toValue: 0,
+      delay: 0,
+    },
+    {
+      type: "translateX",
+      startValue: thirdMenuAnimationOpen.translateX?.startValue!,
+      toValue: -50,
       delay: 0,
     },
   ]);
-
-  const closingAnimation = () => {
-    Object.keys(menuAnimationClose).forEach((item, index, arr) => {
-      menuAnimationClose[item as AnimationType]!.timing().start(
-        ({ finished }) => {
-          finished && index === arr.length - 1 && setOpenMenu(false);
-        }
-      );
-    });
-
-    Object.keys(secondMenuAnimationClose).forEach((item) => {
-      secondMenuAnimationClose[item as AnimationType]!.timing().start();
-    });
-  };
-
-  const resetAnimation = () => {
-    Object.keys(menuAnimationClose).forEach((item, index, arr) => {
-      menuAnimationClose[item as AnimationType]!.timing().reset();
-    });
-
-    Object.keys(secondMenuAnimationClose).forEach((item) => {
-      secondMenuAnimationClose[item as AnimationType]!.timing().reset();
-    });
-  };
-
-  const openingAnimation = () => {
-    Object.keys(menuAnimationOpen).forEach((item) => {
-      menuAnimationOpen[item as AnimationType]!.timing().start();
-    });
-
-    Object.keys(secondMenuAnimationOpen).forEach((item) => {
-      secondMenuAnimationOpen[item as AnimationType]!.timing().start();
-    });
-  };
+  const openingAnimation = createMenuAnimation([
+    menuAnimationOpen,
+    secondMenuAnimationOpen,
+    thirdMenuAnimationOpen,
+  ]);
+  const closingAnimation = createMenuAnimation(
+    [thirdMenuAnimationClose, secondMenuAnimationClose, menuAnimationClose],
+    setOpenMenu,
+    disableModalClick
+  );
+  const resetAnimation = createMenuResetAnimation([
+    menuAnimationClose,
+    secondMenuAnimationClose,
+    thirdMenuAnimationClose,
+  ]);
 
   return (
     <Tab.Navigator
       initialRouteName="Chats"
       screenOptions={({ route, navigation }) => {
         return {
-          header: ({ route }) => {
+          header: ({ route, options }) => {
+            options.headerTitle;
             return (
               <View style={styles.headerContainer}>
                 <Text
@@ -246,7 +250,8 @@ export const TabNavigator = () => {
                     color: Colors.accentDark,
                   }}
                 >
-                  {route.name}
+                  {typeof options.headerTitle === "string" &&
+                    options.headerTitle}
                 </Text>
                 <Animated.View
                   style={{
@@ -269,9 +274,7 @@ export const TabNavigator = () => {
                         closingAnimation();
                         return;
                       }
-
                       openingAnimation();
-
                       setOpenMenu(true);
                     }}
                     name="cog"
@@ -282,12 +285,20 @@ export const TabNavigator = () => {
 
                 <>
                   <Modal transparent={true} visible={openMenu}>
-                    <Pressable
-                      style={{ flex: 1 }}
-                      onPress={() => {
-                        closingAnimation();
-                      }}
-                    ></Pressable>
+                    {!disableModalClick.current && (
+                      <Pressable
+                        android_disableSound={true}
+                        disabled={disableModalClick.current}
+                        style={{ flex: 1 }}
+                        onPress={() => {
+                          !disableModalClick.current && closingAnimation();
+                          disableModalClick.current = true;
+                          cogRotate.rotate?.timing().start(({ finished }) => {
+                            finished && cogRotate.rotate?.timing().reset();
+                          });
+                        }}
+                      ></Pressable>
+                    )}
 
                     <View style={styles.openMenuContainer}>
                       <Pressable
@@ -301,6 +312,8 @@ export const TabNavigator = () => {
                           style={[
                             styles.openMenuText,
                             {
+                              borderTopRightRadius: 5,
+                              borderTopLeftRadius: 2,
                               opacity: menuAnimationOpen.opacity?.startValue,
                               transform: [
                                 {
@@ -359,13 +372,14 @@ export const TabNavigator = () => {
                         onPress={() => {
                           setOpenMenu(false);
                           resetAnimation();
-                          navigation.navigate("Scan");
+                          navigation.navigate("AddFriend");
                         }}
                       >
                         <Animated.View
                           style={[
                             styles.openMenuText,
                             {
+                              paddingLeft: 10,
                               minWidth: "100%",
                               opacity:
                                 secondMenuAnimationOpen.opacity?.startValue,
@@ -378,6 +392,40 @@ export const TabNavigator = () => {
                                 {
                                   scaleX:
                                     secondMenuAnimationOpen.scale?.startValue!,
+                                },
+                              ],
+                            },
+                          ]}
+                        >
+                          <Octicons name="person-add" size={20} color="black" />
+                          <Text>Add Contact</Text>
+                        </Animated.View>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => {
+                          setOpenMenu(false);
+                          resetAnimation();
+                          navigation.navigate("Scan");
+                        }}
+                      >
+                        <Animated.View
+                          style={[
+                            styles.openMenuText,
+                            {
+                              borderBottomRightRadius: 5,
+                              borderBottomLeftRadius: 2,
+                              minWidth: "100%",
+                              opacity:
+                                thirdMenuAnimationOpen.opacity?.startValue,
+                              transform: [
+                                {
+                                  translateX:
+                                    thirdMenuAnimationOpen.translateX
+                                      ?.startValue!,
+                                },
+                                {
+                                  scaleX:
+                                    thirdMenuAnimationOpen.scale?.startValue!,
                                 },
                               ],
                             },
@@ -432,6 +480,8 @@ export const TabNavigator = () => {
             name={item.route}
             component={item.component}
             options={{
+              headerTitle: item.label,
+              tabBarLabel: item.label,
               tabBarShowLabel: true,
               tabBarButton: ({ accessibilityState, onPress }) => (
                 <TabButton
@@ -462,14 +512,49 @@ const styles = StyleSheet.create({
   },
   openMenuContainer: {
     position: "absolute",
-    width: 107,
+    width: 118,
     right: 7,
     top: 48,
   },
   openMenuText: {
     flexDirection: "row",
-    padding: 10,
+    padding: 8,
     backgroundColor: Colors.accent,
     marginBottom: 0.2,
   },
 });
+
+const createMenuResetAnimation = (animationList: returnAnimation[]) => {
+  return () =>
+    animationList.map((aniList) => {
+      Object.keys(aniList).forEach((item) => {
+        aniList[item as AnimationType]!.timing().reset();
+      });
+    });
+};
+
+const createMenuAnimation = (
+  animationList: returnAnimation[],
+  setOpenMenu?: React.Dispatch<React.SetStateAction<boolean>>,
+  disableModelClick?: React.MutableRefObject<boolean>
+) => {
+  return () =>
+    animationList.map((aniList) => {
+      Object.keys(aniList).forEach((item, index, arr) => {
+        if (setOpenMenu && index === arr.length - 1) {
+          aniList[item as AnimationType]!.timing().start(({ finished }) => {
+            finished &&
+              setTimeout(() => {
+                if (disableModelClick && disableModelClick.current === true) {
+                  disableModelClick.current = false;
+                }
+                setOpenMenu(false);
+              }, 350);
+          });
+
+          return;
+        }
+        aniList[item as AnimationType]!.timing().start();
+      });
+    });
+};
