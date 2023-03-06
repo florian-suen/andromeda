@@ -285,20 +285,18 @@ export const TabNavigator = () => {
 
                 <>
                   <Modal transparent={true} visible={openMenu}>
-                    {!disableModalClick.current && (
-                      <Pressable
-                        android_disableSound={true}
-                        disabled={disableModalClick.current}
-                        style={{ flex: 1 }}
-                        onPress={() => {
-                          !disableModalClick.current && closingAnimation();
-                          disableModalClick.current = true;
-                          cogRotate.rotate?.timing().start(({ finished }) => {
-                            finished && cogRotate.rotate?.timing().reset();
-                          });
-                        }}
-                      ></Pressable>
-                    )}
+                    <Pressable
+                      android_disableSound={true}
+                      disabled={disableModalClick.current}
+                      style={{ flex: 1 }}
+                      onPress={() => {
+                        !disableModalClick.current && closingAnimation();
+                        disableModalClick.current = true;
+                        cogRotate.rotate?.timing().start(({ finished }) => {
+                          finished && cogRotate.rotate?.timing().reset();
+                        });
+                      }}
+                    ></Pressable>
 
                     <View style={styles.openMenuContainer}>
                       <Pressable
@@ -397,7 +395,12 @@ export const TabNavigator = () => {
                             },
                           ]}
                         >
-                          <Octicons name="person-add" size={20} color="black" />
+                          <Octicons
+                            name="person-add"
+                            style={{ marginRight: 3 }}
+                            size={20}
+                            color="black"
+                          />
                           <Text>Add Contact</Text>
                         </Animated.View>
                       </Pressable>

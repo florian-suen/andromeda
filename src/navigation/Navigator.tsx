@@ -13,7 +13,6 @@ import { AddBlogScreen } from "../screens/AddBlogScreen";
 import Colors from "../constants/Colors";
 export const Navigator = () => {
   const Stack = createNativeStackNavigator();
-
   const myTheme = {
     ...DefaultTheme,
     dark: true,
@@ -28,6 +27,61 @@ export const Navigator = () => {
     },
   };
 
+  const screenArray = [
+    {
+      route: "Home",
+      label: "Home",
+      component: TabNavigator,
+      options: { headerShown: false },
+    },
+    {
+      route: "GroupChat",
+      label: "GroupChat",
+      component: GroupChatScreen,
+      options: {
+        headerTitleAlign: "left" as "left",
+      },
+    },
+    {
+      route: "SelectContacts",
+      label: "SelectContacts",
+      component: ChatContacts,
+    },
+    {
+      route: "AddNewContact",
+      label: "AddNewContact",
+      component: AddContacts,
+    },
+    {
+      route: "QRCode",
+      label: "QRCode",
+      component: QRCodeScreen,
+      options: { headerTransparent: true, title: "" },
+    },
+    {
+      route: "Scan",
+      label: "Scan",
+      component: ScanScreen,
+      options: { headerTransparent: true, title: "" },
+    },
+    {
+      route: "ContactProfile",
+      label: "Contact Profile",
+      component: ContactProfileScreen,
+      options: { headerTransparent: true, title: "" },
+    },
+    {
+      route: "AddFriend",
+      label: "Add Freidn",
+      component: AddFriendScreen,
+    },
+    {
+      route: "AddBlog",
+      label: "Create Blog",
+      component: AddBlogScreen,
+    },
+  ];
+
   return (
     <View style={{ flex: 1 }}>
       <NavigationContainer theme={myTheme}>
@@ -37,49 +91,24 @@ export const Navigator = () => {
             contentStyle: {
               backgroundColor: "transparent",
             },
-            headerTitleStyle: { color: myTheme.colors.primary },
+            headerTitleStyle: {
+              fontSize: 25,
+              fontFamily: "Chakra",
+              color: Colors.accentDark,
+            },
             headerTitleAlign: "center",
           }}
         >
-          <Stack.Screen
-            name="Home"
-            component={TabNavigator}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="GroupChat"
-            component={GroupChatScreen}
-            options={{
-              headerTitleAlign: "left",
-              headerTitleStyle: { fontFamily: "Chakra", color: Colors.accent },
-            }}
-          />
-
-          <Stack.Screen name="SelectContacts" component={ChatContacts} />
-
-          <Stack.Screen name="AddNewContact" component={AddContacts} />
-
-          <Stack.Screen
-            options={{ headerTransparent: true, title: "" }}
-            name="QRCode"
-            component={QRCodeScreen}
-          />
-
-          <Stack.Screen
-            options={{ headerTransparent: true, title: "" }}
-            name="Scan"
-            component={ScanScreen}
-          />
-
-          <Stack.Screen
-            options={{ headerTransparent: true, title: "" }}
-            name="ContactProfile"
-            component={ContactProfileScreen}
-          />
-
-          <Stack.Screen name="AddFriend" component={AddFriendScreen} />
-
-          <Stack.Screen name="AddBlog" component={AddBlogScreen} />
+          {screenArray.map((item) => {
+            return (
+              <Stack.Screen
+                key={item.label}
+                name={item.route}
+                component={item.component}
+                options={{ ...item.options, title: item.label }}
+              />
+            );
+          })}
         </Stack.Navigator>
       </NavigationContainer>
     </View>
