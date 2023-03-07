@@ -36,7 +36,7 @@ export const Navigator = () => {
     },
     {
       route: "GroupChat",
-      label: "GroupChat",
+      label: "Group Chat",
       component: GroupChatScreen,
       options: {
         headerTitleAlign: "left" as "left",
@@ -44,12 +44,12 @@ export const Navigator = () => {
     },
     {
       route: "SelectContacts",
-      label: "SelectContacts",
+      label: "Select Contacts",
       component: ChatContacts,
     },
     {
       route: "AddNewContact",
-      label: "AddNewContact",
+      label: "Add New Contact",
       component: AddContacts,
     },
     {
@@ -72,7 +72,7 @@ export const Navigator = () => {
     },
     {
       route: "AddFriend",
-      label: "Add Freidn",
+      label: "Add Friend",
       component: AddFriendScreen,
     },
     {

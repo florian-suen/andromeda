@@ -5,7 +5,6 @@ import {
   updateUserContact,
 } from "./queries";
 import { API, graphqlOperation } from "aws-amplify";
-import { RouteProp, useRoute } from "@react-navigation/native";
 import {
   addFriendRequest,
   ContactType,
@@ -17,6 +16,8 @@ import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
 import { UseAsyncReturn } from "react-async-hook";
 import { useContext, useRef } from "react";
 import { userContext } from "../../../utility/userAuth";
+import Colors from "../../constants/Colors";
+import { ActivityIndicator } from "react-native-paper";
 interface userByInviteId {
   userByInviteId: {
     items: inviteUser[];
@@ -36,6 +37,7 @@ export const AddFriendScreen = () => {
   const dispatch = useAppDispatch();
   const userAuth = useContext(userContext);
   const justAddedRef = useRef(false);
+
   const addFriendHandler = async (userContact?: ContactType) => {
     if (userContact) {
       const updateContact = await API.graphql(
@@ -117,45 +119,93 @@ export const AddFriendScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Please input an Invite Code to Add a new friend</Text>
-      <TextInput
-        value={inputText}
-        onChangeText={setInputText}
-        style={styles.inputText}
-        placeholder="Add Friend"
-      />
-      {!Array.isArray(searchResults.result) && searchResults.result && (
-        <View>
-          <Text>{`Invite ID: ${searchResults.result.inviteId}`}</Text>
-          <Image
-            style={{ height: 200, width: 200 }}
-            source={{ uri: searchResults.result.image }}
-          />
-          <Text>{`Username: ${searchResults.result.username}`}</Text>
-          <Text>{`Status: ${searchResults.result.status}`}</Text>
-          <AddButton
-            contacts={contacts}
-            searchResults={searchResults}
-            currentUserId={userAuth?.attributes.sub!}
-            addFriendHandler={addFriendHandler}
-            justAdded={justAddedRef.current}
-          />
+      <View style={styles.inviteContainer}>
+        <View style={styles.inviteHeader}>
+          <Text style={{ color: "white", fontFamily: "Zilla" }}>
+            ADD A CONTACT
+          </Text>
         </View>
+        <Text
+          style={{
+            color: "white",
+            padding: 5,
+            fontFamily: "Exo2",
+            marginLeft: -6,
+          }}
+        >
+          Please enter an Invite Code to find a new contact
+        </Text>
+        <TextInput
+          value={inputText}
+          onChangeText={setInputText}
+          style={styles.inputText}
+          placeholder="Find Friend"
+        />
+      </View>
+      <View style={styles.resultsContainer}>
+        {searchResults.loading && (
+          <ActivityIndicator style={{ marginTop: 50 }} />
+        )}
+        {!Array.isArray(searchResults.result) && searchResults.result && (
+          <View style={styles.mainResults}>
+            <View style={{ flexDirection: "row" }}>
+              <Image
+                style={{
+                  height: 117,
+                  width: 117,
+                  marginHorizontal: 10,
+                  marginRight: 15,
+                }}
+                source={{ uri: searchResults.result.image }}
+              />
+              <View
+                style={{
+                  flex: 1,
+                }}
+              >
+                <View style={styles.resultsTextContainer}>
+                  <Text style={styles.resultsTextProp}>Username :</Text>
+                  <Text style={styles.resultsText}>
+                    {searchResults.result.username}
+                  </Text>
+                </View>
+                <View style={styles.resultsTextContainer}>
+                  <Text style={styles.resultsTextProp}>Status :</Text>
+                  <Text style={styles.resultsText}>
+                    {searchResults.result.status}
+                  </Text>
+                </View>
+
+                <View style={styles.resultsTextContainer}>
+                  <Text style={styles.resultsTextProp}>InviteID :</Text>
+                  <Text style={styles.resultsText}>
+                    {searchResults.result.inviteId}
+                  </Text>
+                </View>
+                <View
+                  style={{ alignSelf: "center", width: "75%", marginTop: 5 }}
+                >
+                  <AddButton
+                    contacts={contacts}
+                    searchResults={searchResults}
+                    currentUserId={userAuth?.attributes.sub!}
+                    addFriendHandler={addFriendHandler}
+                    justAdded={justAddedRef.current}
+                  />
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
+      </View>
+      {searchResults.result === null && (
+        <Text style={{ fontFamily: "Exo2", color: "white", marginTop: 50 }}>
+          No results found
+        </Text>
       )}
-      {searchResults.result === null && <Text>No results found</Text>}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  inputText: {
-    backgroundColor: "white",
-    height: 33,
-    marginTop: 20,
-    padding: 0,
-  },
-});
 
 const inviteCodeValid: (
   inviteID: string
@@ -169,10 +219,8 @@ const inviteCodeValid: (
     return fetchedUser.data.userByInviteId.items[0];
   return null;
 };
-
 const useInviteCodeSearch = () =>
   useDebouncedSearch((text) => inviteCodeValid(text));
-
 const AddButton = ({
   currentUserId,
   contacts,
@@ -224,5 +272,50 @@ const AddButton = ({
     }
   }
 
-  return <Button title="Add Friend" onPress={() => addFriendHandler()} />;
+  return (
+    <View style={{ padding: 14, width: 1000, height: 1000 }}>
+      <Button title="Add Friend" onPress={() => addFriendHandler()} />
+    </View>
+  );
 };
+
+const styles = StyleSheet.create({
+  container: { alignItems: "center", justifyContent: "center" },
+  inviteContainer: {
+    backgroundColor: Colors.tertiary,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "85%",
+    marginTop: 30,
+  },
+  inviteHeader: {
+    backgroundColor: Colors.secondary,
+    alignSelf: "flex-start",
+    width: "100%",
+    padding: 10,
+  },
+  inputText: {
+    backgroundColor: "white",
+    height: 40,
+    marginVertical: 5,
+    marginBottom: 10,
+    borderWidth: 1.5,
+    borderColor: Colors.black,
+    width: "90%",
+    borderRadius: 2,
+    paddingHorizontal: 7,
+  },
+  resultsContainer: { width: "85%" },
+  resultsTextProp: { color: "white", fontFamily: "Chakra", marginRight: 5 },
+  resultsTextContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  resultsText: {
+    fontFamily: "Exo2",
+    color: Colors.accent,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  mainResults: { backgroundColor: Colors.primary, padding: 10 },
+});

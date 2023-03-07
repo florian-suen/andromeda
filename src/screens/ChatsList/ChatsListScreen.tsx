@@ -17,6 +17,7 @@ import {
 } from "../../subscription/subUpdateUserContact";
 import { subOnCreateBlog } from "../../subscription/subOnCreateBlog";
 import Colors from "../../constants/Colors";
+import { ActivityIndicator } from "react-native-paper";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
@@ -26,6 +27,7 @@ export const ChatList = () => {
   const userAuth = useContext(userContext)!;
   const dispatch = useAppDispatch();
   const chatGroup = useAppSelector((state) => state.chatGroup.chatGroup);
+  const chatGroupStatus = useAppSelector((state) => state.chatGroup.status);
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   useEffect(() => {
@@ -55,6 +57,8 @@ export const ChatList = () => {
         return <ChatGroup key={index} chat={item} />;
       }}
     ></FlatList>
+  ) : chatGroupStatus === "fetching" ? (
+    <ActivityIndicator style={{ marginTop: 40 }} />
   ) : (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text
