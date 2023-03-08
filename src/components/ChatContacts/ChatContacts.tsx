@@ -10,16 +10,8 @@ import {
   ImageStyle,
 } from "react-native";
 import { useEffect, useRef } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { EagerUser, User } from "../../models/index";
-
 import { useThemeColor } from "../../../utility/useStyles";
 import { ContactType } from "../../redux/contactList/contactListSlice";
-
-type RootStackParamList = {
-  GroupChat: { chatGroupId: string };
-};
 
 export const ChatContactsComponent = ({
   user,

@@ -148,14 +148,14 @@ export const TabNavigator = () => {
     { type: "translateX", startValue: -50, toValue: 0, delay: 0 },
   ]);
   const secondMenuAnimationOpen = createAnimation([
-    { type: "opacity", startValue: 0, toValue: 1, delay: 150 },
-    { type: "scale", startValue: 0, toValue: 1, delay: 150 },
-    { type: "translateX", startValue: -50, toValue: 0, delay: 150 },
+    { type: "opacity", startValue: 0, toValue: 1, delay: 200 },
+    { type: "scale", startValue: 0, toValue: 1, delay: 200 },
+    { type: "translateX", startValue: -50, toValue: 0, delay: 200 },
   ]);
   const thirdMenuAnimationOpen = createAnimation([
-    { type: "opacity", startValue: 0, toValue: 1, delay: 300 },
-    { type: "scale", startValue: 0, toValue: 1, delay: 300 },
-    { type: "translateX", startValue: -50, toValue: 0, delay: 300 },
+    { type: "opacity", startValue: 0, toValue: 1, delay: 250 },
+    { type: "scale", startValue: 0, toValue: 1, delay: 250 },
+    { type: "translateX", startValue: -50, toValue: 0, delay: 250 },
   ]);
   const menuAnimationClose = createAnimation([
     {
@@ -552,7 +552,7 @@ const createMenuAnimation = (
                   disableModelClick.current = false;
                 }
                 setOpenMenu(false);
-              }, 350);
+              }, 0);
           });
 
           return;

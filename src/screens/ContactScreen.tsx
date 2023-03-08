@@ -55,18 +55,8 @@ export const ContactScreen = () => {
 
   return (
     <>
-      <Octicons
-        name="person-add"
-        size={44}
-        color="black"
-        onPress={() =>
-          navigation.navigate("AddFriend", {
-            currentUser: currentUser!,
-          })
-        }
-      />
-
       <Animated.FlatList
+        style={{ marginTop: 10 }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: true }
