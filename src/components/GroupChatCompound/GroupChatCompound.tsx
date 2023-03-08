@@ -14,6 +14,7 @@ import { removeUserHandler } from "./functions/removeUserHandler";
 import { userChatGroupSubscription } from "./functions/ChatGroupSubscription";
 import { setNavHeaderOptions } from "./functions/setNavHeaderOptions";
 import { UserContext } from "./context";
+import { AddContactParam, ChatGroupParam } from "./types";
 export const GroupChat = ({ children }: PropsWithChildren) => {
   const transformY = useRef(new Animated.Value(0));
   const route = useRoute<RouteProp<ChatGroupParam>>();

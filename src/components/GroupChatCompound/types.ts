@@ -1,4 +1,9 @@
-type GroupChatContext = {
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Animated } from "react-native";
+import { ChatGroupType } from "../../redux/chatGroup/types";
+import { MessageType } from "../../redux/messages/messageSlice";
+
+export type GroupChatContext = {
   messageTiming: {
     transformY: React.MutableRefObject<Animated.Value>;
     reverseTranslateYTiming: () => void;
@@ -30,9 +35,9 @@ type GroupChatContext = {
   };
 };
 
-type ChatGroupParam = {
+export type ChatGroupParam = {
   chat: { chatGroupId: string; username: string };
 };
-type AddContactParam = {
+export type AddContactParam = {
   AddNewContact: { chatGroupId: string; chatGroup: any };
 };

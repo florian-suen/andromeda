@@ -1,47 +1,10 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  SerializedError,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
 import { getUser } from "./queries";
-import { Media } from "../messages/messageSlice";
-import { UserBlogsType } from "../../screens/BlogScreen";
 import { Image } from "react-native";
 import { Storage } from "aws-amplify";
-export interface CurrentUserType {
-  inviteId: string;
-  image: string;
-  username: string;
-  id: string;
-  status: string;
-  _deleted: string;
-  Blog: {
-    items: {
-      userID: string;
-      createdAt: string;
-      id: string;
-      message: string;
-      Media: { items: Media[] };
-    }[];
-  };
-}
-
-export interface ContactState {
-  currentUser: CurrentUserType | null;
-  blog: UserBlogsType[] | [];
-  status: "idle" | "fetching";
-  error: string | null | SerializedError;
-}
-
-const initialState: ContactState = {
-  currentUser: null,
-  blog: [],
-  status: "idle",
-  error: null,
-};
-
+import { ContactState, CurrentUserType } from "./types";
+import { Media } from "../messages/types";
 export const getCurrentUser = createAsyncThunk(
   "currentUser/fetchCurrentUser",
   async (userId: string, { rejectWithValue }) => {
@@ -91,6 +54,13 @@ export const getCurrentUser = createAsyncThunk(
     return rejectWithValue("fetch Current User error");
   }
 );
+
+export const initialState: ContactState = {
+  currentUser: null,
+  blog: [],
+  status: "idle",
+  error: null,
+};
 
 export const currentUserSlice = createSlice({
   name: "contact",

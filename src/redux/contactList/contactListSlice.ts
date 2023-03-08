@@ -1,48 +1,10 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  SerializedError,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
 import { UserBlogsType } from "../../screens/BlogScreen";
-import { Media } from "../messages/messageSlice";
 import { Storage } from "aws-amplify";
 import { listbyUserContactFriend } from "./queries";
 import { Image } from "react-native";
-export type RequestStatusType = "ACCEPTED" | "BLOCKED" | "REQUESTED";
-export interface ContactType {
-  sender: boolean;
-  requestStatus: string;
-  _version: string;
-  _deleted: string;
-  friendID: string;
-  id: string;
-  userContact: { id: string; _version: string; requestStatus: string };
-  friend: {
-    inviteId: string;
-    image: string;
-    username: string;
-    id: string;
-    status: string;
-    _deleted: string;
-    Blog: {
-      items: {
-        createdAt: string;
-        id: string;
-        message: string;
-        Media: { items: Media[] };
-      }[];
-    };
-  };
-}
-
-export interface ContactState {
-  contacts: ContactType[] | [];
-  blogs: UserBlogsType[] | [];
-  status: "idle" | "fetching";
-  error: string | null | SerializedError;
-}
+import { ContactState, ContactType, RequestStatusType } from "./types";
 
 const initialState: ContactState = {
   contacts: [],
