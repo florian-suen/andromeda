@@ -5,16 +5,13 @@ import {
   StyleSheet,
   Pressable,
   Animated,
-  ViewStyle,
-  TextStyle,
-  ImageStyle,
 } from "react-native";
 import { useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useThemeColor } from "../../../utility/useStyles";
 import { useAppDispatch } from "../../../utility/useReduxHooks";
-import { ContactType } from "../../redux/contactList/contactListSlice";
+import { ContactType } from "../../redux/contactList/types";
+
 type RootStackParamList = {
   ContactProfile: { contactId: string };
 };
@@ -31,7 +28,6 @@ export const ContactsComponent = ({
   isSelectable: boolean;
 }) => {
   const image = contact.friend.image ? contact.friend.image : undefined;
-  const styles = useThemeColor(styleSheet);
   const translateX = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
   const navigation =
@@ -111,7 +107,6 @@ export const ContactsComponent = ({
                   {contact.friend.username}
                 </Text>
               </View>
-              <Text style={styles.status}>{contact.friend.status}</Text>
             </View>
           </Animated.View>
         </View>
@@ -120,9 +115,7 @@ export const ContactsComponent = ({
   );
 };
 
-const styleSheet: StyleSheet.NamedStyles<{
-  [p: string]: ViewStyle | ImageStyle | TextStyle;
-}> = {
+const styles = StyleSheet.create({
   circle: {
     height: 12,
     width: 12,
@@ -143,13 +136,12 @@ const styleSheet: StyleSheet.NamedStyles<{
   container: {
     flexDirection: "row",
     marginVertical: 0,
-    height: 80,
+    height: 60,
     alignItems: "center",
     justifyContent: "center",
     borderTopWidth: StyleSheet.hairlineWidth,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: "#18202e",
-    backgroundColor: "background",
   },
   main: {
     flex: 1,
@@ -166,9 +158,9 @@ const styleSheet: StyleSheet.NamedStyles<{
   },
   image: {
     marginLeft: 20,
-    width: 70,
-    height: 70,
+    width: 50,
+    height: 50,
     marginRight: 15,
     borderRadius: 5,
   },
-};
+});

@@ -1,7 +1,7 @@
 import { KeyboardAvoidingView, Platform, Animated } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
-import { useState, createContext, PropsWithChildren, useRef } from "react";
+import { useState, PropsWithChildren, useRef } from "react";
 import { subUpdateChatGroup } from "../../subscription/subUpdateChatGroup";
 import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
 import { useAppDispatch, useAppSelector } from "../../../utility/useReduxHooks";
@@ -35,7 +35,6 @@ export const GroupChat = ({ children }: PropsWithChildren) => {
       (item) => item.Chatgroup.id === chatGroupId
     )!.Chatgroup;
   });
-
   const reverseTranslateYTiming = () =>
     Animated.timing(transformY.current, {
       toValue: 0,

@@ -7,7 +7,6 @@ import {
 import { API, graphqlOperation } from "aws-amplify";
 import {
   addFriendRequest,
-  ContactType,
   updateFriendStatus,
 } from "../../redux/contactList/contactListSlice";
 import { GraphQLResult } from "@aws-amplify/api-graphql";
@@ -18,6 +17,7 @@ import { useContext, useRef } from "react";
 import { userContext } from "../../../utility/userAuth";
 import Colors from "../../constants/Colors";
 import { ActivityIndicator } from "react-native-paper";
+import { ContactType } from "../../redux/contactList/types";
 interface userByInviteId {
   userByInviteId: {
     items: inviteUser[];
@@ -183,8 +183,21 @@ export const AddFriendScreen = () => {
                   </Text>
                 </View>
                 <View
-                  style={{ alignSelf: "center", width: "75%", marginTop: 5 }}
+                  style={{
+                    flexDirection: "row",
+                    width: "100%",
+                    marginTop: 5,
+                    justifyContent:
+                      searchResults.result.id === userAuth?.attributes.sub!
+                        ? "flex-start"
+                        : "center",
+                  }}
                 >
+                  {searchResults.result.id === !userAuth?.attributes.sub! && (
+                    <View style={{ marginRight: 10 }}>
+                      <Button title={"Block"} />
+                    </View>
+                  )}
                   <AddButton
                     contacts={contacts}
                     searchResults={searchResults}
@@ -239,7 +252,7 @@ const AddButton = ({
 
   if (searchResults.status === "success" && searchResults.result) {
     if (searchResults.result.id === currentUserId)
-      return <Button title="Unable to add yourself" disabled />;
+      return <Button title="Your Account" disabled />;
 
     if (
       contactIdArray &&
@@ -252,7 +265,7 @@ const AddButton = ({
       const isBlocked =
         friend?.userContact?.requestStatus === "BLOCKED"
           ? "You have been blocked"
-          : "Already Friends";
+          : "Added";
 
       switch (friend?.requestStatus) {
         case "REQUESTED":
@@ -260,7 +273,7 @@ const AddButton = ({
             <Button title="Requested" disabled />
           ) : (
             <Button
-              title="Add Friend"
+              title="Add Contact"
               onPress={() => addFriendHandler(friend)}
             />
           );
@@ -272,11 +285,7 @@ const AddButton = ({
     }
   }
 
-  return (
-    <View style={{ padding: 14, width: 1000, height: 1000 }}>
-      <Button title="Add Friend" onPress={() => addFriendHandler()} />
-    </View>
-  );
+  return <Button title="Add Friend" onPress={() => addFriendHandler()} />;
 };
 
 const styles = StyleSheet.create({

@@ -5,13 +5,9 @@ import {
   StyleSheet,
   Pressable,
   Animated,
-  ViewStyle,
-  TextStyle,
-  ImageStyle,
 } from "react-native";
 import { useEffect, useRef } from "react";
-import { useThemeColor } from "../../../utility/useStyles";
-import { ContactType } from "../../redux/contactList/contactListSlice";
+import { ContactType } from "../../redux/contactList/types";
 
 export const ChatContactsComponent = ({
   user,
@@ -24,10 +20,9 @@ export const ChatContactsComponent = ({
   isSelected: boolean;
   isSelectable: boolean;
   onSelectHandler: () => void;
-  chatGroupHandler: (user: ContactType["friend"]) => Promise<void>;
+  chatGroupHandler?: (user: ContactType["friend"]) => Promise<void>;
 }) => {
   const image = user.image ? user.image : undefined;
-  const styles = useThemeColor(styleSheet);
   const translateX = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
@@ -71,7 +66,7 @@ export const ChatContactsComponent = ({
       <Pressable
         android_ripple={{ color: "#222b3d" }}
         onPress={() => {
-          if (!isSelectable) chatGroupHandler(user);
+          if (!isSelectable) chatGroupHandler && chatGroupHandler(user);
           if (isSelectable) onSelectHandler();
         }}
         style={({ pressed }) => [pressed ? styles.pressed : null]}
@@ -116,9 +111,7 @@ export const ChatContactsComponent = ({
   );
 };
 
-const styleSheet: StyleSheet.NamedStyles<{
-  [p: string]: ViewStyle | ImageStyle | TextStyle;
-}> = {
+const styles = StyleSheet.create({
   circle: {
     height: 12,
     width: 12,
@@ -139,7 +132,7 @@ const styleSheet: StyleSheet.NamedStyles<{
   container: {
     flexDirection: "row",
     marginVertical: 0,
-    height: 80,
+    height: 60,
     alignItems: "center",
     justifyContent: "center",
     borderTopWidth: StyleSheet.hairlineWidth,
@@ -162,9 +155,9 @@ const styleSheet: StyleSheet.NamedStyles<{
   },
   image: {
     marginLeft: 20,
-    width: 70,
-    height: 70,
+    width: 50,
+    height: 50,
     marginRight: 15,
     borderRadius: 5,
   },
-};
+});

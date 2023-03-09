@@ -1,7 +1,7 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Animated } from "react-native";
 import { ChatGroupType } from "../../redux/chatGroup/types";
-import { MessageType } from "../../redux/messages/messageSlice";
+import { MessageType } from "../../redux/messages/types";
 
 export type GroupChatContext = {
   messageTiming: {

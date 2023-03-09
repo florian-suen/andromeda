@@ -5,9 +5,6 @@ import {
   StyleSheet,
   Animated,
   View,
-  ViewStyle,
-  ImageStyle,
-  TextStyle,
   Button,
 } from "react-native";
 import { createUserChatGroup } from "../../src/graphql/mutations";
@@ -16,9 +13,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChatContactsComponent } from "../components/ChatContacts/ChatContacts";
 import { graphqlOperation, API } from "aws-amplify";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { useThemeColor } from "../../utility/useStyles";
 import { useAppSelector } from "../../utility/useReduxHooks";
-import { ContactType } from "../redux/contactList/contactListSlice";
+import { ContactType } from "../redux/contactList/types";
+import Colors from "../constants/Colors";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
@@ -28,12 +25,11 @@ type RouteParam = {
   GroupChat: { chatGroupId: string; chatGroup: any };
 };
 
-export const AddContacts = () => {
+export const AddContactsScreen = () => {
   const [selectedUserId, setSelectedUserId] = useState<string[]>([]);
   const isSelectable = true;
   const scrollY = useRef(new Animated.Value(0)).current;
   const createGroupOpacity = useRef(new Animated.Value(0)).current;
-  const styles = StyleSheet.create(useThemeColor(styleSheet));
   const route = useRoute<RouteProp<RouteParam>>();
   const chatGroup = route.params.chatGroup;
   const navigation =
@@ -112,7 +108,6 @@ export const AddContacts = () => {
                 user={item.friend}
                 isSelectable={isSelectable}
                 isSelected={isSelected}
-                chatGroupHandler={addGroupHandler}
               />
             </Animated.View>
           );
@@ -169,36 +164,6 @@ export const AddContacts = () => {
   );
 };
 
-const styleSheet: StyleSheet.NamedStyles<{
-  [p: string]: ViewStyle | ImageStyle | TextStyle;
-}> = {
-  container: { alignItems: "center", justifyContent: "center" },
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  groupIconContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "background",
-    padding: 10,
-  },
-  groupIcon: {
-    borderRadius: 15,
-    overflow: "hidden",
-    padding: 10,
-    marginLeft: 16,
-    marginRight: 20,
-  },
-  cancelIconContainer: { padding: 15 },
-
-  iconText: {
-    color: "primary",
-    fontWeight: "bold",
-  },
-};
-
 async function addGroupHandler(
   users: ContactType[],
   route: RouteProp<RouteParam, "GroupChat">,
@@ -214,7 +179,6 @@ async function addGroupHandler(
     }
   }
   for (const username of getNames()) userNames.push(username);
-
   await Promise.all(
     selectedUserId.map((userId) => {
       API.graphql(
@@ -224,8 +188,34 @@ async function addGroupHandler(
       );
     })
   );
-
   navigation.goBack();
-
   setSelectedUserId([]);
 }
+
+const styles = StyleSheet.create({
+  container: { alignItems: "center", justifyContent: "center" },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  groupIconContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: Colors.secondary,
+    padding: 10,
+  },
+  groupIcon: {
+    borderRadius: 15,
+    overflow: "hidden",
+    padding: 10,
+    marginLeft: 16,
+    marginRight: 20,
+  },
+  cancelIconContainer: { padding: 15 },
+
+  iconText: {
+    color: "primary",
+    fontWeight: "bold",
+  },
+});

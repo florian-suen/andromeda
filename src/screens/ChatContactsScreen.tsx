@@ -5,9 +5,6 @@ import {
   StyleSheet,
   Animated,
   View,
-  ViewStyle,
-  ImageStyle,
-  TextStyle,
   Button,
 } from "react-native";
 import {
@@ -18,14 +15,13 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChatContactsComponent } from "../components/ChatContacts/ChatContacts";
 import { graphqlOperation, API } from "aws-amplify";
-import { User } from "../models/index";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
-import { useThemeColor } from "../../utility/useStyles";
 import { UserAuth, userContext } from "../../utility/userAuth";
 import { useAppDispatch, useAppSelector } from "../../utility/useReduxHooks";
 import { createNewChatGroup } from "../redux/chatGroup/chatGroupSlice";
 import { v4 as uuidv4 } from "uuid";
-import { ContactType } from "../redux/contactList/contactListSlice";
+import { ContactType } from "../redux/contactList/types";
+import Colors from "../constants/Colors";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string };
@@ -40,7 +36,6 @@ export const ChatContacts = () => {
   const [isSelectable, setIsSelectable] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
   const createGroupOpacity = useRef(new Animated.Value(0)).current;
-  const styles = StyleSheet.create(useThemeColor(styleSheet));
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -180,36 +175,6 @@ export const ChatContacts = () => {
   );
 };
 
-const styleSheet: StyleSheet.NamedStyles<{
-  [p: string]: ViewStyle | ImageStyle | TextStyle;
-}> = {
-  container: { alignItems: "center", justifyContent: "center" },
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  groupIconContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "background",
-    padding: 10,
-  },
-  groupIcon: {
-    borderRadius: 15,
-    overflow: "hidden",
-    padding: 10,
-    marginLeft: 16,
-    marginRight: 20,
-  },
-  cancelIconContainer: { padding: 15 },
-
-  iconText: {
-    color: "primary",
-    fontWeight: "bold",
-  },
-};
-
 function createChatGroupHandler(
   users: ContactType[],
   userAuth: UserAuth,
@@ -290,3 +255,31 @@ function createChatGroupHandler(
     }
   };
 }
+
+const styles = StyleSheet.create({
+  container: { alignItems: "center", justifyContent: "center" },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  groupIconContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: Colors.secondary,
+    padding: 10,
+  },
+  groupIcon: {
+    borderRadius: 15,
+    overflow: "hidden",
+    padding: 10,
+    marginLeft: 16,
+    marginRight: 20,
+  },
+  cancelIconContainer: { padding: 15 },
+
+  iconText: {
+    color: "primary",
+    fontWeight: "bold",
+  },
+});

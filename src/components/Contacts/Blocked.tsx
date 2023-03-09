@@ -1,9 +1,9 @@
 import { View, Text, Image, Button } from "react-native";
-import { ContactType } from "../../redux/contactList/contactListSlice";
 import { API, graphqlOperation } from "aws-amplify";
 import { deleteUserContact } from "../../screens/AddFriend/queries";
 import { useAppDispatch } from "../../../utility/useReduxHooks";
 import { Dispatch } from "./Contacts";
+import { ContactType } from "../../redux/contactList/types";
 
 export const BlockedComponent = ({
   requestUser,

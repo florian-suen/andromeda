@@ -1,22 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  StyleSheet,
-  Animated,
-  ViewStyle,
-  ImageStyle,
-  TextStyle,
-} from "react-native";
-import { Octicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Animated } from "react-native";
 import { ContactsComponent } from "../components/Contacts/Contacts";
 import { useAppSelector } from "../../utility/useReduxHooks";
-import { ContactType } from "../redux/contactList/contactListSlice";
-
-type RootStackParamList = {
-  AddFriend: { currentUser: ContactType["friend"] };
-};
-
 export const ContactScreen = () => {
   const [selectedUserId, setSelectedUserId] = useState<string[]>([]);
   const isSelectable = false;
@@ -29,12 +14,6 @@ export const ContactScreen = () => {
       item.requestStatus === "ACCEPTED" &&
       item.userContact.requestStatus === "ACCEPTED"
   );
-  const currentUser = useAppSelector((state) => {
-    return state.currentUser.currentUser;
-  });
-
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     const createGrpOpaTiming = Animated.timing(createGroupOpacity, {
@@ -98,34 +77,4 @@ export const ContactScreen = () => {
       ></Animated.FlatList>
     </>
   );
-};
-
-const styleSheet: StyleSheet.NamedStyles<{
-  [p: string]: ViewStyle | ImageStyle | TextStyle;
-}> = {
-  container: { alignItems: "center", justifyContent: "center" },
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  groupIconContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "background",
-    padding: 10,
-  },
-  groupIcon: {
-    borderRadius: 15,
-    overflow: "hidden",
-    padding: 10,
-    marginLeft: 16,
-    marginRight: 20,
-  },
-  cancelIconContainer: { padding: 15 },
-
-  iconText: {
-    color: "primary",
-    fontWeight: "bold",
-  },
 };
