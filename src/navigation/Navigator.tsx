@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ChatContacts } from "../screens/ChatContactsScreen";
 import { TabNavigator } from "./TabNavigator";
 import { GroupChatScreen } from "../screens/GroupChatScreen";
-import { AddContacts } from "../screens/AddNewContactScreen";
+import { AddContactsScreen } from "../screens/AddNewContactScreen";
 import { QRCodeScreen } from "../screens/QRCodeScreen";
 import { View } from "react-native";
 import { ScanScreen } from "../screens/ScanScreen";
@@ -50,7 +50,7 @@ export const Navigator = () => {
     {
       route: "AddNewContact",
       label: "Add New Contact",
-      component: AddContacts,
+      component: AddContactsScreen,
     },
     {
       route: "QRCode",

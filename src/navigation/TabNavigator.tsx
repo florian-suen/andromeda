@@ -13,6 +13,7 @@ import {
   Animated,
   StyleSheet,
   Modal,
+  TextInput as TextInputType,
 } from "react-native";
 import { Icon, Icons } from "../components/Icon/Icon";
 import { Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
@@ -26,6 +27,7 @@ import {
   returnAnimation,
 } from "../../utility/createAnimation";
 import { ContactNavigator } from "./ContactNavigator";
+import { TextInput } from "react-native-paper";
 
 const tabArray = [
   {
@@ -133,6 +135,7 @@ const TabButton = ({
 };
 const Tab = createBottomTabNavigator();
 export const TabNavigator = () => {
+  const [openSearch, setOpenSearch] = useState(false);
   const disableModalClick = useRef(false);
   const [openMenu, setOpenMenu] = useState(false);
   const cogRotate = createAnimation([
@@ -238,215 +241,277 @@ export const TabNavigator = () => {
       initialRouteName="Chats"
       screenOptions={({ route, navigation }) => {
         return {
-          header: ({ route, options }) => {
+          tabBarHideOnKeyboard: true,
+          header: ({ options }) => {
             options.headerTitle;
             return (
-              <View style={styles.headerContainer}>
-                <Text
-                  style={{
-                    fontSize: 25,
-                    marginTop: 40,
-                    fontFamily: "Chakra",
-                    color: Colors.accentDark,
-                  }}
-                >
-                  {typeof options.headerTitle === "string" &&
-                    options.headerTitle}
-                </Text>
-                <Animated.View
-                  style={{
-                    position: "absolute",
-                    right: 15,
-                    bottom: 10,
-                    transform: [
-                      {
-                        rotate: interpolateRotation!,
-                      },
-                    ],
-                  }}
-                >
-                  <FontAwesome
-                    onPress={() => {
-                      cogRotate.rotate?.timing().start(({ finished }) => {
-                        finished && cogRotate.rotate?.timing().reset();
-                      });
-                      if (openMenu === true) {
-                        closingAnimation();
-                        return;
-                      }
-                      openingAnimation();
-                      setOpenMenu(true);
-                    }}
-                    name="cog"
-                    size={25}
-                    color="black"
-                  />
-                </Animated.View>
-
-                <>
-                  <Modal transparent={true} visible={openMenu}>
-                    <Pressable
-                      android_disableSound={true}
-                      disabled={disableModalClick.current}
-                      style={{ flex: 1 }}
+              <>
+                {openSearch ? (
+                  <View style={styles.searchContainer}>
+                    <Ionicons
+                      style={{
+                        marginBottom: 11,
+                        marginLeft: 10,
+                      }}
+                      name="arrow-back"
+                      size={24}
+                      color={Colors.accentDark}
                       onPress={() => {
-                        !disableModalClick.current && closingAnimation();
-                        disableModalClick.current = true;
-                        cogRotate.rotate?.timing().start(({ finished }) => {
-                          finished && cogRotate.rotate?.timing().reset();
+                        setOpenSearch(false);
+                        navigation.setParams({
+                          showTabNav: true,
                         });
                       }}
-                    ></Pressable>
+                    />
+                    <TextInput
+                      placeholderTextColor={Colors.accent}
+                      selectionColor={Colors.accentDark}
+                      underlineColor={"transparent"}
+                      textColor={Colors.accent}
+                      style={{
+                        marginLeft: 5,
+                        height: 50,
+                        width: "90%",
+                        backgroundColor: Colors.secondary,
+                      }}
+                      activeUnderlineColor={"transparent"}
+                      autoFocus
+                      placeholder="Search"
+                      numberOfLines={1}
+                    />
+                  </View>
+                ) : (
+                  <View style={styles.headerContainer}>
+                    <Text
+                      style={{
+                        fontSize: 25,
+                        marginTop: 40,
+                        fontFamily: "Chakra",
+                        color: Colors.accentDark,
+                      }}
+                    >
+                      {typeof options.headerTitle === "string" &&
+                        options.headerTitle}
+                    </Text>
 
-                    <View style={styles.openMenuContainer}>
-                      <Pressable
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        position: "absolute",
+                        right: 15,
+                        bottom: 10,
+                      }}
+                    >
+                      <Ionicons
+                        style={{ marginRight: 15 }}
+                        name="search"
+                        size={24}
+                        color="black"
                         onPress={() => {
-                          setOpenMenu(false);
-                          resetAnimation();
-                          navigation.navigate("SelectContacts");
+                          setOpenSearch(true);
+                          navigation.setParams({
+                            showTabNav: false,
+                          });
+                        }}
+                      />
+                      <Animated.View
+                        style={{
+                          transform: [
+                            {
+                              rotate: interpolateRotation!,
+                            },
+                          ],
                         }}
                       >
-                        <Animated.View
-                          style={[
-                            styles.openMenuText,
-                            {
-                              borderTopRightRadius: 5,
-                              borderTopLeftRadius: 2,
-                              opacity: menuAnimationOpen.opacity?.startValue,
-                              transform: [
-                                {
-                                  translateX:
-                                    menuAnimationOpen.translateX?.startValue!,
-                                },
-                                {
-                                  scaleX: menuAnimationOpen.scale?.startValue!,
-                                },
-                              ],
-                            },
-                          ]}
-                        >
-                          <View
-                            style={{
-                              position: "absolute",
-                              top: -12,
-                              right: 0,
-                              left: 73.5,
-                              bottom: 0,
-                              marginTop: 10,
-                              marginHorizontal: 15,
+                        <FontAwesome
+                          onPress={() => {
+                            cogRotate.rotate?.timing().start(({ finished }) => {
+                              finished && cogRotate.rotate?.timing().reset();
+                            });
+                            if (openMenu === true) {
+                              closingAnimation();
+                              return;
+                            }
+                            openingAnimation();
+                            setOpenMenu(true);
+                          }}
+                          name="cog"
+                          size={25}
+                          color="black"
+                        />
+                      </Animated.View>
+                    </View>
+                    <>
+                      <Modal transparent={true} visible={openMenu}>
+                        <Pressable
+                          android_disableSound={true}
+                          disabled={disableModalClick.current}
+                          style={{ flex: 1 }}
+                          onPress={() => {
+                            !disableModalClick.current && closingAnimation();
+                            disableModalClick.current = true;
+                            cogRotate.rotate?.timing().start(({ finished }) => {
+                              finished && cogRotate.rotate?.timing().reset();
+                            });
+                          }}
+                        ></Pressable>
+
+                        <View style={styles.openMenuContainer}>
+                          <Pressable
+                            onPress={() => {
+                              setOpenMenu(false);
+                              resetAnimation();
+                              navigation.navigate("SelectContacts");
                             }}
                           >
-                            <View style={{ position: "relative", top: 0 }}>
+                            <Animated.View
+                              style={[
+                                styles.openMenuText,
+                                {
+                                  borderTopRightRadius: 5,
+                                  borderTopLeftRadius: 2,
+                                  opacity:
+                                    menuAnimationOpen.opacity?.startValue,
+                                  transform: [
+                                    {
+                                      translateX:
+                                        menuAnimationOpen.translateX
+                                          ?.startValue!,
+                                    },
+                                    {
+                                      scaleX:
+                                        menuAnimationOpen.scale?.startValue!,
+                                    },
+                                  ],
+                                },
+                              ]}
+                            >
                               <View
                                 style={{
                                   position: "absolute",
-                                  top: 0,
-                                  left: -5,
+                                  top: -12,
+                                  right: 0,
+                                  left: 73.5,
+                                  bottom: 0,
+                                  marginTop: 10,
+                                  marginHorizontal: 15,
                                 }}
                               >
-                                <View
-                                  style={{
-                                    backgroundColor: Colors.accent,
-                                    width: 10,
-                                    height: 10,
-                                    transform: [{ rotate: "45deg" }],
-                                  }}
-                                ></View>
+                                <View style={{ position: "relative", top: 0 }}>
+                                  <View
+                                    style={{
+                                      position: "absolute",
+                                      top: 0,
+                                      left: -5,
+                                    }}
+                                  >
+                                    <View
+                                      style={{
+                                        backgroundColor: Colors.accent,
+                                        width: 10,
+                                        height: 10,
+                                        transform: [{ rotate: "45deg" }],
+                                      }}
+                                    ></View>
+                                  </View>
+                                </View>
                               </View>
-                            </View>
-                          </View>
 
-                          <MaterialCommunityIcons
-                            name="chat-plus"
-                            size={20}
-                            color="black"
-                            style={{ marginRight: 5 }}
-                          />
-                          <Text>New Chat</Text>
-                        </Animated.View>
-                      </Pressable>
+                              <MaterialCommunityIcons
+                                name="chat-plus"
+                                size={20}
+                                color="black"
+                                style={{ marginRight: 5 }}
+                              />
+                              <Text>New Chat</Text>
+                            </Animated.View>
+                          </Pressable>
 
-                      <Pressable
-                        onPress={() => {
-                          setOpenMenu(false);
-                          resetAnimation();
-                          navigation.navigate("AddFriend");
-                        }}
-                      >
-                        <Animated.View
-                          style={[
-                            styles.openMenuText,
-                            {
-                              paddingLeft: 10,
-                              minWidth: "100%",
-                              opacity:
-                                secondMenuAnimationOpen.opacity?.startValue,
-                              transform: [
+                          <Pressable
+                            onPress={() => {
+                              setOpenMenu(false);
+                              resetAnimation();
+                              navigation.navigate("AddFriend");
+                            }}
+                          >
+                            <Animated.View
+                              style={[
+                                styles.openMenuText,
                                 {
-                                  translateX:
-                                    secondMenuAnimationOpen.translateX
-                                      ?.startValue!,
+                                  paddingLeft: 10,
+                                  minWidth: "100%",
+                                  opacity:
+                                    secondMenuAnimationOpen.opacity?.startValue,
+                                  transform: [
+                                    {
+                                      translateX:
+                                        secondMenuAnimationOpen.translateX
+                                          ?.startValue!,
+                                    },
+                                    {
+                                      scaleX:
+                                        secondMenuAnimationOpen.scale
+                                          ?.startValue!,
+                                    },
+                                  ],
                                 },
+                              ]}
+                            >
+                              <Octicons
+                                name="person-add"
+                                style={{ marginRight: 3 }}
+                                size={20}
+                                color="black"
+                              />
+                              <Text>Add Contact</Text>
+                            </Animated.View>
+                          </Pressable>
+                          <Pressable
+                            onPress={() => {
+                              setOpenMenu(false);
+                              resetAnimation();
+                              navigation.navigate("Scan");
+                            }}
+                          >
+                            <Animated.View
+                              style={[
+                                styles.openMenuText,
                                 {
-                                  scaleX:
-                                    secondMenuAnimationOpen.scale?.startValue!,
+                                  borderBottomRightRadius: 5,
+                                  borderBottomLeftRadius: 2,
+                                  minWidth: "100%",
+                                  opacity:
+                                    thirdMenuAnimationOpen.opacity?.startValue,
+                                  transform: [
+                                    {
+                                      translateX:
+                                        thirdMenuAnimationOpen.translateX
+                                          ?.startValue!,
+                                    },
+                                    {
+                                      scaleX:
+                                        thirdMenuAnimationOpen.scale
+                                          ?.startValue!,
+                                    },
+                                  ],
                                 },
-                              ],
-                            },
-                          ]}
-                        >
-                          <Octicons
-                            name="person-add"
-                            style={{ marginRight: 3 }}
-                            size={20}
-                            color="black"
-                          />
-                          <Text>Add Contact</Text>
-                        </Animated.View>
-                      </Pressable>
-                      <Pressable
-                        onPress={() => {
-                          setOpenMenu(false);
-                          resetAnimation();
-                          navigation.navigate("Scan");
-                        }}
-                      >
-                        <Animated.View
-                          style={[
-                            styles.openMenuText,
-                            {
-                              borderBottomRightRadius: 5,
-                              borderBottomLeftRadius: 2,
-                              minWidth: "100%",
-                              opacity:
-                                thirdMenuAnimationOpen.opacity?.startValue,
-                              transform: [
-                                {
-                                  translateX:
-                                    thirdMenuAnimationOpen.translateX
-                                      ?.startValue!,
-                                },
-                                {
-                                  scaleX:
-                                    thirdMenuAnimationOpen.scale?.startValue!,
-                                },
-                              ],
-                            },
-                          ]}
-                        >
-                          <Ionicons
-                            name="scan-outline"
-                            size={20}
-                            color="black"
-                            style={{ marginRight: 5 }}
-                          />
-                          <Text>Scan</Text>
-                        </Animated.View>
-                      </Pressable>
-                    </View>
-                  </Modal>
-                </>
-              </View>
+                              ]}
+                            >
+                              <Ionicons
+                                name="scan-outline"
+                                size={20}
+                                color="black"
+                                style={{ marginRight: 5 }}
+                              />
+                              <Text>Scan</Text>
+                            </Animated.View>
+                          </Pressable>
+                        </View>
+                      </Modal>
+                    </>
+                  </View>
+                )}
+              </>
             );
           },
 
@@ -482,6 +547,7 @@ export const TabNavigator = () => {
             key={index}
             name={item.route}
             component={item.component}
+            initialParams={{ showTabNav: !openMenu }}
             options={{
               headerTitle: item.label,
               tabBarLabel: item.label,
@@ -506,6 +572,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  searchContainer: {
+    flexDirection: "row",
+    height: 120,
+    backgroundColor: colors.secondary,
+    alignItems: "flex-end",
   },
   headerContainer: {
     height: 90,

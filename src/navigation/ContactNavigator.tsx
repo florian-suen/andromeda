@@ -6,14 +6,22 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import { useAppSelector } from "../../utility/useReduxHooks";
 import { Text } from "react-native";
+import { RouteProp, useRoute } from "@react-navigation/native";
+
 const Tab = createMaterialTopTabNavigator();
 
 export const ContactNavigator = () => {
+  const route = useRoute<RouteProp<{ params: { showTabNav: boolean } }>>();
   const contactRequest = useAppSelector((state) => {
     return state.contacts.contacts;
   }).filter((item) => item.requestStatus === "REQUESTED" && !item.sender);
   return (
-    <Tab.Navigator screenOptions={{ tabBarActiveTintColor: Colors.accent }}>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarStyle: { display: route.params.showTabNav ? "flex" : "none" },
+        tabBarActiveTintColor: Colors.accent,
+      }}
+    >
       <Tab.Screen
         options={{
           tabBarShowLabel: false,
