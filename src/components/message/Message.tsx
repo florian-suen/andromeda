@@ -16,12 +16,12 @@ import ImageView from "react-native-image-viewing";
 import { Feather } from "@expo/vector-icons";
 import { Video, ResizeMode } from "expo-av";
 import { userContext } from "../../../utility/userAuth";
-import { Attachments, Media } from "../../redux/messages/messageSlice";
 import Colors from "../../constants/Colors";
 import { MediaItem } from "../Blogs/BlogComponent";
 import { BlurView } from "expo-blur";
 import * as MediaLibrary from "expo-media-library";
-import { ProgressBar, MD3Colors } from "react-native-paper";
+import { ProgressBar } from "react-native-paper";
+import { Attachments, Media } from "../../redux/messages/types";
 
 dayjs.extend(relativeTime);
 

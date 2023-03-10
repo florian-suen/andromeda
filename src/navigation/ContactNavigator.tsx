@@ -5,7 +5,7 @@ import { RequestScreen } from "../screens/RequestScreen";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import { useAppSelector } from "../../utility/useReduxHooks";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { RouteProp, useRoute } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
@@ -46,7 +46,13 @@ export const ContactNavigator = () => {
           tabBarBadge: () => {
             return (
               contactRequest.length > 0 && (
-                <Text style={{ color: "white" }}>{contactRequest.length}</Text>
+                <View style={{}}>
+                  <Text
+                    style={{ color: Colors.accent, padding: 5, marginRight: 5 }}
+                  >
+                    {contactRequest.length}
+                  </Text>
+                </View>
               )
             );
           },
