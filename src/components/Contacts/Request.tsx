@@ -129,7 +129,7 @@ export const RequestComponent = ({
               }}
             >
               Block
-            </Button>{" "}
+            </Button>
           </>
         )}
       </View>

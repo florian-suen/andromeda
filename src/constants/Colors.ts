@@ -15,7 +15,7 @@ export default {
   attachBoxTwo: "#107c94",
   progressBar: "purple",
   danger: "#d12f2c",
-  warning: "#f59218",
+  warning: "#ba4f07",
   success: "#067d4d",
   info: "#09bdd9",
 };

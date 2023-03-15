@@ -1,23 +1,25 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Text, View, Image, Button, StyleSheet } from "react-native";
+import { Text, View, Image, StyleSheet } from "react-native";
 import { useExistingChatGroups } from "../../utility/useExistingChatGroups";
 import { useAppDispatch, useAppSelector } from "../../utility/useReduxHooks";
 import { Dispatch } from "../components/Contacts/Contacts";
-import {
-  ContactType,
-  updateFriendStatus,
-} from "../redux/contactList/contactListSlice";
+import { updateFriendStatus } from "../redux/contactList/contactListSlice";
 import { v4 as uuidv4 } from "uuid";
 import { API, graphqlOperation } from "aws-amplify";
 import { createChatGroup, createUserChatGroup } from "../graphql/mutations";
+
 import {
   ChatGroupType,
   createNewChatGroup,
 } from "../redux/chatGroup/chatGroupSlice";
-import { CurrentUserType } from "../redux/currentUser/currentUserSlice";
+
 import { useNavigation } from "@react-navigation/native";
 import { updateUserContact } from "./AddFriend/queries";
+import { ContactType } from "../redux/contactList/types";
+import { CurrentUserType } from "../redux/currentUser/types";
+import Colors from "../constants/Colors";
+import { Button } from "react-native-paper";
 type RouteParam = {
   ContactProfile: { contactId: string };
 };
@@ -40,17 +42,43 @@ export const ContactProfileScreen = () => {
   return (
     <View style={styles.container}>
       <View>
-        <Image
-          style={styles.image}
-          source={{ uri: currentContact.friend.image }}
-        />
-        <Text>{currentContact.friend.username}</Text>
-        <Text>{currentContact.friend.status}</Text>
-        <Text>{currentContact.friend.inviteId}</Text>
+        <View
+          style={{
+            backgroundColor: "grey",
+            padding: 15,
+            paddingBottom: 10,
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 3,
+          }}
+        >
+          <Image
+            style={styles.image}
+            source={{ uri: currentContact.friend.image }}
+          />
+
+          <View style={styles.textContainer}>
+            <Text style={styles.textProp}>Username:</Text>
+            <Text style={styles.text}>{currentContact.friend.username}</Text>
+          </View>
+          <View style={styles.textContainer}>
+            <Text numberOfLines={3} style={styles.textProp}>
+              Status:
+            </Text>
+            <Text numberOfLines={2} style={[styles.text]}>
+              {currentContact.friend.status}
+            </Text>
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.textProp}>Invite Code:</Text>
+            <Text style={styles.text}>{currentContact.friend.inviteId}</Text>
+          </View>
+        </View>
       </View>
-      <View>
+      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
         <Button
-          title="Send Message"
+          mode="contained"
+          style={styles.button}
           onPress={() => {
             createChatGroupHandler(
               currentContact.friend,
@@ -60,14 +88,21 @@ export const ContactProfileScreen = () => {
               chatGroupList
             );
           }}
-        />
+        >
+          Send Message
+        </Button>
         {currentContact.requestStatus === "BLOCKED" ? (
-          <Button title="Blocked" />
+          <Button mode="contained" style={styles.button} disabled>
+            Blocked
+          </Button>
         ) : (
           <Button
-            title="Block User"
+            mode="contained"
+            style={styles.button}
             onPress={() => blockFriendHandler(currentContact, dispatch)}
-          />
+          >
+            Block User
+          </Button>
         )}
       </View>
     </View>
@@ -162,6 +197,25 @@ const createChatGroupHandler = async (
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center" },
-  image: { height: 200, width: 200 },
+  container: {
+    alignItems: "center",
+    marginTop: "30%",
+  },
+  image: { height: 150, width: 150, borderRadius: 2, marginBottom: 7 },
+  textContainer: { flexDirection: "row" },
+  text: {
+    fontFamily: "Exo2",
+    color: Colors.accent,
+    fontSize: 16,
+    maxWidth: 200,
+  },
+  textProp: { fontFamily: "Exo2Bold", color: Colors.secondary, fontSize: 15 },
+  button: {
+    justifyContent: "center",
+    height: 45,
+    width: "100%",
+    borderRadius: 0,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.black,
+  },
 });

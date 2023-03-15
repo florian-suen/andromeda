@@ -9,6 +9,7 @@ import Colors from "./constants/Colors";
 export const Index = () => {
   const [fontsLoaded] = useFonts({
     Exo2: require("../assets/fonts/Exo2-VariableFont_wght.ttf"),
+    Exo2Bold: require("../assets/fonts/Exo2-Bold.ttf"),
     Zilla: require("../assets/fonts/ZillaSlab-Medium.ttf"),
     Chakra: require("../assets/fonts/ChakraPetch-SemiBold.ttf"),
   });

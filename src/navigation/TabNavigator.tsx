@@ -27,8 +27,8 @@ import {
   returnAnimation,
 } from "../../utility/createAnimation";
 import { ContactNavigator } from "./ContactNavigator";
-import { TextInput } from "react-native-paper";
-
+import { Searchbar, Chip } from "react-native-paper";
+import { Keyboard } from "react-native";
 const tabArray = [
   {
     route: "Chats",
@@ -135,6 +135,8 @@ const TabButton = ({
 };
 const Tab = createBottomTabNavigator();
 export const TabNavigator = () => {
+  const [searchInput, setSearchInput] = useState("");
+  const [videoSelect, setVideoSelect] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const disableModalClick = useRef(false);
   const [openMenu, setOpenMenu] = useState(false);
@@ -248,37 +250,76 @@ export const TabNavigator = () => {
               <>
                 {openSearch ? (
                   <View style={styles.searchContainer}>
-                    <Ionicons
+                    <View style={styles.mainSearch}>
+                      <Ionicons
+                        style={{
+                          marginLeft: 10,
+                        }}
+                        name="arrow-back"
+                        size={24}
+                        color={Colors.accentDark}
+                        onPress={() => {
+                          setOpenSearch(false);
+                          navigation.setParams({
+                            showTabNav: true,
+                          });
+                        }}
+                      />
+                      <Searchbar
+                        placeholderTextColor={Colors.accent}
+                        selectionColor={Colors.accentDark}
+                        value={searchInput}
+                        blurOnSubmit={false}
+                        onChangeText={setSearchInput}
+                        elevation={0}
+                        style={{
+                          height: 50,
+                          width: "90%",
+                          backgroundColor: Colors.secondary,
+                          borderWidth: 0,
+                        }}
+                        autoFocus
+                        placeholder="Search..."
+                        numberOfLines={1}
+                        onBlur={() => setOpenSearch(false)}
+                      />
+                    </View>
+                    <View
                       style={{
-                        marginBottom: 11,
+                        flexDirection: "row",
+                        marginBottom: 5,
                         marginLeft: 10,
                       }}
-                      name="arrow-back"
-                      size={24}
-                      color={Colors.accentDark}
-                      onPress={() => {
-                        setOpenSearch(false);
-                        navigation.setParams({
-                          showTabNav: true,
-                        });
-                      }}
-                    />
-                    <TextInput
-                      placeholderTextColor={Colors.accent}
-                      selectionColor={Colors.accentDark}
-                      underlineColor={"transparent"}
-                      textColor={Colors.accent}
-                      style={{
-                        marginLeft: 5,
-                        height: 50,
-                        width: "90%",
-                        backgroundColor: Colors.secondary,
-                      }}
-                      activeUnderlineColor={"transparent"}
-                      autoFocus
-                      placeholder="Search"
-                      numberOfLines={1}
-                    />
+                    >
+                      <Chip
+                        textStyle={styles.chipText}
+                        style={styles.chip}
+                        selected={videoSelect}
+                        icon="video"
+                        onPress={() => setVideoSelect(!videoSelect)}
+                      >
+                        Video
+                      </Chip>
+                      <Chip
+                        textStyle={styles.chipText}
+                        style={styles.chip}
+                        selected={videoSelect}
+                        icon="music"
+                        onPress={() => setVideoSelect(!videoSelect)}
+                      >
+                        Music
+                      </Chip>
+
+                      <Chip
+                        textStyle={styles.chipText}
+                        style={[styles.chip, { width: 110 }]}
+                        selected={videoSelect}
+                        icon="file"
+                        onPress={() => setVideoSelect(!videoSelect)}
+                      >
+                        Documents
+                      </Chip>
+                    </View>
                   </View>
                 ) : (
                   <View style={styles.headerContainer}>
@@ -575,17 +616,33 @@ const styles = StyleSheet.create({
   },
 
   searchContainer: {
-    flexDirection: "row",
     height: 120,
     backgroundColor: colors.secondary,
-    alignItems: "flex-end",
+    justifyContent: "flex-end",
   },
+  mainSearch: {
+    flexDirection: "row",
+
+    alignItems: "center",
+  },
+  chip: {
+    transform: [{ scale: 0.9 }],
+    borderRadius: 15,
+    textAlign: "center",
+    width: 80,
+    height: 32,
+    justifyContent: "center",
+    paddingBottom: 0,
+    flexDirection: "row",
+  },
+  chipText: { padding: 0 },
   headerContainer: {
     height: 90,
     backgroundColor: colors.secondary,
     justifyContent: "center",
     alignItems: "center",
   },
+
   openMenuContainer: {
     position: "absolute",
     width: 118,

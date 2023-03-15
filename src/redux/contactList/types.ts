@@ -4,6 +4,7 @@ import { Media } from "../messages/types";
 
 export type RequestStatusType = "ACCEPTED" | "BLOCKED" | "REQUESTED";
 export interface ContactType {
+  updatedAt: string;
   createdAt: string;
   sender: boolean;
   requestStatus: string;

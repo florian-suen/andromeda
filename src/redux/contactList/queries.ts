@@ -2,6 +2,7 @@ export const listbyUserContactFriend = /* GraphQL */ `
   query ListbyUserContactFriend($userID: ID!) {
     ListbyUserContactFriend(userID: $userID) {
       items {
+        updatedAt
         createdAt
         sender
         requestStatus
