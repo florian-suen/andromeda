@@ -13,7 +13,7 @@ export const BlockedScreen = () => {
       {contactBlocked.length > 0 ? (
         <BlurView
           style={{ margin: 5, marginHorizontal: 12, borderRadius: 3 }}
-          intensity={20}
+          intensity={8}
         >
           <FlatList
             data={contactBlocked}

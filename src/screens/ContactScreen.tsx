@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Animated } from "react-native";
 import { ContactsComponent } from "../components/Contacts/Contacts";
 import { useAppSelector } from "../../utility/useReduxHooks";
+import { BlurView } from "expo-blur";
 export const ContactScreen = () => {
   const [selectedUserId, setSelectedUserId] = useState<string[]>([]);
   const isSelectable = false;
@@ -66,11 +67,20 @@ export const ContactScreen = () => {
                 transform: [{ scale }],
               }}
             >
-              <ContactsComponent
-                contact={item}
-                isSelectable={isSelectable}
-                isSelected={isSelected}
-              />
+              <BlurView
+                intensity={20}
+                style={{
+                  margin: 5,
+                  marginHorizontal: 12,
+                  borderRadius: 3,
+                }}
+              >
+                <ContactsComponent
+                  contact={item}
+                  isSelectable={isSelectable}
+                  isSelected={isSelected}
+                />
+              </BlurView>
             </Animated.View>
           );
         }}

@@ -76,7 +76,14 @@ export const ContactsComponent = ({
         }}
         style={({ pressed }) => [pressed ? styles.pressed : null]}
       >
-        <View>
+        <View
+          style={{
+            padding: 10,
+            borderTopWidth: StyleSheet.hairlineWidth,
+            borderBottomWidth: StyleSheet.hairlineWidth,
+            borderColor: "#18202e",
+          }}
+        >
           <Animated.View
             style={{
               ...styles.container,
@@ -139,9 +146,6 @@ const styles = StyleSheet.create({
     height: 60,
     alignItems: "center",
     justifyContent: "center",
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: "#18202e",
   },
   main: {
     flex: 1,
@@ -157,10 +161,9 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   image: {
-    marginLeft: 20,
-    width: 50,
-    height: 50,
-    marginRight: 15,
+    width: 70,
+    height: 70,
+    marginRight: 10,
     borderRadius: 5,
   },
 });

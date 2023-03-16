@@ -25,7 +25,7 @@ export const RequestScreen = () => {
               <Divider horizontalInset style={styles.divider} />
               <BlurView
                 style={{ margin: 5, marginHorizontal: 12, borderRadius: 3 }}
-                intensity={20}
+                intensity={5}
               >
                 <FlatList
                   data={contactRequest}
@@ -42,7 +42,7 @@ export const RequestScreen = () => {
               <Divider horizontalInset style={styles.divider} />
               <BlurView
                 style={{ margin: 5, marginHorizontal: 12, borderRadius: 3 }}
-                intensity={20}
+                intensity={5}
               >
                 <FlatList
                   data={userRequest}
