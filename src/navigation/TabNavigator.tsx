@@ -28,7 +28,7 @@ import {
 } from "../../utility/createAnimation";
 import { ContactNavigator } from "./ContactNavigator";
 import { Searchbar, Chip } from "react-native-paper";
-import { Keyboard } from "react-native";
+
 const tabArray = [
   {
     route: "Chats",
@@ -77,9 +77,9 @@ const TabButton = ({
   let inputOpacity = useRef(
     focused ? new Animated.Value(1) : new Animated.Value(0.2)
   );
-  let color = useRef(colors.peacock);
-  if (color.current !== colors.peacock && focused === false)
-    (color.current = colors.peacock),
+  let color = useRef(colors.inActiveIcon);
+  if (color.current !== colors.inActiveIcon && focused === false)
+    (color.current = colors.inActiveIcon),
       (inputOpacity.current = new Animated.Value(0.2));
   if (focused) color.current = colors.accent;
 
@@ -137,6 +137,8 @@ const Tab = createBottomTabNavigator();
 export const TabNavigator = () => {
   const [searchInput, setSearchInput] = useState("");
   const [videoSelect, setVideoSelect] = useState(false);
+  const [musicSelect, setMusicSelect] = useState(false);
+  const [documentSelect, setDocumentSelect] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const disableModalClick = useRef(false);
   const [openMenu, setOpenMenu] = useState(false);
@@ -266,22 +268,22 @@ export const TabNavigator = () => {
                         }}
                       />
                       <Searchbar
+                        iconColor={Colors.accent}
                         placeholderTextColor={Colors.accent}
                         selectionColor={Colors.accentDark}
                         value={searchInput}
-                        blurOnSubmit={false}
                         onChangeText={setSearchInput}
                         elevation={0}
+                        inputStyle={{ color: Colors.accent }}
                         style={{
                           height: 50,
                           width: "90%",
-                          backgroundColor: Colors.secondary,
+
                           borderWidth: 0,
                         }}
                         autoFocus
                         placeholder="Search..."
                         numberOfLines={1}
-                        onBlur={() => setOpenSearch(false)}
                       />
                     </View>
                     <View
@@ -293,7 +295,14 @@ export const TabNavigator = () => {
                     >
                       <Chip
                         textStyle={styles.chipText}
-                        style={styles.chip}
+                        style={
+                          videoSelect
+                            ? [
+                                styles.chip,
+                                { backgroundColor: Colors.messageOne },
+                              ]
+                            : styles.chip
+                        }
                         selected={videoSelect}
                         icon="video"
                         onPress={() => setVideoSelect(!videoSelect)}
@@ -302,20 +311,37 @@ export const TabNavigator = () => {
                       </Chip>
                       <Chip
                         textStyle={styles.chipText}
-                        style={styles.chip}
-                        selected={videoSelect}
+                        style={
+                          musicSelect
+                            ? [
+                                styles.chip,
+                                { backgroundColor: Colors.messageOne },
+                              ]
+                            : styles.chip
+                        }
+                        selected={musicSelect}
                         icon="music"
-                        onPress={() => setVideoSelect(!videoSelect)}
+                        onPress={() => setMusicSelect(!musicSelect)}
                       >
                         Music
                       </Chip>
 
                       <Chip
                         textStyle={styles.chipText}
-                        style={[styles.chip, { width: 110 }]}
-                        selected={videoSelect}
+                        style={
+                          documentSelect
+                            ? [
+                                styles.chip,
+                                {
+                                  backgroundColor: Colors.messageOne,
+                                  width: 110,
+                                },
+                              ]
+                            : [styles.chip, { width: 110 }]
+                        }
+                        selected={documentSelect}
                         icon="file"
-                        onPress={() => setVideoSelect(!videoSelect)}
+                        onPress={() => setDocumentSelect(!documentSelect)}
                       >
                         Documents
                       </Chip>
@@ -432,7 +458,7 @@ export const TabNavigator = () => {
                                   position: "absolute",
                                   top: -12,
                                   right: 0,
-                                  left: 73.5,
+                                  left: 84.5,
                                   bottom: 0,
                                   marginTop: 10,
                                   marginHorizontal: 15,
@@ -634,6 +660,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingBottom: 0,
     flexDirection: "row",
+    backgroundColor: Colors.white,
   },
   chipText: { padding: 0 },
   headerContainer: {

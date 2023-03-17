@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { View, Text, Image, FlatList } from "react-native";
+import { Media } from "../../redux/messages/types";
 import { UserBlogsType } from "../../screens/BlogScreen";
 import { BlogMediaComponent } from "./BlogMediaComponent";
-import { Storage } from "aws-amplify";
-import { Media } from "../../redux/messages/messageSlice";
 
 export interface MediaItem extends Media {
   uri: string;

@@ -235,11 +235,11 @@ export const Message = ({
                 width: "100%",
                 marginBottom: 5,
                 backgroundColor: myMsg.current
-                  ? Colors.accentDark
-                  : Colors.messageOneDark,
+                  ? Colors.attachBoxTwo
+                  : Colors.attachBoxOne,
                 borderRadius: 1,
                 borderWidth: StyleSheet.hairlineWidth,
-                borderColor: "mistyrose",
+                borderColor: "#a19291",
               }}
             >
               {mediaSrc.map((item, index) => {
@@ -273,7 +273,7 @@ export const Message = ({
                             }}
                             name="plus-square"
                             size={40}
-                            color={myMsg.current ? "seashell" : Colors.peacock}
+                            color={myMsg.current ? "seashell" : Colors.tertiary}
                           />
                           <Image
                             style={[styles.image]}
@@ -314,12 +314,23 @@ export const Message = ({
             <View
               key={message.createdAt}
               style={{
+                marginBottom: 5,
                 backgroundColor: myMsg.current
-                  ? Colors.attachBoxOne
-                  : Colors.attachBoxTwo,
+                  ? Colors.attachBoxTwo
+                  : Colors.attachBoxOne,
                 padding: 10,
-                borderRadius: 3,
+                borderRadius: 2,
                 borderWidth: StyleSheet.hairlineWidth,
+                borderColor: myMsg.current ? "#6c3466" : "#3b696d",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 1,
+                },
+                shadowOpacity: 0.2,
+                shadowRadius: 1.41,
+
+                elevation: 2,
               }}
             >
               {attachments.map((item, index) => {
@@ -348,7 +359,7 @@ export const Message = ({
                         </Text>
                         <ProgressBar
                           style={{
-                            backgroundColor: "white",
+                            backgroundColor: Colors.white,
                             marginVertical: 5,
                             height: 4,
                             width: "50%",
@@ -358,7 +369,11 @@ export const Message = ({
                             progress[index][0] > 0
                           }
                           progress={progress[index] ? progress[index][0] : 0.5}
-                          color={Colors.progressBar}
+                          color={
+                            myMsg.current
+                              ? Colors.progressBarOne
+                              : Colors.progressBarTwo
+                          }
                         />
                       </View>
                     ) : null}
@@ -415,8 +430,8 @@ const styles = StyleSheet.create({
   },
   container: {
     margin: 7,
-    padding: 10,
-    borderRadius: 5,
+    padding: 7,
+    borderRadius: 3,
     maxWidth: "85%",
     shadowColor: "#000",
     shadowOffset: {
@@ -439,8 +454,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.messageTwo,
   },
   time: {
+    marginTop: 3,
     fontStyle: "italic",
-    color: "purple",
+    color: Colors.tertiary,
     alignSelf: "flex-end",
     fontSize: 10,
   },

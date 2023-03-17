@@ -70,6 +70,7 @@ export const RequestComponent = ({
               style={{ marginRight: 5, borderRadius: 3 }}
               mode="contained"
               compact
+              buttonColor={Colors.decline}
               onPress={() => {
                 deleteFriendHandler(requestUser, dispatch);
               }}
@@ -100,6 +101,7 @@ export const RequestComponent = ({
         ) : (
           <>
             <Button
+              buttonColor={Colors.decline}
               style={{ marginRight: 10, borderRadius: 3 }}
               mode="contained"
               compact
@@ -112,7 +114,6 @@ export const RequestComponent = ({
             <Button
               textColor={Colors.danger}
               compact
-              mode="contained"
               onPress={() => {
                 Alert.alert(
                   "Blocking User",

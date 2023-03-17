@@ -70,9 +70,8 @@ export const ContactScreen = () => {
               <BlurView
                 intensity={20}
                 style={{
-                  margin: 5,
-                  marginHorizontal: 12,
-                  borderRadius: 3,
+                  marginHorizontal: 10,
+                  borderRadius: 5,
                 }}
               >
                 <ContactsComponent

@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { API, graphqlOperation } from "aws-amplify";
 import { GetUser } from "../../screens/ChatsList/queries";
-import { ContactType } from "../contactList/contactListSlice";
+import { ContactType } from "../contactList/types";
+
 import { ChatgroupState, ChatGroupType } from "./types";
 export const getChatGroup = createAsyncThunk(
   "chatGroup/fetchGroup",

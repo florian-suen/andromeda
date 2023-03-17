@@ -11,6 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAppDispatch } from "../../../utility/useReduxHooks";
 import { ContactType } from "../../redux/contactList/types";
+import Colors from "../../constants/Colors";
 
 type RootStackParamList = {
   ContactProfile: { contactId: string };
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: { flexDirection: "row" },
-  name: { flex: 1, fontWeight: "bold", color: "#DAD5CF", fontSize: 18 },
+  name: { flex: 1, fontFamily: "Exo2", color: Colors.accent, fontSize: 18 },
   status: {
     color: "gray",
     marginRight: 10,

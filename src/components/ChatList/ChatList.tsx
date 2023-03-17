@@ -26,10 +26,7 @@ export const ChatGroup = ({ chat }: { chat: ChatGroupType }) => {
     chatGroupData.users.items && (
       <Pressable
         android_ripple={{ color: Colors.primary }}
-        style={({ pressed }) => [
-          styles.container,
-          pressed ? styles.pressed : null,
-        ]}
+        style={({ pressed }) => [pressed ? styles.pressed : null]}
         onPress={() =>
           navigation.navigate("GroupChat", {
             chatGroupId: chatGroupData.id,
@@ -72,7 +69,7 @@ export const ChatGroup = ({ chat }: { chat: ChatGroupType }) => {
 };
 
 const styles = StyleSheet.create({
-  pressed: { opacity: 0.7, backgroundColor: Colors.tertiary },
+  pressed: { opacity: 0.7, backgroundColor: Colors.secondary },
 
   container: {
     flexDirection: "row",

@@ -28,9 +28,10 @@ import { useDispatch } from "react-redux";
 import { userContext } from "../../../utility/userAuth";
 import { useAppSelector } from "../../../utility/useReduxHooks";
 import { ChatGroupType } from "../../redux/chatGroup/chatGroupSlice";
-import { ContactType } from "../../redux/contactList/contactListSlice";
+
 import Colors from "../../constants/Colors";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
+import { ContactType } from "../../redux/contactList/types";
 
 type messageInput = {
   chatgroupID: string;
@@ -306,13 +307,13 @@ export const InputBox = ({
                       padding: 8,
                       marginLeft: 10,
                       marginRight: -10,
-                      backgroundColor: Colors.secondary,
-                      borderColor: Colors.peacock,
+                      backgroundColor: "#145766",
+                      borderColor: Colors.tertiary,
                       borderWidth: StyleSheet.hairlineWidth,
                     }}
                     name="highlight-remove"
                     size={24}
-                    color={Colors.peacock}
+                    color={Colors.messageOne}
                   />
                 </Pressable>
               </View>
@@ -365,7 +366,7 @@ export const InputBox = ({
             style={styles.plusCircleIcon}
             name="plus-circle-outline"
             size={32}
-            color={"white"}
+            color={Colors.white}
           />
 
           {inputText || media.length || attachments.length ? (
@@ -483,7 +484,7 @@ const checkIfBlocked = (
 const styles = StyleSheet.create({
   imageContainer: {
     flexDirection: "row",
-    backgroundColor: Colors.tertiary,
+    backgroundColor: Colors.secondary,
     flex: 1,
     padding: 5,
     paddingHorizontal: 10,
@@ -518,14 +519,14 @@ const styles = StyleSheet.create({
   },
   container: {
     flexDirection: "row",
-    backgroundColor: Colors.tertiary,
+    backgroundColor: Colors.secondary,
     padding: 5,
     paddingHorizontal: 6,
     alignItems: "center",
   },
   input: {
     marginVertical: 3,
-    backgroundColor: "white",
+    backgroundColor: Colors.white,
     borderWidth: StyleSheet.hairlineWidth,
     flex: 1,
     borderRadius: 3,
@@ -541,7 +542,7 @@ const styles = StyleSheet.create({
   },
 
   openSelector: {
-    backgroundColor: Colors.tertiary,
+    backgroundColor: Colors.secondary,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
