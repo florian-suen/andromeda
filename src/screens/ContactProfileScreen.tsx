@@ -8,7 +8,7 @@ import { updateFriendStatus } from "../redux/contactList/contactListSlice";
 import { v4 as uuidv4 } from "uuid";
 import { API, graphqlOperation } from "aws-amplify";
 import { createChatGroup, createUserChatGroup } from "../graphql/mutations";
-
+import { Ionicons } from "@expo/vector-icons";
 import {
   ChatGroupType,
   createNewChatGroup,
@@ -44,7 +44,6 @@ export const ContactProfileScreen = () => {
       <View>
         <View
           style={{
-            backgroundColor: "grey",
             padding: 15,
             paddingBottom: 10,
             justifyContent: "center",
@@ -56,24 +55,44 @@ export const ContactProfileScreen = () => {
             style={styles.image}
             source={{ uri: currentContact.friend.image }}
           />
-
-          <View style={styles.textContainer}>
-            <Text style={styles.textProp}>Username:</Text>
-            <Text style={styles.text}>{currentContact.friend.username}</Text>
-          </View>
-          <View style={styles.textContainer}>
-            <Text numberOfLines={3} style={styles.textProp}>
-              Status:
-            </Text>
-            <Text numberOfLines={2} style={[styles.text]}>
-              {currentContact.friend.status}
-            </Text>
-          </View>
-          <View style={styles.textContainer}>
-            <Text style={styles.textProp}>Invite Code:</Text>
-            <Text style={styles.text}>{currentContact.friend.inviteId}</Text>
+          <View style={{}}>
+            <View style={styles.textContainer}>
+              <Text style={styles.textProp}>Username:</Text>
+              <Text style={styles.text}>{currentContact.friend.username}</Text>
+            </View>
+            <View style={[styles.textContainer, { marginLeft: 26 }]}>
+              <Text numberOfLines={3} style={styles.textProp}>
+                Status:
+              </Text>
+              <Text numberOfLines={2} style={[styles.text]}>
+                {currentContact.friend.status}
+              </Text>
+            </View>
           </View>
         </View>
+      </View>
+      <View
+        style={{
+          alignItems: "center",
+          marginBottom: 20,
+        }}
+      >
+        <Text style={styles.textProp}>Invite Code</Text>
+        <Text
+          style={[
+            styles.text,
+            {
+              maxWidth: 350,
+              backgroundColor: Colors.white,
+              color: Colors.black,
+              padding: 3,
+              borderRadius: 3,
+            },
+          ]}
+        >
+          {currentContact.friend.inviteId}
+        </Text>
+        <Ionicons name="copy" size={24} color="black" />
       </View>
       <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
         <Button
@@ -201,7 +220,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: "30%",
   },
-  image: { height: 150, width: 150, borderRadius: 2, marginBottom: 7 },
+  image: {
+    height: 150,
+    width: 150,
+    borderRadius: 3,
+    marginBottom: 7,
+    borderWidth: 1,
+    borderColor: Colors.info,
+  },
   textContainer: { flexDirection: "row" },
   text: {
     fontFamily: "Exo2",
@@ -209,7 +235,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     maxWidth: 200,
   },
-  textProp: { fontFamily: "Exo2Bold", color: Colors.secondary, fontSize: 15 },
+  textProp: {
+    fontFamily: "Exo2Bold",
+    color: Colors.info,
+    fontSize: 15,
+    marginRight: 3,
+  },
   button: {
     justifyContent: "center",
     height: 45,

@@ -20,6 +20,6 @@ export default {
   danger: "#d12f2c",
   warning: "#ba4f07",
   success: "#067d4d",
-  info: "#09bdd9",
+  info: "#18617a",
   decline: "#7c2d73",
 };

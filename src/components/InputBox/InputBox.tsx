@@ -382,7 +382,7 @@ export const InputBox = ({
                 style={styles.sendIcon}
                 name="send"
                 size={28}
-                color={"white"}
+                color={Colors.white}
                 onPress={sendHandler}
               />
             </Animated.View>
