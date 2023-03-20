@@ -1,4 +1,6 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
+import * as Clipboard from "expo-clipboard";
+import Toast from "react-native-root-toast";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Text, View, Image, StyleSheet } from "react-native";
 import { useExistingChatGroups } from "../../utility/useExistingChatGroups";
@@ -13,13 +15,14 @@ import {
   ChatGroupType,
   createNewChatGroup,
 } from "../redux/chatGroup/chatGroupSlice";
-
+import { FontAwesome, AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { updateUserContact } from "./AddFriend/queries";
 import { ContactType } from "../redux/contactList/types";
 import { CurrentUserType } from "../redux/currentUser/types";
 import Colors from "../constants/Colors";
 import { Button } from "react-native-paper";
+import React from "react";
 type RouteParam = {
   ContactProfile: { contactId: string };
 };
@@ -45,7 +48,7 @@ export const ContactProfileScreen = () => {
         <View
           style={{
             padding: 15,
-            paddingBottom: 10,
+            paddingBottom: 12,
             justifyContent: "center",
             alignItems: "center",
             borderRadius: 3,
@@ -77,26 +80,58 @@ export const ContactProfileScreen = () => {
           marginBottom: 20,
         }}
       >
-        <Text style={styles.textProp}>Invite Code</Text>
-        <Text
-          style={[
-            styles.text,
-            {
-              maxWidth: 350,
-              backgroundColor: Colors.white,
-              color: Colors.black,
-              padding: 3,
-              borderRadius: 3,
-            },
-          ]}
+        <Text style={[styles.textProp, { marginBottom: 2 }]}>Invite Code</Text>
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 15,
+          }}
         >
-          {currentContact.friend.inviteId}
-        </Text>
-        <Ionicons name="copy" size={24} color="black" />
+          <Text
+            style={[
+              styles.text,
+              {
+                maxWidth: 350,
+                backgroundColor: Colors.white,
+                color: Colors.black,
+                padding: 3,
+                borderRadius: 3,
+              },
+            ]}
+          >
+            {currentContact.friend.inviteId}
+          </Text>
+          <Ionicons
+            onPress={() => {
+              Clipboard.setStringAsync(currentContact.friend.inviteId).then(
+                (done) => {
+                  done &&
+                    Toast.show("Copied Invite Code to Clipboard", {
+                      duration: Toast.durations.LONG,
+                      position: -40,
+                      shadow: true,
+                      backgroundColor: Colors.info,
+                    });
+                }
+              );
+            }}
+            style={{ marginLeft: 10 }}
+            name="copy"
+            size={24}
+            color={Colors.info}
+          />
+        </View>
       </View>
       <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
         <Button
+          icon={() => {
+            return <AntDesign name="message1" size={24} color={Colors.info} />;
+          }}
           mode="contained"
+          contentStyle={{ flexDirection: "row-reverse" }}
+          buttonColor={Colors.buttonDefault}
           style={styles.button}
           onPress={() => {
             createChatGroupHandler(
@@ -108,14 +143,46 @@ export const ContactProfileScreen = () => {
             );
           }}
         >
-          Send Message
+          Message
         </Button>
+        <Button
+          icon={() => {
+            return <FontAwesome name="star-o" size={24} color={Colors.info} />;
+          }}
+          contentStyle={{ flexDirection: "row-reverse" }}
+          mode="contained"
+          buttonColor={Colors.buttonDefault}
+          style={styles.button}
+          onPress={() => {}}
+        >
+          Favourite
+        </Button>
+
         {currentContact.requestStatus === "BLOCKED" ? (
-          <Button mode="contained" style={styles.button} disabled>
+          <Button
+            icon={() => {
+              return (
+                <MaterialIcons name="block" size={24} color={Colors.info} />
+              );
+            }}
+            contentStyle={{ flexDirection: "row-reverse" }}
+            mode="contained"
+            buttonColor={Colors.buttonDefault}
+            style={styles.button}
+            disabled
+          >
             Blocked
           </Button>
         ) : (
           <Button
+            icon={() => {
+              return (
+                <MaterialIcons name="block" size={24} color={Colors.info} />
+              );
+            }}
+            contentStyle={{ flexDirection: "row-reverse" }}
+            textColor={Colors.danger}
+            buttonColor={Colors.buttonDefault}
             mode="contained"
             style={styles.button}
             onPress={() => blockFriendHandler(currentContact, dispatch)}
@@ -242,11 +309,11 @@ const styles = StyleSheet.create({
     marginRight: 3,
   },
   button: {
-    justifyContent: "center",
-    height: 45,
+    height: 46,
     width: "100%",
     borderRadius: 0,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.black,
+    marginTop: StyleSheet.hairlineWidth,
   },
 });

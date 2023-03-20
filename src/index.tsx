@@ -5,6 +5,7 @@ import { store } from "./redux/store";
 import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
 import Colors from "./constants/Colors";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 export const Index = () => {
   const [fontsLoaded] = useFonts({
@@ -22,7 +23,9 @@ export const Index = () => {
         end={{ x: 0.5, y: 1.5 }}
         style={{ flex: 1, position: "relative" }}
       >
-        {fontsLoaded ? <Navigator /> : null}
+        <RootSiblingParent>
+          {fontsLoaded ? <Navigator /> : null}
+        </RootSiblingParent>
         <StatusBar style="dark" />
       </LinearGradient>
     </Provider>

@@ -22,4 +22,5 @@ export default {
   success: "#067d4d",
   info: "#18617a",
   decline: "#7c2d73",
+  buttonDefault: "#3f236e",
 };
