@@ -127,11 +127,18 @@ export const ContactProfileScreen = () => {
       <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
         <Button
           icon={() => {
-            return <AntDesign name="message1" size={24} color={Colors.info} />;
+            return (
+              <AntDesign
+                style={{ marginLeft: 2, marginTop: 3 }}
+                name="message1"
+                size={20}
+                color={Colors.white}
+              />
+            );
           }}
           mode="contained"
           contentStyle={{ flexDirection: "row-reverse" }}
-          buttonColor={Colors.buttonDefault}
+          buttonColor={Colors.buttonProfile}
           style={styles.button}
           onPress={() => {
             createChatGroupHandler(
@@ -147,11 +154,18 @@ export const ContactProfileScreen = () => {
         </Button>
         <Button
           icon={() => {
-            return <FontAwesome name="star-o" size={24} color={Colors.info} />;
+            return (
+              <FontAwesome
+                style={{ marginLeft: 2, marginTop: 3 }}
+                name="star-o"
+                size={20}
+                color={Colors.white}
+              />
+            );
           }}
           contentStyle={{ flexDirection: "row-reverse" }}
           mode="contained"
-          buttonColor={Colors.buttonDefault}
+          buttonColor={Colors.buttonProfile}
           style={styles.button}
           onPress={() => {}}
         >
@@ -160,16 +174,25 @@ export const ContactProfileScreen = () => {
 
         {currentContact.requestStatus === "BLOCKED" ? (
           <Button
+            textColor={Colors.lightGray}
             icon={() => {
               return (
-                <MaterialIcons name="block" size={24} color={Colors.info} />
+                <MaterialIcons
+                  style={{ marginLeft: 2, marginTop: 3 }}
+                  name="block"
+                  size={20}
+                  color={Colors.lightGray}
+                />
               );
             }}
-            contentStyle={{ flexDirection: "row-reverse" }}
+            contentStyle={{
+              flexDirection: "row-reverse",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
             mode="contained"
-            buttonColor={Colors.buttonDefault}
-            style={styles.button}
-            disabled
+            buttonColor={Colors.gray}
+            style={[styles.button, { marginTop: 30 }]}
           >
             Blocked
           </Button>
@@ -177,14 +200,21 @@ export const ContactProfileScreen = () => {
           <Button
             icon={() => {
               return (
-                <MaterialIcons name="block" size={24} color={Colors.info} />
+                <MaterialIcons
+                  style={{ marginLeft: 2, marginTop: 3 }}
+                  name="block"
+                  size={20}
+                  color={Colors.danger}
+                />
               );
             }}
-            contentStyle={{ flexDirection: "row-reverse" }}
+            contentStyle={{
+              flexDirection: "row-reverse",
+            }}
             textColor={Colors.danger}
-            buttonColor={Colors.buttonDefault}
+            buttonColor={Colors.buttonProfile}
             mode="contained"
-            style={styles.button}
+            style={[styles.button, { marginTop: 30 }]}
             onPress={() => blockFriendHandler(currentContact, dispatch)}
           >
             Block User
@@ -293,7 +323,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginBottom: 7,
     borderWidth: 1,
-    borderColor: Colors.info,
+    borderColor: Colors.white,
   },
   textContainer: { flexDirection: "row" },
   text: {

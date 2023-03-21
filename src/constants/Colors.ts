@@ -8,7 +8,8 @@ export default {
   accentDark: "#a19792",
   black: "#000",
   white: "#a9a9a9",
-  gray: "gray",
+  gray: "#2e3436",
+  lightGray: "#566063",
   messageOneDark: "#4a878c",
   messageOne: "#4f8f94",
   messageTwo: "#96458d",
@@ -22,5 +23,5 @@ export default {
   success: "#067d4d",
   info: "#18617a",
   decline: "#7c2d73",
-  buttonDefault: "#3f236e",
+  buttonProfile: "#134f63",
 };

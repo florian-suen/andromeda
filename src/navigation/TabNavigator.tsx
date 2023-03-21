@@ -137,7 +137,7 @@ const Tab = createBottomTabNavigator();
 export const TabNavigator = () => {
   const [searchInput, setSearchInput] = useState("");
   const [videoSelect, setVideoSelect] = useState(false);
-  const [musicSelect, setMusicSelect] = useState(false);
+  const [photoSelect, setPhotoSelect] = useState(false);
   const [documentSelect, setDocumentSelect] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const disableModalClick = useRef(false);
@@ -296,6 +296,23 @@ export const TabNavigator = () => {
                       <Chip
                         textStyle={styles.chipText}
                         style={
+                          photoSelect
+                            ? [
+                                styles.chip,
+                                { backgroundColor: Colors.messageOne },
+                              ]
+                            : styles.chip
+                        }
+                        selected={photoSelect}
+                        icon="image"
+                        onPress={() => setPhotoSelect(!photoSelect)}
+                      >
+                        Image
+                      </Chip>
+
+                      <Chip
+                        textStyle={styles.chipText}
+                        style={
                           videoSelect
                             ? [
                                 styles.chip,
@@ -309,23 +326,6 @@ export const TabNavigator = () => {
                       >
                         Video
                       </Chip>
-                      <Chip
-                        textStyle={styles.chipText}
-                        style={
-                          musicSelect
-                            ? [
-                                styles.chip,
-                                { backgroundColor: Colors.messageOne },
-                              ]
-                            : styles.chip
-                        }
-                        selected={musicSelect}
-                        icon="music"
-                        onPress={() => setMusicSelect(!musicSelect)}
-                      >
-                        Music
-                      </Chip>
-
                       <Chip
                         textStyle={styles.chipText}
                         style={
@@ -373,7 +373,7 @@ export const TabNavigator = () => {
                         style={{ marginRight: 15 }}
                         name="search"
                         size={24}
-                        color="black"
+                        color={Colors.accent}
                         onPress={() => {
                           setOpenSearch(true);
                           navigation.setParams({
@@ -404,7 +404,7 @@ export const TabNavigator = () => {
                           }}
                           name="cog"
                           size={25}
-                          color="black"
+                          color={Colors.accent}
                         />
                       </Animated.View>
                     </View>
