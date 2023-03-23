@@ -5,6 +5,7 @@ export const getUser = /* GraphQL */ `
       username
       status
       image
+      _version
       inviteId
       Blog {
         items {

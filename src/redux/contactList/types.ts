@@ -20,6 +20,7 @@ export interface ContactType {
     id: string;
     status: string;
     _deleted: string;
+    _version: string;
     Blog: {
       items: {
         createdAt: string;

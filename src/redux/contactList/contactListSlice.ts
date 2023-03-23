@@ -78,6 +78,19 @@ export const contactSlice = createSlice({
   name: "contact",
   initialState,
   reducers: {
+    updateStatus: (
+      state,
+      action: PayloadAction<{ status: string; _version: string; id: string }>
+    ) => {
+      const userIndex = state.contacts.findIndex(
+        (item) => item.friendID === action.payload.id
+      );
+
+      state.contacts[userIndex].friend.status = action.payload.status;
+      state.contacts[userIndex].friend._version = action.payload._version;
+
+      return state;
+    },
     addFriendRequest: (state, action: PayloadAction<ContactType>) => {
       if (state.contacts.some((item) => item.id === action.payload.id))
         return state;
@@ -155,4 +168,5 @@ export const {
   updateFriendStatus,
   updateUserContact,
   deleteUserContact,
+  updateStatus,
 } = contactSlice.actions;

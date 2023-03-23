@@ -66,6 +66,15 @@ export const currentUserSlice = createSlice({
   name: "contact",
   initialState,
   reducers: {
+    updateStatus: (
+      state,
+      action: PayloadAction<{ status: string; _version: string }>
+    ) => {
+      state.currentUser!.status = action.payload.status;
+      state.currentUser!._version = action.payload._version;
+      return state;
+    },
+
     updateUserBlogOnCreateMedia: (
       state,
       action: PayloadAction<{ blogId: string; newMedia: Media }>
@@ -124,5 +133,8 @@ export const currentUserSlice = createSlice({
   },
 });
 
-export const { updateUserOnCreateBlog, updateUserBlogOnCreateMedia } =
-  currentUserSlice.actions;
+export const {
+  updateUserOnCreateBlog,
+  updateUserBlogOnCreateMedia,
+  updateStatus,
+} = currentUserSlice.actions;

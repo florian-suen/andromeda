@@ -7,6 +7,7 @@ export interface CurrentUserType {
   image: string;
   username: string;
   id: string;
+  _version: string;
   status: string;
   _deleted: string;
   Blog: {

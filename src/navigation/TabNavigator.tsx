@@ -618,6 +618,7 @@ export const TabNavigator = () => {
             options={{
               headerTitle: item.label,
               tabBarLabel: item.label,
+              headerShown: item.route === "Account" ? false : true,
               tabBarShowLabel: true,
               tabBarButton: ({ accessibilityState, onPress }) => (
                 <TabButton

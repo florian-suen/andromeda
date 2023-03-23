@@ -124,7 +124,13 @@ export const ContactProfileScreen = () => {
           />
         </View>
       </View>
-      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
+      >
         <Button
           icon={() => {
             return (
@@ -192,7 +198,7 @@ export const ContactProfileScreen = () => {
             }}
             mode="contained"
             buttonColor={Colors.gray}
-            style={[styles.button, { marginTop: 30 }]}
+            style={styles.blockButton}
           >
             Blocked
           </Button>
@@ -204,17 +210,17 @@ export const ContactProfileScreen = () => {
                   style={{ marginLeft: 2, marginTop: 3 }}
                   name="block"
                   size={20}
-                  color={Colors.danger}
+                  color={Colors.white}
                 />
               );
             }}
             contentStyle={{
               flexDirection: "row-reverse",
             }}
-            textColor={Colors.danger}
-            buttonColor={Colors.buttonProfile}
+            textColor={Colors.white}
+            buttonColor={Colors.danger}
             mode="contained"
-            style={[styles.button, { marginTop: 30 }]}
+            style={styles.blockButton}
             onPress={() => blockFriendHandler(currentContact, dispatch)}
           >
             Block User
@@ -339,11 +345,22 @@ const styles = StyleSheet.create({
     marginRight: 3,
   },
   button: {
-    height: 46,
+    justifyContent: "center",
+    height: 50,
     width: "100%",
     borderRadius: 0,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.black,
     marginTop: StyleSheet.hairlineWidth,
+  },
+  blockButton: {
+    justifyContent: "center",
+    height: 55,
+    width: "30%",
+
+    borderRadius: 5,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.black,
+    marginTop: 50,
   },
 });

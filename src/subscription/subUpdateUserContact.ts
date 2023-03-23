@@ -1,7 +1,5 @@
 import {
-  ContactType,
   deleteUserContact,
-  RequestStatusType,
   updateUserContact,
 } from "./../redux/contactList/contactListSlice";
 import { API, graphqlOperation } from "aws-amplify";
@@ -16,6 +14,7 @@ import {
   onDeleteUserContact,
   onUpdateUserContact,
 } from "./subscriptionQueries";
+import { ContactType, RequestStatusType } from "../redux/contactList/types";
 
 export const subOnDeleteUserContact = (
   userId: string,
