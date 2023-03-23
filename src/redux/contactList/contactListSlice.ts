@@ -78,16 +78,17 @@ export const contactSlice = createSlice({
   name: "contact",
   initialState,
   reducers: {
-    updateStatus: (
+    updateContactStatus: (
       state,
       action: PayloadAction<{ status: string; _version: string; id: string }>
     ) => {
       const userIndex = state.contacts.findIndex(
-        (item) => item.friendID === action.payload.id
+        (item) => item.friend.id === action.payload.id
       );
 
-      state.contacts[userIndex].friend.status = action.payload.status;
-      state.contacts[userIndex].friend._version = action.payload._version;
+      console.log(userIndex);
+      /*  state.contacts[userIndex].friend.status = action.payload.status;
+      state.contacts[userIndex].friend._version = action.payload._version; */
 
       return state;
     },
@@ -168,5 +169,5 @@ export const {
   updateFriendStatus,
   updateUserContact,
   deleteUserContact,
-  updateStatus,
+  updateContactStatus,
 } = contactSlice.actions;

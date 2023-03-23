@@ -18,6 +18,7 @@ import {
 import { subOnCreateBlog } from "../../subscription/subOnCreateBlog";
 import Colors from "../../constants/Colors";
 import { ActivityIndicator } from "react-native-paper";
+import { subOnupdateUser } from "../../subscription/subUpdateUser";
 
 type RootStackParamList = {
   GroupChat: { chatGroupId: string; username: string };
@@ -46,6 +47,7 @@ export const ChatList = () => {
   subonUpdateUserContact(userAuth.attributes.sub, dispatch);
   subOnCreateUserContact(userAuth.attributes.sub, dispatch);
   subOnCreateBlog(userAuth.attributes.sub, dispatch);
+  subOnupdateUser(userAuth.attributes.sub, dispatch);
   return chatGroup && chatGroup?.length ? (
     <FlatList
       keyExtractor={(item) => {

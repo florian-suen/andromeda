@@ -1,6 +1,6 @@
 import { graphqlOperation, API } from "aws-amplify";
 import { onUpdateUser } from "../graphql/subscriptions";
-import { updateStatus } from "../redux/contactList/contactListSlice";
+import { updateContactStatus } from "../redux/contactList/contactListSlice";
 
 import { AppDispatch } from "../redux/store";
 
@@ -10,7 +10,7 @@ export const subOnupdateUser = (
 ) => {
   const onUpdateCurrentUser = API.graphql(
     graphqlOperation(onUpdateUser, {
-      filter: { id: { eq: currentUserId } },
+      filter: { not: { id: { eq: currentUserId } } },
     })
   );
   const onUpdateCurrentUserSubscription =
@@ -18,7 +18,7 @@ export const subOnupdateUser = (
     onUpdateCurrentUser.subscribe({
       next: ({ value }: any) => {
         dispatch(
-          updateStatus({
+          updateContactStatus({
             _version: value.data.onUpdateUser._version,
             status: value.data.onUpdateUser.status,
             id: value.data.onUpdateUser.id,
