@@ -109,6 +109,9 @@ export const AccountScreen = () => {
                             position: -60,
                             shadow: true,
                             backgroundColor: Colors.info,
+                            textStyle: {
+                              fontFamily: "Exo2",
+                            },
                           });
                       }
                     );

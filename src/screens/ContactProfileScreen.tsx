@@ -113,6 +113,7 @@ export const ContactProfileScreen = () => {
                       position: -40,
                       shadow: true,
                       backgroundColor: Colors.info,
+                      textStyle: { fontFamily: "Exo2" },
                     });
                 }
               );

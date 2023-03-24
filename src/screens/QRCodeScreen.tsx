@@ -1,17 +1,14 @@
-import { useContext, useRef } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  ToastAndroid,
-  Button,
-} from "react-native";
+import { useRef } from "react";
+import { StyleSheet, View, Text, Image } from "react-native";
 import ViewShot, { captureScreen } from "react-native-view-shot";
 import QRCode from "react-native-qrcode-svg";
 import { useAppSelector } from "../../utility/useReduxHooks";
 import { LinearGradient } from "expo-linear-gradient";
 import * as MediaLibrary from "expo-media-library";
+import Colors from "../constants/Colors";
+import { Button } from "react-native-paper";
+import { BlurView } from "expo-blur";
+import Toast from "react-native-root-toast";
 
 export interface QRCodeProps {
   inviteId: string;
@@ -36,7 +33,15 @@ export const QRCodeScreen = () => {
     ref.current.capture().then((uri: any) => {
       status === "granted" &&
         MediaLibrary.saveToLibraryAsync(uri).then(() => {
-          ToastAndroid.show("Saved to Gallery", ToastAndroid.SHORT);
+          Toast.show("Saved to Gallery", {
+            duration: Toast.durations.LONG,
+            position: -60,
+            shadow: true,
+            backgroundColor: Colors.info,
+            textStyle: {
+              fontFamily: "Exo2",
+            },
+          });
         });
     });
   };
@@ -46,7 +51,7 @@ export const QRCodeScreen = () => {
       <View>
         {screenshot ? (
           <LinearGradient
-            colors={["purple", "orange"]}
+            colors={[Colors.buttonProfile, Colors.tertiary]}
             start={{ x: 0.8, y: 0.35 }}
             end={{ x: 1, y: 1 }}
           >
@@ -54,22 +59,25 @@ export const QRCodeScreen = () => {
               {
                 <QRCode
                   size={240}
-                  color="white"
+                  color={Colors.qrCode}
                   /*    logo={{ uri: }} */
                   backgroundColor="transparent"
                   value={JSON.stringify(payload)}
                 />
               }
             </View>
-            <View style={styles.textInfo}>
-              <Text>Scan QR code to form a contract</Text>
+            <Text
+              style={[{ alignSelf: "center", marginBottom: 15 }, styles.text]}
+            >
+              Scan QR code to add Contact
+            </Text>
+            <BlurView intensity={15} style={styles.textInfo}>
               <Image
                 style={styles.imageInfo}
                 source={{ uri: currentUser.image }}
               />
-              <Text>{currentUser.username}</Text>
-              <Text>{currentUser.status}</Text>
-            </View>
+              <Text style={styles.text}>{currentUser.username}</Text>
+            </BlurView>
           </LinearGradient>
         ) : (
           <>
@@ -77,28 +85,36 @@ export const QRCodeScreen = () => {
               {
                 <QRCode
                   size={240}
-                  color="white"
+                  color={Colors.qrCode}
                   /*    logo={{ uri: }} */
                   backgroundColor="transparent"
                   value={JSON.stringify(payload)}
                 />
               }
             </View>
-            <View style={styles.textInfo}>
-              <Text>Scan QR code to form a contract</Text>
+            <Text
+              style={[{ alignSelf: "center", marginBottom: 15 }, styles.text]}
+            >
+              Scan QR code to add Contact
+            </Text>
+            <BlurView intensity={15} style={styles.textInfo}>
               <Image
                 style={styles.imageInfo}
                 source={{ uri: currentUser.image }}
               />
-              <Text>{currentUser.username}</Text>
-              <Text>{currentUser.status}</Text>
-            </View>
+              <Text style={styles.text}>{currentUser.username}</Text>
+            </BlurView>
+
             <Button
-              title="Save QR Code"
+              mode="contained"
+              textColor={Colors.qrCode}
+              style={{ borderRadius: 3 }}
               onPress={() => {
                 saveImageHandler();
               }}
-            />
+            >
+              Save QR Code
+            </Button>
           </>
         )}
       </View>
@@ -108,7 +124,7 @@ export const QRCodeScreen = () => {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={["purple", "orange"]}
+        colors={[Colors.buttonProfile, Colors.tertiary]}
         style={styles.linearGradient}
         start={{ x: 1, y: 0 }}
         end={{ x: 2, y: 1 }}
@@ -130,8 +146,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  qrCode: { paddingVertical: 30, paddingHorizontal: 50 },
+  text: { fontFamily: "Exo2", color: Colors.accent },
+  qrCode: {
+    paddingVertical: 50,
+    paddingHorizontal: 4,
+  },
   linearGradient: { flex: 1, alignItems: "center", justifyContent: "center" },
-  textInfo: { alignItems: "center" },
-  imageInfo: { width: 50, height: 50 },
+  textInfo: {
+    flexDirection: "row",
+
+    alignItems: "center",
+    borderRadius: 2,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 1.0,
+    elevation: 0.1,
+  },
+  imageInfo: {
+    width: 50,
+    height: 50,
+    margin: 10,
+    marginBottom: 5,
+    borderRadius: 5,
+    marginRight: 22,
+  },
 });

@@ -24,4 +24,5 @@ export default {
   info: "#18617a",
   decline: "#7c2d73",
   buttonProfile: "#134f63",
+  qrCode: "#bdbbbb",
 };
