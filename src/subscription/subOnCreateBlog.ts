@@ -3,12 +3,12 @@ import { API, graphqlOperation } from "aws-amplify";
 import { AppDispatch } from "../redux/store";
 import { onCreateBlog } from "./subscriptionQueries";
 import {
-  CurrentUserType,
   updateUserBlogOnCreateMedia,
   updateUserOnCreateBlog,
 } from "../redux/currentUser/currentUserSlice";
 import { onCreateMedia } from "../graphql/subscriptions";
-import { Media } from "../redux/messages/messageSlice";
+import { CurrentUserType } from "../redux/currentUser/types";
+import { Media } from "../redux/messages/types";
 
 export const subOnCreateBlog = (userId: string, dispatch: AppDispatch) => {
   useEffect(() => {

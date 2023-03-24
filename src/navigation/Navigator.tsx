@@ -56,7 +56,10 @@ export const Navigator = () => {
       route: "QRCode",
       label: "QRCode",
       component: QRCodeScreen,
-      options: { headerTransparent: true, title: "" },
+      options: {
+        headerTransparent: true,
+        title: "",
+      },
     },
     {
       route: "Scan",
