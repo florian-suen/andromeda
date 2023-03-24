@@ -18,7 +18,7 @@ export default {
   attachBoxTwo: "#8c4284",
   progressBarOne: "#642f5e",
   progressBarTwo: "#386266",
-  danger: "#9c2421",
+  danger: "#871e1b",
   warning: "#ba4f07",
   success: "#067d4d",
   info: "#18617a",

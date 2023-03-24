@@ -87,7 +87,7 @@ export const AccountScreen = () => {
                   style={{
                     position: "absolute",
                     right: 21,
-                    top: 0,
+                    top: -2,
                   }}
                   name="qrcode"
                   size={28}
@@ -290,6 +290,7 @@ export const AccountScreen = () => {
           </View>
         </Pressable>
         <Button
+          labelStyle={{ fontFamily: "Chakra", color: Colors.white }}
           buttonColor={Colors.danger}
           style={styles.button}
           mode="contained"
@@ -326,7 +327,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   profileImage: {
-    marginRight: 15,
+    marginRight: 18,
     height: 100,
     width: 100,
     borderRadius: 5,
