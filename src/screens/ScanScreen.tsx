@@ -5,12 +5,15 @@ import {
   View,
   StyleSheet,
   Text,
-  Button,
   Dimensions,
   Platform,
+  Image,
 } from "react-native";
 import { QRCodeProps } from "./QRCodeScreen";
-
+import { LinearGradient } from "expo-linear-gradient";
+import Colors from "../constants/Colors";
+import { BlurView } from "expo-blur";
+import { Button } from "react-native-paper";
 export const ScanScreen = () => {
   const [loading, setLoading] = useState(true);
   const [scanData, setScanData] = useState<QRCodeProps | string | null>(null);
@@ -93,21 +96,26 @@ export const ScanScreen = () => {
   if (scanData) {
     if (typeof scanData === "object")
       return (
-        <>
-          <View style={styles.container}>
-            <Text>{scanData.inviteId}</Text>
-            <Text>{scanData.name}</Text>
-            <Text>{scanData.image}</Text>
-          </View>
+        <LinearGradient
+          style={styles.linearGradient}
+          colors={[Colors.buttonProfile, Colors.tertiary]}
+          start={{ x: 1, y: 0 }}
+          end={{ x: 1.5, y: 1 }}
+        >
+          <BlurView intensity={15} style={styles.textInfo}>
+            <Image style={styles.imageInfo} source={{ uri: scanData.image }} />
+            <Text style={styles.text}>{scanData.name}</Text>
+          </BlurView>
 
           <Button
-            title="scan again"
-            color={"royalblue"}
-            onPress={() => {
-              setScanData(null);
-            }}
-          ></Button>
-        </>
+            mode="contained"
+            textColor={Colors.qrCode}
+            style={{ borderRadius: 3 }}
+            onPress={() => {}}
+          >
+            Save QR Code
+          </Button>
+        </LinearGradient>
       );
     else {
       return (
@@ -117,12 +125,12 @@ export const ScanScreen = () => {
           </View>
 
           <Button
-            title="scan again"
-            color={"royalblue"}
             onPress={() => {
               setScanData(null);
             }}
-          ></Button>
+          >
+            scan again
+          </Button>
         </>
       );
     }
@@ -175,5 +183,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  linearGradient: { flex: 1, alignItems: "center", justifyContent: "center" },
+  imageInfo: {
+    width: 50,
+    height: 50,
+    margin: 10,
+    marginBottom: 8,
+    borderRadius: 5,
+    marginRight: 22,
+  },
+  text: { fontFamily: "Exo2", color: Colors.accent },
+  textInfo: {
+    flexDirection: "row",
+
+    alignItems: "center",
+    borderRadius: 2,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 1.0,
+    elevation: 0.1,
   },
 });
